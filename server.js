@@ -6,8 +6,10 @@ var graph = new neo4js.GraphDatabase('http://localhost:7474');
 
 app.use(express.bodyParser());
 
-app.get('/', function(request, response) {
-  response.send('Hello World!');
+app.use(express.static('public'));
+
+app.post('/node/', function(request, response) {
+	response.json({ "nodes": 1 });
 });
 
 app.get('/topic/:id/links', function(request, response) {
