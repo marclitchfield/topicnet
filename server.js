@@ -1,9 +1,25 @@
 var express = require('express');
+var neo4js = require('neo4js');
 
 var app = express.createServer(express.logger());
+var graph = new neo4js.GraphDatabase('http://localhost:7474');
+
+app.use(express.bodyParser());
 
 app.get('/', function(request, response) {
   response.send('Hello World!');
+});
+
+app.get('/topic/:id/links', function(request, response) {
+});
+
+app.post('/topic', function(request, response) {
+	var node = { 'name': request.body.name };
+	graph.node(node).then(function() {
+		console.log('Saved node: ' + node.name);
+	}, function(err) {
+		console.log('Error saving node: ' + node.name + ', ' + err);
+	})
 });
 
 var port = process.env.PORT || 5000;
