@@ -2,8 +2,10 @@ var express = require('express');
 
 var app = express.createServer(express.logger());
 
-app.get('/', function(request, response) {
-  response.send('Hello World!');
+app.use(express.static('public'));
+
+app.post('/node/', function(request, response) {
+	response.json({ "nodes": 1 });
 });
 
 var port = process.env.PORT || 5000;
