@@ -1,8 +1,8 @@
 var express = require('express');
-var neo4js = require('neo4js');
+var neo4j = require('neo4j');
 
 var app = express.createServer(express.logger());
-var graph = new neo4js.GraphDatabase('http://localhost:7474');
+var graph = new neo4j.GraphDatabase('http://localhost:7474');
 
 app.use(express.bodyParser());
 
@@ -16,11 +16,12 @@ app.get('/topic/:id/links', function(request, response) {
 });
 
 app.post('/topic', function(request, response) {
-	var node = { 'name': request.body.name };
-	graph.node(node).then(function() {
-		console.log('Saved node: ' + node.name);
+	var data  = { 'name': request.body.name };
+	var node = graph.createNode(data);
+	node.save(function() {
+		console.log('Saved node: ' + data.name);
 	}, function(err) {
-		console.log('Error saving node: ' + node.name + ', ' + err);
+		console.log('Error saving node: ' + data.name + ', ' + err);
 	})
 });
 
