@@ -1,8 +1,10 @@
 $(function() {
 	$("#submit").click(function() {
-		$.post('http://localhost:5000/node/', $("#add-node-form").serialize(), function(data) {
+		var param = { name: $("#name").val() };
+
+		$.post('http://localhost:5000/topic/', param, function(node) {
 				$("#name").val("");
-				var message = "<p>Nodes Created: " + data.nodes + "</p>";
+				var message = "<p>Node Created: " + node.name + "</p>";
 				$("#add-node-form").after(message);
 		});
 	});

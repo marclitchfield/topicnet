@@ -18,8 +18,10 @@ app.get('/topic/:id/links', function(request, response) {
 app.post('/topic', function(request, response) {
 	var data  = { 'name': request.body.name };
 	var node = graph.createNode(data);
+
 	node.save(function() {
 		console.log('Saved node: ' + data.name);
+		response.json(data);
 	}, function(err) {
 		console.log('Error saving node: ' + data.name + ', ' + err);
 	})
