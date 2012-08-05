@@ -3,8 +3,7 @@
   "version": "0.0.1",
   "dependencies": {
     "express": "2.5.x",
-    "neo4js": "0.0.4",
-    "jquery": "1.7.3"
+    "neo4j": "0.2.x"
   },
   "engines": {
     "node": "0.8.x",
