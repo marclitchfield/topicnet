@@ -8,7 +8,7 @@
 	"api-easy": "0.3.x"
   },
   "scripts": {
-    "test": "vows test/Server-test.js"
+    "test": "vows test/Server-test.js --spec"
   },
   "engines": {
     "node": "0.8.x",
