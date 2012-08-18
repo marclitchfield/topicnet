@@ -8,10 +8,8 @@
 	"api-easy": "0.3.x",
     "npm": "1.1.x"
   },
-  "devDependencies": {
-    "vows": ">= 0.5.6"
-  },
   "scripts": {
+    "test": "vows --spec"
   },
   "engines": {
     "node": "0.8.x",

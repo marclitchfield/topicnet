@@ -1,7 +1,7 @@
 var APIeasy = require('api-easy'),
     assert = require('assert');
 
-var suite = APIeasy.describe('your/awesome/api');
+var suite = APIeasy.describe('artoplasm REST API');
 
 suite.discuss('When using the API')
 	.use('localhost', 5000)
