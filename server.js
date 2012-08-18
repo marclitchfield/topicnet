@@ -3,7 +3,8 @@ var neo4j = require('neo4j');
 var _ = require('underscore');
 
 var app = express.createServer(express.logger());
-var graph = new neo4j.GraphDatabase('http://localhost:7474');
+var neo4jUrl = process.env.NEO4J_URL || 'http://localhost:7474'; 
+var graph = new neo4j.GraphDatabase(neo4jUrl);
 
 app.use(express.bodyParser());
 
