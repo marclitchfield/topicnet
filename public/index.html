@@ -2,14 +2,19 @@
 <html>
 <head>
 	<title>add a node | artoplasm</title>
+	<link href="css/bootstrap.min.css" rel="stylesheet">
 	<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.7.2/jquery.min.js"></script>
-	<script src="add.js"></script>
+	<script src="js/bootstrap.min.js"></script>
+	<script src="js/add.js"></script>
 </head>
-<body>
-	<h1>Add a Node</h1>
-	<form id="add-node-form">
-		<input type="text" id="name" name="name" />
-		<button type="button" id="submit" name="submit">Add Node</button>
+<body class="container">
+	<div class="hero-unit">
+		<h1>artoplasm</h1>
+	</div>
+	<form id="add-node-form" class="form-inline">
+		<input type="text" id="name" name="name" placeholder="Add a node" />
+		<button type="button" class="btn btn-primary" id="submit" name="submit">Add Node</button>
 	</form>
+	<div class="alert alert-success hide" id="result" />
 </body>
 </html>

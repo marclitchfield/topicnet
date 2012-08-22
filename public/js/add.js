@@ -4,8 +4,9 @@ $(function() {
 
 		$.post('/topic/', param, function(node) {
 				$("#name").val("");
-				var message = "<p>Node Created: " + node.name + "</p>";
-				$("#add-node-form").after(message);
+				var message = "<b>Node Created</b>: " + node.name;
+				$("#result").html(message);
+				$("#result").removeClass("hide");
 		});
 	});
 });
