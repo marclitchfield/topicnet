@@ -10,4 +10,9 @@ suite.discuss('When using the API')
     	.post({ name: 'testnode' })
 			.expect(200)
  	    	.expect({ "name": "testnode" })
+		.post({  })
+			.expect(500)
+			.expect('should respond with error', function(err, res, body) {
+				assert.include(res.body, 'name is required');
+			})
 	.export(module);

@@ -9,14 +9,14 @@ var topicService = require('./lib/TopicService').createService(graph);
 app.use(express.bodyParser());
 app.use(express.static('public'));
 
-app.post('/topic', function(request, response) {
+app.post('/topic', function(request, response, next) {
 	var topic  = { 'name': request.body.name };
 	topicService.create(topic, 
 		function(created) {
 			response.json(created);
 		},
-		function(error) {
-			response.send(500, error); 
+		function(err) {
+			next(new Error(err));
 		}
 	); 
 });
