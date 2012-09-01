@@ -84,28 +84,60 @@ vows.describe('REST service').addBatch({
 			'returns 404 not found': assertStatus(404)
 		}
 	},
-	'POST /topics/:id/root': {
+	'POST /topics/:id/root then calling GET /topics': {
+		topic: function() {
+			var self = this;
+			api.post('/topics', { name: 'testnode' }, function(err, res) {
+				var id = JSON.parse(res.body).id;
+				assert.equal(200, res.statusCode);
+				api.post('/topics/' + id + '/root', {}, function(err, res) {
+					api.get('/topics', function(err, res) {
+						self.callback (err, res, id);
+					});
+				});
+			});
+		},
+		'returns 200 OK': assertStatus(200),
+		'returns the topic': function(err, res, id) {
+			var response = JSON.parse(res.body);
+			assert.ok(_.any(response, function(t) {
+				return t.id === id;
+			}));
+		}
+	},
+	// 'POST /topics/:fromid/:type': {
+	// 	topic: function() {
+	// 		var self = this;
+	// 		api.post('/topics', { name: 'tonode'}, function(err, res) {
+	// 			self.toid = JSON.parse(res.body).id;
+	// 			api.post('/topics', { name: 'fromnode' }, function(err, res) {
+	// 				self.fromid = self.toid = JSON.parse(res.body).id;
+	// 				api.post('/topics/' + self.fromid + '/sub', { toid: self.toid }, self.callback);
+	// 			});
+	// 		});
+	// 	},
+	// 	'returns 200 OK': assertStatus(200)
+	// },
+	'GET /topics': {
 		topic: function() {
 			var self = this;
 			api.post('/topics', { name: 'testnode' }, function(err, res) {
 				self.id = JSON.parse(res.body).id;
-				api.post('/topics/' + self.id + '/root', {}, self.callback);
+				api.post('/topics/' + self.id + '/root', {}, function(err, res) {
+					api.get('/topics', self.callback);
+				});
 			});
 		},
 		'returns 200 OK': assertStatus(200),
-		'then calling GET /topics': {
-			topic: function() {
+		'returns root node': {
+			topic: function(res) {
 				var self = this;
-				api.get('/topics', function(err, res) {
-					self.callback(err, res, self.id);
+				var rootNodes = JSON.parse(res);
+				return _.find(rootNodes, function(node) {
+					return node.id === self.id;
 				});
 			},
-			'returns 200 OK': assertStatus(200),
-			'returns the topic': function(err, res, id) {
-				var response = JSON.parse(res.body);
-				assert.ok(_.any(response, function(t) {
-					return t.id === id;
-				}));
+			'with relationships': {
 			}
 		}
 	}
