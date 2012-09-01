@@ -49,4 +49,8 @@ graph API
 Testing
 -------
 
-To run the tests, start the neo4j test database (neo4j-test) running on port 7476 and start node with: <pre>NODE_ENV=test node server.js</pre>. Then run <pre>npm test</pre> to run the test suite.
+To run the tests, start the neo4j test database (neo4j-test) running on port 7476 and start node with:
+<pre>NODE_ENV=test node server.js</pre>
+Then run
+<pre>npm test</pre>
+to run the test suite.
