@@ -5,4 +5,4 @@ module.exports = function() {
 		default:
 			return { neo4j: { port: 7474 }};
 	}
-};
+}();
