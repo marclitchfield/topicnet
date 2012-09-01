@@ -2,23 +2,23 @@ var express = require('express');
 var neo4j = require('neo4j');
 
 var app = express.createServer(express.logger());
-var neo4jUrl = process.env.NEO4J_URL || 'http://localhost:7474'; 
+var neo4jUrl = process.env.NEO4J_URL || 'http://localhost:7474';
 var graph = new neo4j.GraphDatabase(neo4jUrl);
 var topicService = require('./lib/TopicService').createService(graph);
 
 app.use(express.bodyParser());
 app.use(express.static('public'));
 
-app.post('/topic', function(request, response, next) {
+app.post('/topics', function(request, response, next) {
 	var topic  = { 'name': request.body.name };
-	topicService.create(topic, 
+	topicService.create(topic,
 		function(created) {
 			response.json(created);
 		},
 		function(err) {
 			next(new Error(err));
 		}
-	); 
+	);
 });
 
 var port = process.env.PORT || 5000;

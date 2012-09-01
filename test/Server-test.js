@@ -18,13 +18,13 @@ var api = {
 			headers: { 'Content-Type': 'application/json' }
 		}, callback);
 	}
-}; 
+};
 			
 
-vows.describe('/topic').addBatch({
-	'POST to /topic': {
-		topic: function() { 
-			api.post('/topic', { name: 'testnode' }, this.callback);
+vows.describe('/topics').addBatch({
+	'POST to /topics': {
+		topic: function() {
+			api.post('/topics', { name: 'testnode' }, this.callback);
 		},
 		'returns status code 200 OK': function( err, res ) {
 			assert.equal(res.statusCode, 200);
@@ -38,11 +38,11 @@ vows.describe('/topic').addBatch({
 			'and a valid id': function( obj ) {
 				assert.ok( obj.id > 0 );
 			}
-		}	
+		}
 	},
-	'POST to /topic with no name': {
+	'POST to /topics with no name': {
 		topic: function() {
-			api.post('/topic', {}, this.callback);
+			api.post('/topics', {}, this.callback);
 		},
 		'returns status code 500': function( err, res ) {
 			assert.equal(res.statusCode, 500);
@@ -52,4 +52,3 @@ vows.describe('/topic').addBatch({
 		}
 	}
 }).export(module);
-				
