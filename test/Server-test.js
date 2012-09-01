@@ -56,8 +56,8 @@ vows.describe('/topics').addBatch({
 		topic: function() {
 			var self = this;
 			api.post('/topics', { name: 'testnode' }, function(err, res) {
-				var id = JSON.parse(res.body).id;
-				api.get('/topics/' + id, self.callback);
+				self.id = JSON.parse(res.body).id;
+				api.get('/topics/' + self.id, self.callback);
 			});
 		},
 		'returns status code 200 OK': assertStatus(200),
@@ -67,6 +67,9 @@ vows.describe('/topics').addBatch({
 			},
 			'with the expected name': function(obj) {
 				assert.equal(obj.name, 'testnode');
+			},
+			'with the specified id': function(obj) {
+				assert.equal(obj.id, this.id);
 			}
 		}
 	},

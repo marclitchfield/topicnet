@@ -6,7 +6,7 @@ topic CRUD
 - GET  /topics/:id       - get topic details
 - GET  /topics/          - return root topics
 
-	{ name:NN, next: [3,4], sub: [8, 9] } 
+	{ id: 1, name:NN, next: [3,4], sub: [8, 9] } 
 
 - POST /topics           - create a topic
 - PUT  /topics           - update a topic
