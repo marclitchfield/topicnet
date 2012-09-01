@@ -1,0 +1,21 @@
+{
+    "folders":
+    [
+        {
+            "path": "lib"
+        },
+        {
+            "path": "public"
+        },
+        {
+            "path": "test"
+        }
+    ],
+    "settings":
+    {
+        "tab_size": 4
+    },
+    "build_systems":
+    [
+    ]
+}
