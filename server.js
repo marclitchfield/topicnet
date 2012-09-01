@@ -3,7 +3,6 @@ var neo4j = require('neo4j');
 var config = require('./config.js');
 
 var app = express.createServer(express.logger());
-console.log(config);
 var neo4jUrl = process.env.NEO4J_URL || 'http://localhost:' + config.neo4j.port;
 var graph = new neo4j.GraphDatabase(neo4jUrl);
 var topicService = require('./lib/TopicService').createService(graph);
