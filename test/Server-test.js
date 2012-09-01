@@ -19,16 +19,19 @@ var api = {
 		}, callback);
 	}
 };
-			
+
+function assertStatus(code) {
+    return function (e, res) {
+        assert.equal (res.statusCode, code);
+    };
+}
 
 vows.describe('/topics').addBatch({
-	'POST to /topics': {
+	'POST with valid data': {
 		topic: function() {
 			api.post('/topics', { name: 'testnode' }, this.callback);
 		},
-		'returns status code 200 OK': function( err, res ) {
-			assert.equal(res.statusCode, 200);
-		},
+		'returns status code 200 OK': assertStatus(200),
 		'responds with new topic object': {
 			topic: function(res) { return JSON.parse(res.body); },
 
@@ -40,15 +43,37 @@ vows.describe('/topics').addBatch({
 			}
 		}
 	},
-	'POST to /topics with no name': {
+	'POST with no name': {
 		topic: function() {
 			api.post('/topics', {}, this.callback);
 		},
-		'returns status code 500': function( err, res ) {
-			assert.equal(res.statusCode, 500);
-		},
+		'returns status code 500': assertStatus(500),
 		'responds with error message': function( err, res ) {
 			assert.include(res.body, 'name is required');
 		}
+	},
+	'GET with valid id': {
+		topic: function() {
+			var self = this;
+			api.post('/topics', { name: 'testnode' }, function(err, res) {
+				var id = JSON.parse(res.body).id;
+				api.get('/topics/' + id, self.callback);
+			});
+		},
+		'returns status code 200 OK': assertStatus(200),
+		'responds with existing topic object': {
+			topic: function(res) {
+				return JSON.parse(res.body);
+			},
+			'with the expected name': function(obj) {
+				assert.equal(obj.name, 'testnode');
+			}
+		}
+	},
+	'GET with invalid id: ': {
+		topic: function() {
+			api.get('/topics/-99999', this.callback);
+		},
+		'returns 404 not found': assertStatus(404)
 	}
 }).export(module);
