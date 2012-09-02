@@ -108,40 +108,49 @@ vows.describe('REST service').addBatch({
 				}
 			},
 
-			'. given a subtopic,': {
+			'. then POST /topics/:id/:rel with a subtopic': {
 				topic: function(res, obj) {
 					var self = this;
 					api.post('/topics', { name: 'subtopic' }, function(err, res) {
 						var sub = JSON.parse(res.body);
-						self.callback(err, res, obj, sub);
+						api.post('/topics/' + obj.id + '/sub', { toid: sub.id }, function(err, res) {
+							self.callback(err, res, obj, sub);
+						});
 					});
 				},
-				'POST /topics/:id/:rel': {
+				'returns 200 OK': assertStatus(200),
+				'. then GET /topics/:id/:rel': {
 					topic: function(res, obj, sub) {
 						var self = this;
-						api.post('/topics/' + obj.id + '/sub', { toid: sub.id }, function(err, res) {
+						api.get('/topics/' + obj.id + '/sub', function(err, res) {
 							self.callback(err, res, obj, sub);
 						});
 					},
 					'returns 200 OK': assertStatus(200),
-					'. then GET /topics/:id/:rel': {
-						topic: function(res, obj, sub) {
-							var self = this;
-							api.get('/topics/' + obj.id + '/sub', function(err, res) {
-								self.callback(err, res, obj, sub);
-							});
-						},
-						'returns 200 OK': assertStatus(200),
-						'returns the subtopic': function(err, res, obj, sub) {
-							var self = this;
-							assert.equal(res.statusCode, 200);
-							var subTopics = JSON.parse(res.body);
-							assert.ok(_.any(subTopics, function(t) {
-								return t.id === sub.id;
-							}));
-						}
+					'returns the subtopic': function(err, res, obj, sub) {
+						var self = this;
+						assert.equal(res.statusCode, 200);
+						var subTopics = JSON.parse(res.body);
+						assert.ok(_.any(subTopics, function(t) {
+							return t.id === sub.id;
+						}));
 					}
 				}
+				// ,
+				// '. then GET /topics/:id': {
+				// 	topic: function(res, obj, sub) {
+				// 		var self = this;
+				// 		api.get('/topics/' + obj.id, function(err, res) {
+				// 			self.callback(err, res, sub.id);
+				// 		});
+				// 	},
+				// 	'returns 200 OK': assertStatus(200),
+				// 	'returns a link to the subtopic': function(err, res, subtopicId) {
+				// 		var topic = JSON.parse(res.body);
+				// 		assert.ok(topic.sub);
+				// 		assert.include(topic.sub, subtopicId);
+				// 	}
+				// }
 			}
 		}
 	},
