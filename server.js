@@ -48,14 +48,19 @@ app.post('/topics/:id/root', function(request, response, next) {
 	);
 });
 
-app.get('/topics/:id/:relationship', function(request, response) {
-	topicService.getRelated(request.params.id, request.params.relationship, function(topics) {
-		response.json(topics);
-	});
+app.get('/topics/:id/:rel', function(request, response, next) {
+	topicService.getRelated(request.params.id, request.params.rel,
+		function(topics) {
+			response.json(topics);
+		},
+		function(err) {
+			next(new Error(err));
+		}
+	);
 });
 
-app.post('/topics/:id/:relationship', function(request, response, next) {
-	topicService.createRelationship(request.params.id, request.body.toid, request.params.relationship,
+app.post('/topics/:id/:rel', function(request, response, next) {
+	topicService.createRelationship(request.params.id, request.body.toid, request.params.rel,
 		function() {
 			response.send(200);
 		},

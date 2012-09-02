@@ -34,7 +34,7 @@ vows.describe('REST service').addBatch({
 				api.post('/topics', {}, this.callback);
 			},
 			'returns status code 500': assertStatus(500),
-			'responds with error message': function( err, res ) {
+			'returns error message': function( err, res ) {
 				assert.include(res.body, 'name is required');
 			}
 		},
@@ -45,7 +45,7 @@ vows.describe('REST service').addBatch({
 					self.callback(err, res, JSON.parse(res.body));
 				});
 			},
-			'returns status code 200 OK': assertStatus(200),
+			'returns 200 OK': assertStatus(200),
 			'returns new topic object': {
 				'with a name': function(res, obj) {
 					assert.equal(obj.name, 'testnode');
@@ -116,7 +116,7 @@ vows.describe('REST service').addBatch({
 						self.callback(err, res, obj, sub);
 					});
 				},
-				'POST /topics/:id/:relationship': {
+				'POST /topics/:id/:rel': {
 					topic: function(res, obj, sub) {
 						var self = this;
 						api.post('/topics/' + obj.id + '/sub', { toid: sub.id }, function(err, res) {
@@ -124,7 +124,7 @@ vows.describe('REST service').addBatch({
 						});
 					},
 					'returns 200 OK': assertStatus(200),
-					'. then GET /topics/:id/:relationship': {
+					'. then GET /topics/:id/:rel': {
 						topic: function(res, obj, sub) {
 							var self = this;
 							api.get('/topics/' + obj.id + '/sub', function(err, res) {
@@ -143,6 +143,26 @@ vows.describe('REST service').addBatch({
 					}
 				}
 			}
+		}
+	},
+	'POST /topics/:id/:rel with an invalid relationship': {
+		topic: function() {
+			var self = this;
+			api.post('/topics/1/invalid', { toid: 2 }, self.callback);
+		},
+		'returns status code 500': assertStatus(500),
+		'returns error message': function(err, res) {
+			assert.include(res.body, 'invalid relationship');
+		}
+	},
+	'GET /topics/:id/:rel with an invalid relationship': {
+		topic: function() {
+			var self = this;
+			api.get('/topics/1/invalid', self.callback);
+		},
+		'returns status code 500': assertStatus(500),
+		'returns error message': function(err, res) {
+			assert.include(res.body, 'invalid relationship');
 		}
 	}
 }).export(module);
