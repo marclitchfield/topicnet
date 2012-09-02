@@ -29,22 +29,6 @@ function assertStatus(code) {
 
 vows.describe('REST service').addBatch({
 	'POST to /topics': {
-		'with valid data': {
-			topic: function() {
-				api.post('/topics', { name: 'testnode' }, this.callback);
-			},
-			'returns status code 200 OK': assertStatus(200),
-			'responds with new topic object': {
-				topic: function(res) { return JSON.parse(res.body); },
-
-				'with a name': function( obj ) {
-					assert.equal(obj.name, 'testnode');
-				},
-				'and a valid id': function( obj ) {
-					assert.ok( obj.id > 0 );
-				}
-			}
-		},
 		'with no name': {
 			topic: function() {
 				api.post('/topics', {}, this.callback);
@@ -53,91 +37,111 @@ vows.describe('REST service').addBatch({
 			'responds with error message': function( err, res ) {
 				assert.include(res.body, 'name is required');
 			}
-		}
-	},
-	'GET /topics/:id': {
-		'with valid id': {
+		},
+		'with valid data': {
 			topic: function() {
 				var self = this;
 				api.post('/topics', { name: 'testnode' }, function(err, res) {
-					self.id = JSON.parse(res.body).id;
-					api.get('/topics/' + self.id, self.callback);
+					self.callback(err, res, JSON.parse(res.body));
 				});
 			},
 			'returns status code 200 OK': assertStatus(200),
-			'responds with existing topic object': {
-				topic: function(res) {
-					return JSON.parse(res.body);
-				},
-				'with the expected name': function(obj) {
+			'returns new topic object': {
+				'with a name': function(res, obj) {
 					assert.equal(obj.name, 'testnode');
 				},
-				'with the specified id': function(obj) {
-					assert.equal(obj.id, this.id);
+				'and a valid id': function(res, obj) {
+					assert.ok( obj.id > 0 );
 				}
-			}
-		},
-		'with invalid id': {
-			topic: function() {
-				api.get('/topics/-99999', this.callback);
 			},
-			'returns 404 not found': assertStatus(404)
-		}
-	},
-	'POST /topics/:id/root then calling GET /topics': {
-		topic: function() {
-			var self = this;
-			api.post('/topics', { name: 'testnode' }, function(err, res) {
-				var id = JSON.parse(res.body).id;
-				assert.equal(200, res.statusCode);
-				api.post('/topics/' + id + '/root', {}, function(err, res) {
-					api.get('/topics', function(err, res) {
-						self.callback (err, res, id);
+
+			'. then GET /topics/:id': {
+				'with invalid id': {
+					topic: function() {
+						api.get('/topics/-99999', this.callback);
+					},
+					'returns 404 not found': assertStatus(404)
+				},
+				'with valid id': {
+					topic: function(res, obj) {
+						var self = this;
+						api.get('/topics/' + obj.id, function(err, res) {
+							self.callback(err, res, obj.id);
+						});
+					},
+					'returns status code 200 OK': assertStatus(200),
+					'returns existing topic': {
+						topic: function(res, id) {
+							this.callback(JSON.parse(res.body), id);
+						},
+						'with the expected name': function(obj, id) {
+							assert.equal(obj.name, 'testnode');
+						},
+						'with the specified id': function(obj, id) {
+							assert.equal(obj.id, id);
+						}
+					}
+				}
+			},
+
+			'. then POST /topics/:id/root': {
+				topic: function(res, obj) {
+					var self = this;
+					api.post('/topics/' + obj.id + '/root', {}, function(err, res) {
+						self.callback(err, res, obj);
 					});
-				});
-			});
-		},
-		'returns 200 OK': assertStatus(200),
-		'returns the topic': function(err, res, id) {
-			var response = JSON.parse(res.body);
-			assert.ok(_.any(response, function(t) {
-				return t.id === id;
-			}));
-		}
-	},
-	// 'POST /topics/:fromid/:type': {
-	// 	topic: function() {
-	// 		var self = this;
-	// 		api.post('/topics', { name: 'tonode'}, function(err, res) {
-	// 			self.toid = JSON.parse(res.body).id;
-	// 			api.post('/topics', { name: 'fromnode' }, function(err, res) {
-	// 				self.fromid = self.toid = JSON.parse(res.body).id;
-	// 				api.post('/topics/' + self.fromid + '/sub', { toid: self.toid }, self.callback);
-	// 			});
-	// 		});
-	// 	},
-	// 	'returns 200 OK': assertStatus(200)
-	// },
-	'GET /topics': {
-		topic: function() {
-			var self = this;
-			api.post('/topics', { name: 'testnode' }, function(err, res) {
-				self.id = JSON.parse(res.body).id;
-				api.post('/topics/' + self.id + '/root', {}, function(err, res) {
-					api.get('/topics', self.callback);
-				});
-			});
-		},
-		'returns 200 OK': assertStatus(200),
-		'returns root node': {
-			topic: function(res) {
-				var self = this;
-				var rootNodes = JSON.parse(res);
-				return _.find(rootNodes, function(node) {
-					return node.id === self.id;
-				});
+				},
+				'returns 200 OK': assertStatus(200),
+				'. then GET /topics': {
+					topic: function(res, obj) {
+						var self = this;
+						api.get('/topics', function(err, res) {
+							self.callback (err, res, obj.id);
+						});
+					},
+					'returns all root topics, including our topic': function(err, res, id) {
+						var rootTopics = JSON.parse(res.body);
+						assert.ok(_.any(rootTopics, function(t) {
+							return t.id === id;
+						}));
+					}
+				}
 			},
-			'with relationships': {
+
+			'. given a subtopic,': {
+				topic: function(res, obj) {
+					var self = this;
+					api.post('/topics', { name: 'subtopic' }, function(err, res) {
+						var sub = JSON.parse(res.body);
+						self.callback(err, res, obj, sub);
+					});
+				},
+				'POST /topics/:id/:relationship': {
+					topic: function(res, obj, sub) {
+						var self = this;
+						api.post('/topics/' + obj.id + '/sub', { toid: sub.id }, function(err, res) {
+							self.callback(err, res, obj, sub);
+						});
+					},
+					'returns 200 OK': assertStatus(200),
+					'. then GET /topics/:id/:relationship': {
+						topic: function(res, obj, sub) {
+							var self = this;
+							api.get('/topics/' + obj.id + '/sub', function(err, res) {
+								self.callback(err, res, obj, sub);
+							});
+						},
+						'returns 200 OK': assertStatus(200),
+						'returns the subtopic': function(err, res, obj, sub) {
+							var self = this;
+							assert.equal(res.statusCode, 200);
+							var subTopics = JSON.parse(res.body);
+							assert.ok(_.any(subTopics, function(t) {
+								return t.id === sub.id;
+							}));
+						}
+					}
+				}
 			}
 		}
 	}

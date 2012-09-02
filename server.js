@@ -40,7 +40,24 @@ app.get('/topics/:id', function(request, response) {
 
 app.post('/topics/:id/root', function(request, response, next) {
 	topicService.makeRoot(request.params.id,
-		function(created) {
+		function() {
+			response.send(200);
+		},
+		function(err) {
+			next(new Error(err));
+		}
+	);
+});
+
+app.get('/topics/:id/:relationship', function(request, response) {
+	topicService.getRelated(request.params.id, request.params.relationship, function(topics) {
+		response.json(topics);
+	});
+});
+
+app.post('/topics/:id/:relationship', function(request, response, next) {
+	topicService.createRelationship(request.params.id, request.body.toid, request.params.relationship,
+		function() {
 			response.send(200);
 		},
 		function(err) {
