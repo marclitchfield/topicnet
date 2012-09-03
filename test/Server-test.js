@@ -135,22 +135,21 @@ vows.describe('REST service').addBatch({
 							return t.id === sub.id;
 						}));
 					}
+				},
+				'. then GET /topics/:id': {
+					topic: function(res, obj, sub) {
+						var self = this;
+						api.get('/topics/' + obj.id, function(err, res) {
+							self.callback(err, res, sub.id);
+						});
+					},
+					'returns 200 OK': assertStatus(200),
+					'returns a link to the subtopic': function(err, res, subtopicId) {
+						var topic = JSON.parse(res.body);
+						assert.ok(topic.sub);
+						assert.include(topic.sub, subtopicId);
+					}
 				}
-				// ,
-				// '. then GET /topics/:id': {
-				// 	topic: function(res, obj, sub) {
-				// 		var self = this;
-				// 		api.get('/topics/' + obj.id, function(err, res) {
-				// 			self.callback(err, res, sub.id);
-				// 		});
-				// 	},
-				// 	'returns 200 OK': assertStatus(200),
-				// 	'returns a link to the subtopic': function(err, res, subtopicId) {
-				// 		var topic = JSON.parse(res.body);
-				// 		assert.ok(topic.sub);
-				// 		assert.include(topic.sub, subtopicId);
-				// 	}
-				// }
 			}
 		}
 	},

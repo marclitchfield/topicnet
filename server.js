@@ -10,10 +10,15 @@ var topicService = require('./lib/TopicService').createService(graph);
 app.use(express.bodyParser());
 app.use(express.static('public'));
 
-app.get('/topics', function(request, response) {
-	topicService.getRootTopics(function(topics) {
-		response.json(topics);
-	});
+app.get('/topics', function(request, response, next) {
+	topicService.getRootTopics(
+		function(topics) {
+			response.json(topics);
+		},
+		function(err) {
+			next(new Error(err));
+		}
+	);
 });
 
 app.post('/topics', function(request, response, next) {
@@ -27,14 +32,19 @@ app.post('/topics', function(request, response, next) {
 	);
 });
 
-app.get('/topics/:id', function(request, response) {
-	topicService.get(request.params.id, function(topic) {
-		if (topic === null) {
-			response.send(404);
-		} else {
-			response.json(topic);
+app.get('/topics/:id', function(request, response, next) {
+	topicService.get(request.params.id,
+		function(topic) {
+			if (topic === null) {
+				response.send(404);
+			} else {
+				response.json(topic);
+			}
+		},
+		function(err) {
+			next(new Error(err));
 		}
-	});
+	);
 });
 
 app.post('/topics/:id/root', function(request, response, next) {
