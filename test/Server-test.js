@@ -27,6 +27,16 @@ function assertStatus(code) {
     };
 }
 
+function postSubtopic(res, obj) {
+	var self = this;
+	api.post('/topics', { name: 'subtopic' }, function(err, res) {
+		var sub = JSON.parse(res.body);
+		api.post('/topics/' + obj.id + '/sub', { toid: sub.id }, function(err, res) {
+			self.callback(err, res, obj, sub);
+		});
+	});
+}
+
 vows.describe('REST service').addBatch({
 	'POST to /topics': {
 		'with no name': {
@@ -105,20 +115,28 @@ vows.describe('REST service').addBatch({
 							return t.id === id;
 						}));
 					}
+				},
+				'. then POST /topics/:id/:rel with a subtopic': {
+					topic: postSubtopic,
+					'. then GET /topics': {
+						topic: function(res, obj, sub) {
+							var self = this;
+							api.get('/topics', function(err, res) {
+								self.callback (err, res, obj.id, sub.id);
+							});
+						},
+						'returns root topics with links to subtopics': function(err, res, id, subtopicId) {
+							var rootTopics = JSON.parse(res.body);
+							var ourTopic = _.find(rootTopics, function(t) { return t.id === id; });
+							assert.ok(ourTopic.sub);
+							assert.include(ourTopic.sub, subtopicId);
+						}
+					}
 				}
 			},
 
 			'. then POST /topics/:id/:rel with a subtopic': {
-				topic: function(res, obj) {
-					var self = this;
-					api.post('/topics', { name: 'subtopic' }, function(err, res) {
-						var sub = JSON.parse(res.body);
-						api.post('/topics/' + obj.id + '/sub', { toid: sub.id }, function(err, res) {
-							self.callback(err, res, obj, sub);
-						});
-					});
-				},
-				'returns 200 OK': assertStatus(200),
+				topic: postSubtopic,
 				'. then GET /topics/:id/:rel': {
 					topic: function(res, obj, sub) {
 						var self = this;
