@@ -205,14 +205,23 @@ vows.describe('REST service').addBatch({
 			assert.include(res.body, 'invalid relationship');
 		}
 	},
-	'GET /topics/:id/:rel with an invalid relationship': {
-		topic: function() {
-			var self = this;
-			api.get('/topics/1/invalid', self.callback);
+	'GET /topics/:id/:rel': {
+		'with an invalid relationship': {
+			topic: function() {
+				var self = this;
+				api.get('/topics/1/invalid', self.callback);
+			},
+			'returns status code 500': assertStatus(500),
+			'returns error message': function(err, res) {
+				assert.include(res.body, 'invalid relationship');
+			}
 		},
-		'returns status code 500': assertStatus(500),
-		'returns error message': function(err, res) {
-			assert.include(res.body, 'invalid relationship');
+		'with an invalid id': {
+			topic: function() {
+				var self = this;
+				api.get('/topics/-9999999/sub', self.callback);
+			},
+			'returns 404 not found': assertStatus(404)
 		}
 	}
 }).export(module);

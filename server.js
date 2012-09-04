@@ -12,74 +12,59 @@ console.log(config);
 app.use(express.bodyParser());
 app.use(express.static('public'));
 
+function successHandler(response) {
+	return function(result) {
+		if (result === null) {
+			response.send(404);
+		} else if (result === undefined) {
+			response.send(200);
+		} else {
+			response.json(result);
+		}
+	};
+}
+
+function errorHandler(next) {
+	return function(err) {
+		next(new Error(err));
+	};
+}
+
+
 app.get('/topics', function(request, response, next) {
 	topicService.getRootTopics(
-		function(topics) {
-			response.json(topics);
-		},
-		function(err) {
-			next(new Error(err));
-		}
-	);
+		successHandler(response),
+		errorHandler(next));
 });
 
 app.post('/topics', function(request, response, next) {
 	topicService.create(request.body,
-		function(created) {
-			response.json(created);
-		},
-		function(err) {
-			next(new Error(err));
-		}
-	);
+		successHandler(response),
+		errorHandler(next));
 });
 
 app.get('/topics/:id', function(request, response, next) {
 	topicService.get(request.params.id,
-		function(topic) {
-			if (topic === null) {
-				response.send(404);
-			} else {
-				response.json(topic);
-			}
-		},
-		function(err) {
-			next(new Error(err));
-		}
-	);
+		successHandler(response),
+		errorHandler(next));
 });
 
 app.post('/topics/:id/root', function(request, response, next) {
 	topicService.makeRoot(request.params.id,
-		function() {
-			response.send(200);
-		},
-		function(err) {
-			next(new Error(err));
-		}
-	);
+		successHandler(response),
+		errorHandler(next));
 });
 
 app.get('/topics/:id/:rel', function(request, response, next) {
 	topicService.getRelated(request.params.id, request.params.rel,
-		function(topics) {
-			response.json(topics);
-		},
-		function(err) {
-			next(new Error(err));
-		}
-	);
+		successHandler(response),
+		errorHandler(next));
 });
 
 app.post('/topics/:id/:rel', function(request, response, next) {
 	topicService.createRelationship(request.params.id, request.body.toid, request.params.rel,
-		function() {
-			response.send(200);
-		},
-		function(err) {
-			next(new Error(err));
-		}
-	);
+		successHandler(response),
+		errorHandler(next));
 });
 
 
