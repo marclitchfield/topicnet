@@ -43,7 +43,7 @@ vows.describe('REST service').addBatch({
 			topic: function() {
 				api.post('/topics', {}, this.callback);
 			},
-			'returns status code 500': assertStatus(500),
+			'returns 500 server error': assertStatus(500),
 			'returns error message': function( err, res ) {
 				assert.include(res.body, 'name is required');
 			}
@@ -79,7 +79,7 @@ vows.describe('REST service').addBatch({
 							self.callback(err, res, obj.id);
 						});
 					},
-					'returns status code 200 OK': assertStatus(200),
+					'returns 200 OK': assertStatus(200),
 					'returns existing topic': {
 						topic: function(res, id) {
 							this.callback(JSON.parse(res.body), id);
@@ -109,6 +109,7 @@ vows.describe('REST service').addBatch({
 							self.callback (err, res, obj.id);
 						});
 					},
+					'returns 200 OK': assertStatus(200),
 					'returns all root topics, including our topic': function(err, res, id) {
 						var rootTopics = JSON.parse(res.body);
 						assert.ok(_.any(rootTopics, function(t) {
@@ -125,6 +126,7 @@ vows.describe('REST service').addBatch({
 								self.callback (err, res, obj.id, sub.id);
 							});
 						},
+						'returns 200 OK': assertStatus(200),
 						'returns root topics with links to subtopics': function(err, res, id, subtopicId) {
 							var rootTopics = JSON.parse(res.body);
 							var ourTopic = _.find(rootTopics, function(t) { return t.id === id; });
@@ -177,6 +179,7 @@ vows.describe('REST service').addBatch({
 							});
 						});
 					},
+					'returns 200 OK': assertStatus(200),
 					'. then GET /topics/:id/:rel': {
 						topic: function(res, obj, sub, subsub) {
 							var self = this;
@@ -184,6 +187,7 @@ vows.describe('REST service').addBatch({
 								self.callback(err, res, sub.id, subsub.id);
 							});
 						},
+						'returns 200 OK': assertStatus(200),
 						'returns subtopics with link to the sub-subtopic': function(err, res, subtopicId, subsubtopicId) {
 							var subtopics = JSON.parse(res.body);
 							var ourSubtopic = _.find(subtopics, function(t) { return t.id === subtopicId; });
@@ -200,7 +204,7 @@ vows.describe('REST service').addBatch({
 			var self = this;
 			api.post('/topics/1/invalid', { toid: 2 }, self.callback);
 		},
-		'returns status code 500': assertStatus(500),
+		'returns 500 server error': assertStatus(500),
 		'returns error message': function(err, res) {
 			assert.include(res.body, 'invalid relationship');
 		}
@@ -211,7 +215,7 @@ vows.describe('REST service').addBatch({
 				var self = this;
 				api.get('/topics/1/invalid', self.callback);
 			},
-			'returns status code 500': assertStatus(500),
+			'returns 500 server error': assertStatus(500),
 			'returns error message': function(err, res) {
 				assert.include(res.body, 'invalid relationship');
 			}
