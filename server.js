@@ -7,6 +7,8 @@ var neo4jUrl = process.env.NEO4J_URL || 'http://localhost:' + config.neo4j.port;
 var graph = new neo4j.GraphDatabase(neo4jUrl);
 var topicService = require('./lib/TopicService').createService(graph);
 
+console.log(config);
+
 app.use(express.bodyParser());
 app.use(express.static('public'));
 

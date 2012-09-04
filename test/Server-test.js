@@ -147,7 +147,6 @@ vows.describe('REST service').addBatch({
 					'returns 200 OK': assertStatus(200),
 					'returns the subtopic': function(err, res, obj, sub) {
 						var self = this;
-						assert.equal(res.statusCode, 200);
 						var subTopics = JSON.parse(res.body);
 						assert.ok(_.any(subTopics, function(t) {
 							return t.id === sub.id;
@@ -166,6 +165,31 @@ vows.describe('REST service').addBatch({
 						var topic = JSON.parse(res.body);
 						assert.ok(topic.sub);
 						assert.include(topic.sub, subtopicId);
+					}
+				},
+				'. then POST /topics/:id/:rel with a sub-subtopic': {
+					topic: function(res, obj, sub) {
+						var self = this;
+						api.post('/topics', { name: 'subsubtopic' }, function(err, res) {
+							var subsub = JSON.parse(res.body);
+							api.post('/topics/' + sub.id + '/sub', { toid: subsub.id }, function(err, res) {
+								self.callback(err, res, obj, sub, subsub);
+							});
+						});
+					},
+					'. then GET /topics/:id/:rel': {
+						topic: function(res, obj, sub, subsub) {
+							var self = this;
+							api.get('/topics/' + obj.id + '/sub', function(err, res) {
+								self.callback(err, res, sub.id, subsub.id);
+							});
+						},
+						'returns subtopics with link to the sub-subtopic': function(err, res, subtopicId, subsubtopicId) {
+							var subtopics = JSON.parse(res.body);
+							var ourSubtopic = _.find(subtopics, function(t) { return t.id === subtopicId; });
+							assert.ok(ourSubtopic.sub);
+							assert.include(ourSubtopic.sub, subsubtopicId);
+						}
 					}
 				}
 			}
