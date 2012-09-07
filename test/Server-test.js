@@ -37,6 +37,16 @@ function postSubtopic(res, obj) {
 	});
 }
 
+function postNextTopic(res, obj) {
+	var self = this;
+	api.post('/topics', { name: 'nexttopic' }, function(err, res) {
+		var next = JSON.parse(res.body);
+		api.post('/topics/' + obj.id + '/next', { toid: next.id }, function(err, res) {
+			self.callback(err, res, obj, next);
+		});
+	});
+}
+
 vows.describe('REST service').addBatch({
 	'POST to /topics': {
 		'with no name': {
@@ -116,24 +126,6 @@ vows.describe('REST service').addBatch({
 							return t.id === id;
 						}));
 					}
-				},
-				'. then POST /topics/:id/:rel with a subtopic': {
-					topic: postSubtopic,
-					'. then GET /topics': {
-						topic: function(res, obj, sub) {
-							var self = this;
-							api.get('/topics', function(err, res) {
-								self.callback (err, res, obj.id, sub.id);
-							});
-						},
-						'returns 200 OK': assertStatus(200),
-						'returns root topics with links to subtopics': function(err, res, id, subtopicId) {
-							var rootTopics = JSON.parse(res.body);
-							var ourTopic = _.find(rootTopics, function(t) { return t.id === id; });
-							assert.ok(ourTopic.sub);
-							assert.include(ourTopic.sub, subtopicId);
-						}
-					}
 				}
 			},
 
@@ -159,41 +151,52 @@ vows.describe('REST service').addBatch({
 					topic: function(res, obj, sub) {
 						var self = this;
 						api.get('/topics/' + obj.id, function(err, res) {
-							self.callback(err, res, sub.id);
+							self.callback(err, res, sub);
 						});
 					},
 					'returns 200 OK': assertStatus(200),
-					'returns a link to the subtopic': function(err, res, subtopicId) {
+					'returns the subtopic in the sub array': function(err, res, sub) {
 						var topic = JSON.parse(res.body);
 						assert.ok(topic.sub);
-						assert.include(topic.sub, subtopicId);
+						assert.ok(_.any(topic.sub, function(t) {
+							return t.id === sub.id && t.name === sub.name;
+						}));
 					}
-				},
-				'. then POST /topics/:id/:rel with a sub-subtopic': {
-					topic: function(res, obj, sub) {
+				}
+			},
+
+			'. then POST /topics/:id/:rel with a next topic': {
+				topic: postNextTopic,
+				'. then GET /topics/:id/:rel': {
+					topic: function(res, obj, next) {
 						var self = this;
-						api.post('/topics', { name: 'subsubtopic' }, function(err, res) {
-							var subsub = JSON.parse(res.body);
-							api.post('/topics/' + sub.id + '/sub', { toid: subsub.id }, function(err, res) {
-								self.callback(err, res, obj, sub, subsub);
-							});
+						api.get('/topics/' + obj.id + '/next', function(err, res) {
+							self.callback(err, res, obj, next);
 						});
 					},
 					'returns 200 OK': assertStatus(200),
-					'. then GET /topics/:id/:rel': {
-						topic: function(res, obj, sub, subsub) {
-							var self = this;
-							api.get('/topics/' + obj.id + '/sub', function(err, res) {
-								self.callback(err, res, sub.id, subsub.id);
-							});
-						},
-						'returns 200 OK': assertStatus(200),
-						'returns subtopics with link to the sub-subtopic': function(err, res, subtopicId, subsubtopicId) {
-							var subtopics = JSON.parse(res.body);
-							var ourSubtopic = _.find(subtopics, function(t) { return t.id === subtopicId; });
-							assert.ok(ourSubtopic.sub);
-							assert.include(ourSubtopic.sub, subsubtopicId);
-						}
+					'returns the next topic': function(err, res, obj, next) {
+						var self = this;
+						var nextTopics = JSON.parse(res.body);
+						assert.ok(_.any(nextTopics, function(t) {
+							return t.id === next.id;
+						}));
+					}
+				},
+				'. then GET /topics/:id': {
+					topic: function(res, obj, next) {
+						var self = this;
+						api.get('/topics/' + obj.id, function(err, res) {
+							self.callback(err, res, next);
+						});
+					},
+					'returns 200 OK': assertStatus(200),
+					'returns the next topic in the next array': function(err, res, next) {
+						var topic = JSON.parse(res.body);
+						assert.ok(topic.next);
+						assert.ok(_.any(topic.next, function(t) {
+							return t.id === next.id && t.name === next.name;
+						}));
 					}
 				}
 			}
