@@ -3,12 +3,30 @@ Artoplasm
 
 topic CRUD
 ----------
-- GET  /topics/:id       - get topic details
+- GET  /topics/:id       - get topic details and arrays of entire related nodes
+<pre>
+	{ id: 1, 
+		name: "main node",
+		sub [ 
+			{ id: 2, name: "sub node" },
+			{ id: 78, name: "other sub node" } 
+		],
+		next [ 
+			{ id: 3, name: "next node" },
+			{ id: 10, name: "other next node" }
+		]
+	}
+</pre>
+
 - GET  /topics/          - return root topics
+<pre>
+	[ 
+		{ id: 1, name: "root topic" },
+		{ id: 54, name: "other root topic" }
+	] 
+</pre>
 
-	{ id: 1, name:NN, next: [3,4], sub: [8, 9] } 
-
-- POST /topics           - create a topic
+- POST /topics           - create a topic and return the created topic
 - PUT  /topics           - update a topic
 - DEL  /topics/:id       - delete a topic, and all relationships to it
 
