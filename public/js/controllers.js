@@ -6,16 +6,14 @@ angular.module('controllers', []).
 			otherwise({redirectTo: '/'});
 	});
 
-function RootController($scope) {
-	$.get('/topics', function(topics) {
+function RootController($scope, $http) {
+	$http.get('/topics').success(function(topics) {
 		$scope.rootTopics = topics;
-		$scope.$apply();
 	});
 }
 
-function DetailController($scope, $location, $routeParams) {
-	$.get('/topics/' + $routeParams.topicId, function(topic) {
+function DetailController($scope, $http, $routeParams) {
+	$http.get('/topics/' + $routeParams.topicId).success(function(topic) {
 		$scope.topic = topic;
-		$scope.$apply();
 	});
 }
