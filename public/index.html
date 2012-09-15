@@ -2,7 +2,7 @@
 <html>
 <head>
 	<title>artoplasm</title>
-	<link href="css/bootstrap.min.css" rel="stylesheet">
+	<link href="css/bootstrap.css" rel="stylesheet">
 	<script src="//ajax.googleapis.com/ajax/libs/jquery/1.7.2/jquery.min.js"></script>
 	<script src="//ajax.googleapis.com/ajax/libs/angularjs/1.0.2/angular.min.js"></script>
 	<script src="//ajax.googleapis.com/ajax/libs/angularjs/1.0.2/angular-resource.min.js"></script>
@@ -12,7 +12,13 @@
 	<script src="js/controllers.js"></script>
 </head>
 <body ng-app="controllers">
-	<div class="container" ng-view>
+	<header class="row">
+		<h1 class="span10 offset2">artoplasm</h1>
+	</header>
+
+	<div class="row">
+		<div ng-view class="span10 offset2">
+		</div>
 	</div>
 </body>
 </html>

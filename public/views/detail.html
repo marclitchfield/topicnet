@@ -1,19 +1,30 @@
-<div ng-controller="TopicController">
-	<section class="row">
-		<div class="span8">
-			<h2>{{ name }}</h2>
-			<ul ng-repeat="resource in resources">
+<div ng-controller="DetailController">
+	<div class="row">
+		<div class="span6 well">
+			<h3>{{ topic.name }}</h3>
+			<ul class="unstyled">
+				<li ng-repeat="resource in topic.resources"></li>
 			</ul>
 		</div>
 
-		<div class="span4">
-			<ul ng-repeat="topic in nextTopics">
+		<div class="span3">
+			<h4>next</h4>
+			<ul class="unstyled">
+				<li ng-repeat="topic in topic.next">
+					<a href="#/detail/{{ topic.id }}">{{ topic.name }}</a>
+				</li>
 			</ul>
 		</div>
-	</section>
+	</div>
 
-	<section class="row">
-		<ul ng-repeat="topic in subTopics">
-		</ul>
-	</section>
+	<div class="row">
+		<div class="span6">
+			<h4>sub topics</h4>
+			<ul class="unstyled">
+				<li ng-repeat="topic in topic.sub">
+					<a href="#/detail/{{ topic.id }}">{{ topic.name }}</a>
+				</li>
+			</ul>		
+		</div>
+	</div>
 </div>

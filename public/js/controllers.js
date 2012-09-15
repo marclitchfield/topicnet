@@ -14,5 +14,8 @@ function RootController($scope) {
 }
 
 function DetailController($scope, $location, $routeParams) {
-	$scope.topic = $.get({ id: $routeParams.topicId });
+	$.get('/topics/' + $routeParams.topicId, function(topic) {
+		$scope.topic = topic;
+		$scope.$apply();
+	});
 }
