@@ -1,0 +1,19 @@
+<div ng-controller="TopicController">
+	<section class="row">
+		<div class="span8">
+			<h2>{{ name }}</h2>
+			<ul ng-repeat="resource in resources">
+			</ul>
+		</div>
+
+		<div class="span4">
+			<ul ng-repeat="topic in nextTopics">
+			</ul>
+		</div>
+	</section>
+
+	<section class="row">
+		<ul ng-repeat="topic in subTopics">
+		</ul>
+	</section>
+</div>
