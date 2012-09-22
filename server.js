@@ -30,11 +30,16 @@ function errorHandler(next) {
 	};
 }
 
-
 app.get('/topics', function(request, response, next) {
-	topicService.getRootTopics(
-		successHandler(response),
-		errorHandler(next));
+    if (request.query.q) {
+        topicService.search(request.query.q,
+            successHandler(response),
+            errorHandler(next));
+    } else {
+        topicService.getRootTopics(
+            successHandler(response),
+            errorHandler(next));
+    }
 });
 
 app.post('/topics', function(request, response, next) {

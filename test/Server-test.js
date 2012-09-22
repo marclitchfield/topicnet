@@ -75,6 +75,22 @@ vows.describe('REST service').addBatch({
 				}
 			},
 
+            '. then GET /topics?q=test': {
+                topic: function(res, obj) {
+                    var self = this;
+                    api.get('/topics?q=test', function(err, res) {
+                       self.callback(err, res, obj.id);
+                    });
+                },
+                'returns 200 OK': assertStatus(200),
+                'returns existing topic': function(err, res, id) {
+                    var foundTopics = JSON.parse(res.body);
+                    assert.ok(_.any(foundTopics, function(t) {
+                        return t.id === id;
+                    }));
+                }
+            },
+
 			'. then GET /topics/:id': {
 				'with invalid id': {
 					topic: function() {
