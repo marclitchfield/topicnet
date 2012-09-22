@@ -60,7 +60,7 @@ vows.describe('REST service').addBatch({
 		},
 		'with valid data': {
 			topic: function() {
-				var self = this;
+			var self = this;
 				api.post('/topics', { name: 'testnode' }, function(err, res) {
 					self.callback(err, res, JSON.parse(res.body));
 				});
