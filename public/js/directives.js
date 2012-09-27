@@ -4,8 +4,11 @@ angular.module('artoplasm.directives', []).
         return function(scope, el, attrs) {
 			el.typeahead({
 				source: function(typeahead, query) {
+					var queryTopic = {name: query};
+					scope.$broadcast('topicSelected', queryTopic);
+
 					return $.get('/topics', {q: query.toLowerCase()}).success(function(topics) {
-						topics.push({name: query});
+						topics.push(queryTopic);
 						var response = typeahead.process(topics);
 						scope.$apply();
 						return response;
