@@ -5,8 +5,5 @@
 		<li ng-repeat="topic in rootTopics"><a href="#/detail/{{ topic.id }}">{{ topic.name }}</a></li>
 	</ul>
 
-	<form ng-submit="addRootTopic()" class="form-inline">
-		<input type="text" ng-model="rootTopicName" class="input-medium" placeholder="add root topic" />
-		<button type="submit" class="btn btn-primary btn-small"><i class="icon-plus icon-white"></i></button>
-	</form>
+	<div add-topic-form />
 </div>

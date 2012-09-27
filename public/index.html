@@ -8,18 +8,19 @@
 	<script src="//ajax.googleapis.com/ajax/libs/jquery/1.7.2/jquery.min.js"></script>
 	<script src="//ajax.googleapis.com/ajax/libs/angularjs/1.0.2/angular.min.js"></script>
 	<script src="//ajax.googleapis.com/ajax/libs/angularjs/1.0.2/angular-resource.min.js"></script>
-	<script src="js/vendor/bootstrap.min.js"></script>
+	<script src="js/vendor/bootstrap.js"></script>
 	<script src="js/vendor/underscore-min.js"></script>
-	<script src="js/api.js"></script>
 	<script src="js/controllers.js"></script>
+	<script src="js/directives.js"></script>
+	<script src="js/app.js"></script>
 </head>
-<body ng-app="controllers" class="container">
+<body class="container" ng-app="artoplasm">
 	<header class="row">
 		<h1 class="span10 offset2">artoplasm</h1>
 	</header>
 
 	<div class="row">
-		<div ng-view class="span10 offset2">
+		<div class="span10 offset2" ng-view>
 		</div>
 	</div>
 </body>

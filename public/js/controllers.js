@@ -1,22 +1,28 @@
-angular.module('controllers', []).
-	config(function($routeProvider) {
-		$routeProvider.
-			when('/', {controller: RootController, templateUrl: 'views/root.html'}).
-			when('/detail/:topicId', {controller: DetailController, templateUrl: 'views/detail.html'}).
-			otherwise({redirectTo: '/'});
+function AddController($scope, $http) {
+	$scope.$on('topicSelected', function(e, topic) {
+		$scope.selectedTopic = topic;
 	});
+
+	$scope.add = function() {
+		if ($scope.selectedTopic.hasOwnProperty('id')) {
+			$scope.linkfn($scope.selectedTopic);
+		} else {
+			$http.post('/topics', { name: $scope.searchQuery }).success(function(topic) {
+				$scope.linkfn(topic);
+			});
+		}
+		$scope.searchQuery = '';
+	};
+}
 
 function RootController($scope, $http) {
 	$http.get('/topics').success(function(topics) {
 		$scope.rootTopics = topics;
 	});
 
-	$scope.addRootTopic = function() {
-		$http.post('/topics', { name: $scope.rootTopicName }).success(function(newTopic) {
-			$http.post('/topics/' + newTopic.id + '/root').success(function() {
-				$scope.rootTopics.push(newTopic);
-				$scope.rootTopicName = '';
-			});
+	$scope.linkfn = function makeRoot(topic) {
+		$http.post('/topics/' + topic.id + '/root').success(function() {
+			$scope.rootTopics.push(topic);
 		});
 	};
 }
@@ -28,22 +34,20 @@ function DetailController($scope, $http, $routeParams) {
 		$scope.nextTopics = topic.next || [];
 		$scope.resources = topic.resources || [];
 	});
+}
 
-	$scope.addSubTopic = function() {
-		$http.post('/topics', { name: $scope.subTopicName }).success(function(newTopic) {
-			$http.post('/topics/' + $scope.topic.id + '/sub', { toid: newTopic.id }).success(function() {
-				$scope.subTopics.push(newTopic);
-				$scope.subTopicName = '';
-			});
+function SubTopicController($scope, $http) {
+	$scope.linkfn = function addSubTopic(toTopic) {
+		$http.post('/topics/' + $scope.topic.id + '/sub', { toid: toTopic.id }).success(function() {
+			$scope.subTopics.push(toTopic);
 		});
 	};
+}
 
-	$scope.addNextTopic = function() {
-		$http.post('/topics', { name: $scope.nextTopicName }).success(function(newTopic) {
-			$http.post('/topics/' + $scope.topic.id + '/next', { toid: newTopic.id }).success(function() {
-				$scope.nextTopics.push(newTopic);
-				$scope.nextTopicName = '';
-			});
+function NextTopicController($scope, $http) {
+	$scope.linkfn = function addNextTopic(toTopic) {
+		$http.post('/topics/' + $scope.topic.id + '/next', { toid: toTopic.id }).success(function() {
+			$scope.nextTopics.push(toTopic);
 		});
 	};
 }
