@@ -46,7 +46,7 @@ describe('Artoplasm REST Service', function() {
 		it('returns status 500 and error message', function(done) {
 			api.post('/topics', {}, function(err, res) {
 				assert.equal(500, res.statusCode);
-				assert.include(res.body, 'name is required');
+				assert.notEqual(-1, res.body.indexOf('name is required'));
 				done();
 			});
 		})
@@ -111,25 +111,25 @@ describe('Artoplasm REST Service', function() {
 	})
 
 
-	describe('GET /topics?q=search', function() {
-		var p = api.request();
-		var searchResults;
+	// describe('GET /topics?q=search', function() {
+	// 	var p = api.request();
+	// 	var searchResults;
 
-		before(function(done) {
-			p.postTopic(function() {
-				api.get('/topics?q=' + p.topic.name, function(err, res) {
-					searchResults = res;
-					done();
-				});
-			})
-		})
+	// 	before(function(done) {
+	// 		p.postTopic(function() {
+	// 			api.get('/topics?q=' + p.topic.name, function(err, res) {
+	// 				searchResults = res;
+	// 				done();
+	// 			});
+	// 		})
+	// 	})
 
-		it('returns existing topic', function() {
-			assert.ok(_.any(searchResults, function(t) {
-				return t.id = p.topic.id;
-			}));
-		})
-	})
+	// 	it('returns existing topic', function() {
+	// 		assert.ok(_.any(searchResults, function(t) {
+	// 			return t.id = p.topic.id;
+	// 		}));
+	// 	})
+	// })
 
 
 	describe('POST /topics/:id/root', function() {
@@ -288,7 +288,7 @@ describe('Artoplasm REST Service', function() {
 		})
 
 		it('returns error message', function() {
-			assert.include(r.body, 'invalid relationship');
+			assert.notEqual(-1, r.body.indexOf('invalid relationship'));
 		})
 
 	})
