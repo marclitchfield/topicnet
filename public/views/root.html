@@ -2,7 +2,11 @@
 	<h2>root topics</h2>
 
 	<ul class="unstyled">
-		<li ng-repeat="topic in rootTopics"><a href="#/detail/{{ topic.id }}">{{ topic.name }}</a></li>
+		<li ng-repeat="topic in rootTopics" gesture-swipe="showDelete=true">
+			<a href="#/detail/{{ topic.id }}">{{ topic.name }}</a>
+			<button class="close" ng-click="removeRoot(topic)">&times;</button>
+			<button ng-show="showDelete" ng-click="removeRoot(topic)">Remove</button>
+		</li>
 	</ul>
 
 	<div add-topic-form />

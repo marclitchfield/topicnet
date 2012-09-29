@@ -111,25 +111,25 @@ describe('Artoplasm REST Service', function() {
 	})
 
 
-	// describe('GET /topics?q=search', function() {
-	// 	var p = api.request();
-	// 	var searchResults;
+	describe('GET /topics?q=search', function() {
+		var p = api.request();
+		var searchResults;
 
-	// 	before(function(done) {
-	// 		p.postTopic(function() {
-	// 			api.get('/topics?q=' + p.topic.name, function(err, res) {
-	// 				searchResults = res;
-	// 				done();
-	// 			});
-	// 		})
-	// 	})
+		before(function(done) {
+			p.postTopic(function() {
+				api.get('/topics?q=' + p.topic.name, function(err, res) {
+					searchResults = res;
+					done();
+				});
+			})
+		})
 
-	// 	it('returns existing topic', function() {
-	// 		assert.ok(_.any(searchResults, function(t) {
-	// 			return t.id = p.topic.id;
-	// 		}));
-	// 	})
-	// })
+		it('returns existing topic', function() {
+			assert.ok(_.any(searchResults, function(t) {
+				return t.id = p.topic.id;
+			}));
+		})
+	})
 
 
 	describe('POST /topics/:id/root', function() {

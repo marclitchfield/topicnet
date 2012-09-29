@@ -26,4 +26,13 @@ angular.module('artoplasm.directives', []).
 			templateUrl: 'partials/add-topic-form.html',
 			replace: true
 		};
+    }).
+
+    directive('gestureSwipe', function() {
+		return function(scope, el, attrs) {
+			el.bind('touchy-swipe', function() {
+				scope.$eval(attrs.gestureSwipe);
+				scope.$apply();
+			});
+		};
     });

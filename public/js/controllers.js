@@ -25,6 +25,10 @@ function RootController($scope, $http) {
 			$scope.rootTopics.push(topic);
 		});
 	};
+
+	$scope.removeRoot = function(topic) {
+		
+	};
 }
 
 function DetailController($scope, $http, $routeParams) {
@@ -39,6 +43,10 @@ function SubTopicController($scope, $http) {
 			$scope.topic.sub.push(toTopic);
 		});
 	};
+
+	$scope.removeLink = function(topic, subTopic) {
+		
+	};
 }
 
 function NextTopicController($scope, $http) {
@@ -46,5 +54,9 @@ function NextTopicController($scope, $http) {
 		$http.post('/topics/' + $scope.topic.id + '/next', { toid: toTopic.id }).success(function() {
 			$scope.topic.next.push(toTopic);
 		});
+	};
+
+	$scope.removeLink = function(topic, nextTopic) {
+		
 	};
 }
