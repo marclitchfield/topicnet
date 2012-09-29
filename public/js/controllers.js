@@ -7,7 +7,7 @@ function AddController($scope, $http) {
 		if ($scope.selectedTopic.hasOwnProperty('id')) {
 			$scope.linkfn($scope.selectedTopic);
 		} else {
-			$http.post('/topics', { name: $scope.selectedTopic.name }).success(function(topic) {
+			$http.post('/topics', { name: $scope.searchQuery }).success(function(topic) {
 				$scope.linkfn(topic);
 			});
 		}
@@ -27,13 +27,19 @@ function RootController($scope, $http) {
 	};
 
 	$scope.removeRoot = function(topic) {
-
+		$http['delete']('/topics/' + topic.id + '/root').success(function() {
+			$scope.rootTopics = $scope.rootTopics.filter(function(t) {
+				return t.id !== topic.id;
+			});
+		});
 	};
 }
 
 function DetailController($scope, $http, $routeParams) {
 	$http.get('/topics/' + $routeParams.topicId).success(function(topic) {
 		$scope.topic = topic;
+		$scope.topic.sub = $scope.topic.sub || [];
+		$scope.topic.next = $scope.topic.next || [];
 	});
 }
 
@@ -45,7 +51,16 @@ function SubTopicController($scope, $http) {
 	};
 
 	$scope.removeLink = function(topic, subTopic) {
-		
+		$.ajax({
+			url: '/topics/' + topic.id + '/sub',
+			type: 'DELETE',
+			data: { toid: subTopic.id}
+		}).success(function() {
+			$scope.topic.sub = $scope.topic.sub.filter(function(t) {
+				return t.id !== subTopic.id;
+			});
+			$scope.$apply();
+		});
 	};
 }
 
@@ -57,6 +72,15 @@ function NextTopicController($scope, $http) {
 	};
 
 	$scope.removeLink = function(topic, nextTopic) {
-		
+		$.ajax({
+			url: '/topics/' + topic.id + '/next',
+			type: 'DELETE',
+			data: { toid: nextTopic.id}
+		}).success(function() {
+			$scope.topic.next = $scope.topic.next.filter(function(t) {
+				return t.id !== nextTopic.id;
+			});
+			$scope.$apply();
+		});
 	};
 }
