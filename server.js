@@ -36,7 +36,7 @@ app.get('/topics', function(request, response, next) {
             successHandler(response),
             errorHandler(next));
     } else {
-        topicService.getRootTopics(
+        topicService.getRelated(0, 'root',
             successHandler(response),
             errorHandler(next));
     }
@@ -54,14 +54,14 @@ app.get('/topics/:id', function(request, response, next) {
 		errorHandler(next));
 });
 
-app.post('/topics/:id/root', function(request, response, next) {
-	topicService.makeRoot(request.params.id,
+app.get('/topics/:id/:rel', function(request, response, next) {
+	topicService.getRelated(request.params.id, request.params.rel,
 		successHandler(response),
 		errorHandler(next));
 });
 
-app.get('/topics/:id/:rel', function(request, response, next) {
-	topicService.getRelated(request.params.id, request.params.rel,
+app.post('/topics/:id/root', function(request, response, next) {
+	topicService.createRelationship(0, request.params.id, 'root',
 		successHandler(response),
 		errorHandler(next));
 });
@@ -72,12 +72,17 @@ app.post('/topics/:id/:rel', function(request, response, next) {
 		errorHandler(next));
 });
 
+app.delete('/topics/:id/root', function(request, response, next) {
+	topicService.deleteRelationship(0, request.params.id, 'root',
+		successHandler(response),
+		errorHandler(next));
+});
+
 app.delete('/topics/:id/:rel', function(request, response, next) {
 	topicService.deleteRelationship(request.params.id, request.body.toid, request.params.rel,
 		successHandler(response),
 		errorHandler(next));
 });
-
 
 var port = process.env.PORT || 5000;
 app.listen(port, function() {

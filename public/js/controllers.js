@@ -27,7 +27,7 @@ function RootController($scope, $http) {
 	};
 
 	$scope.removeRoot = function(topic) {
-		
+
 	};
 }
 

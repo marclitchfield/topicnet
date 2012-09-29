@@ -3,21 +3,21 @@ var request = require('request');
 var _ = require('underscore');
 
 var api = {
-  post: function(path, body, callback) {
-    request({
-      uri: 'http://localhost:5000' + path,
-      method: 'POST',
-      body: JSON.stringify(body),
-      headers: { 'Content-Type': 'application/json' }
-    }, callback);
-  },
-  get: function(path, callback) {
-    request({
-      uri: 'http://localhost:5000' + path,
-      method: 'GET',
-      headers: { 'Content-Type': 'application/json' }
-    }, callback);
-  },
+	post: function(path, body, callback) {
+		request({
+			uri: 'http://localhost:5000' + path,
+			method: 'POST',
+			body: JSON.stringify(body),
+			headers: { 'Content-Type': 'application/json' }
+		}, callback);
+	},
+	get: function(path, callback) {
+		request({
+			uri: 'http://localhost:5000' + path,
+			method: 'GET',
+			headers: { 'Content-Type': 'application/json' }
+		}, callback);
+	},
 	del: function(path, body, callback) {
 		request({
 			uri: 'http://localhost:5000' + path,
@@ -33,7 +33,7 @@ var api = {
 				api.post('/topics', { name: 'testnode' }, function(err, res) {
 					self.response = res;
 					self.topic = JSON.parse(res.body);
-					callback();	
+					callback();
 				});
 			},
 			getTopic: function(id, callback) {
@@ -126,7 +126,7 @@ describe('Artoplasm REST Service', function() {
 		before(function(done) {
 			p.postTopic(function() {
 				api.get('/topics?q=' + p.topic.name, function(err, res) {
-					searchResults = res;
+					searchResults = JSON.parse(res.body);
 					done();
 				});
 			})
@@ -134,7 +134,7 @@ describe('Artoplasm REST Service', function() {
 
 		it('returns existing topic', function() {
 			assert.ok(_.any(searchResults, function(t) {
-				return t.id = p.topic.id;
+				return t.id === p.topic.id;
 			}));
 		})
 	})
@@ -176,7 +176,7 @@ describe('Artoplasm REST Service', function() {
 			it('returns all root topics including our topic', function() {
 				var rootTopics = JSON.parse(rootTopicsResponse.body);
 				assert.ok(_.any(rootTopics, function(t) {
-					return t.id = p.topic.id;
+					return t.id === p.topic.id;
 				}));
 			})
 
@@ -224,7 +224,7 @@ describe('Artoplasm REST Service', function() {
 			it('returns the subtopic', function() {
 				var returnedTopics = JSON.parse(getSubResponse.body);
 				assert.ok(_.any(returnedTopics, function(t) {
-					return t.id = postChild.topic.id;
+					return t.id === postChild.topic.id;
 				}));
 			})
 
@@ -272,7 +272,7 @@ describe('Artoplasm REST Service', function() {
 			it('returns the next topic', function() {
 				var returnedTopics = JSON.parse(getNextResponse.body);
 				assert.ok(_.any(returnedTopics, function(t) {
-					return t.id = postNext.topic.id;
+					return t.id === postNext.topic.id;
 				}));
 			})
 
@@ -389,7 +389,7 @@ describe('Artoplasm REST Service', function() {
 				api.get('/topics/' + postParent.topic.id + '/sub', function(err, results) {
 					var subTopics = JSON.parse(results.body);
 					assert.ok(!_.any(subTopics, function(t) {
-						return t.id = postChild.topic.id;
+						return t.id === postChild.topic.id;
 					}));
 					done();
 				});
@@ -397,6 +397,44 @@ describe('Artoplasm REST Service', function() {
 
 		})
 
+	})
+
+	describe('DELETE /topics/:id/root', function() {
+
+		var rootPost = api.request();
+
+		before(function(done) {
+			rootPost.postTopic(function() {
+				api.post('/topics/' + rootPost.topic.id + '/root', {}, 
+					function(err, results) {
+						done(err);
+					}
+				);
+			})
+		})
+
+		it('returns status 200', function(done) {
+			api.del('/topics/' + rootPost.topic.id + '/root', {}, 
+				function(err, results) {
+					assert.equal(results.statusCode, 200);
+					done(err);
+				}
+			);
+		});
+
+		describe('then GET /topics/:id/root', function() {
+
+			it('does not include the topic in the root relationships', function(done) {
+				api.get('/topics', function(err, results) {
+					var rootTopics = JSON.parse(results.body);
+					assert.ok(!_.any(rootTopics, function(t) {
+						return t.id === rootPost.topic.id;
+					}));
+					done();
+				});
+			})
+
+		})
 	})
 
 })
