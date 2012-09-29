@@ -10,7 +10,6 @@ angular.module('artoplasm.directives', []).
 					return $.get('/topics', {q: query.toLowerCase()}).success(function(topics) {
 						topics.push(queryTopic);
 						var response = typeahead.process(topics);
-						scope.$apply();
 						return response;
 					});
 				},

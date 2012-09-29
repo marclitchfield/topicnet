@@ -12,8 +12,8 @@
 			<div ng-controller="SubTopicController">
 				<h4>sub topics</h4>
 				<ul class="unstyled">
-					<li ng-repeat="topic in subTopics">
-						<a href="#/detail/{{ topic.id }}">{{ topic.name }}</a>
+					<li ng-repeat="subTopic in topic.sub">
+						<a href="#/detail/{{ subTopic.id }}">{{ subTopic.name }}</a>
 					</li>
 				</ul>
 
@@ -24,8 +24,8 @@
 		<div class="span3" ng-controller="NextTopicController">
 			<h4>next</h4>
 			<ul class="unstyled">
-				<li ng-repeat="topic in nextTopics">
-					<a href="#/detail/{{ topic.id }}">{{ topic.name }}</a>
+				<li ng-repeat="nextTopic in topic.next">
+					<a href="#/detail/{{ nextTopic.id }}">{{ nextTopic.name }}</a>
 				</li>
 			</ul>
 
