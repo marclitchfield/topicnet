@@ -1,0 +1,12 @@
+.close {
+	float:none;
+}
+
+li .close {
+	margin-left: .25em;
+	visibility: hidden;
+}
+
+li:hover .close {
+	visibility: visible;
+}
