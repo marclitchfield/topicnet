@@ -72,6 +72,12 @@ app.post('/topics/:id/:rel', function(request, response, next) {
 		errorHandler(next));
 });
 
+app.delete('/topics/:id/:rel', function(request, response, next) {
+	topicService.deleteRelationship(request.params.id, request.body.toid, request.params.rel,
+		successHandler(response),
+		errorHandler(next));
+});
+
 
 var port = process.env.PORT || 5000;
 app.listen(port, function() {
