@@ -18,6 +18,14 @@ var api = {
       headers: { 'Content-Type': 'application/json' }
     }, callback);
   },
+	del: function(path, body, callback) {
+		request({
+			uri: 'http://localhost:5000' + path,
+			method: 'DELETE',
+			body: JSON.stringify(body),
+			headers: { 'Content-Type': 'application/json' }
+		}, callback);
+	},
 	request: function() {
 		return {
 			postTopic: function(callback) {
@@ -295,11 +303,98 @@ describe('Artoplasm REST Service', function() {
 
 	describe('POST /topics/:id/:rel with an invalid id', function() {
 
-		it('returns 404 not found', function(done) {
+		it('returns status 404', function(done) {
 			api.get('/topics/-9999999/sub', function(err, res) {
 				assert.equal(res.statusCode, 404);
 				done();
 			});
+		})
+
+	})
+
+	describe('DELETE /topics/:id/sub with an invalid id', function() {
+
+		it('returns status 404', function(done) {
+			api.del('/topics/-9999999/sub', { toid: 1 }, function(err, res) {
+				assert.equal(res.statusCode, 404);
+				done();
+			});
+		})
+
+	}) 
+
+	describe('DELETE /topics/:id/sub with an invalid toid', function() {
+
+		var post = api.request();
+
+		before(function(done) {
+			post.postTopic(done);
+		})
+
+		it('returns status 404', function(done) {
+			api.del('/topics/' + post.topic.id + '/sub', { toid: -9999999 }, function(err, res) {
+				assert.equal(res.statusCode, 404);
+				done();
+			});
+		})
+
+	})
+
+	describe('DELETE /topics/:id/:rel with an invalid relationship type', function() {
+
+		var post = api.request();
+		
+		before(function(done) {
+			post.postTopic(done);
+		})
+
+		it('returns status 500', function(done) {
+			api.del('/topics/' + post.topic.id + '/invalidrel', { toid: -9999999 }, function(err, res) {
+				assert.equal(res.statusCode, 500);
+				done();
+			});
+		})
+
+	})
+
+	describe('DELETE /topics/:id/sub with valid data', function() {
+
+		var postParent = api.request();
+		var postChild = api.request();
+
+		before(function(done) {
+			postParent.postTopic(function() {
+				postChild.postTopic(function() {
+					api.post('/topics/' + postParent.topic.id + '/sub', { toid: postChild.topic.id }, 
+						function(err, results) {
+							done(err);
+						}
+					);
+				})
+			});
+		})
+
+		it('returns status 200', function(done) {
+			api.del('/topics/' + postParent.topic.id + '/sub', { toid: postChild.topic.id }, 
+				function(err, results) {
+					assert.equal(results.statusCode, 200);
+					done(err);
+				}
+			);
+		});
+
+		describe('then GET /topics/:id/sub', function() {
+
+			it('does not include the topic whose sub relationship was deleted', function(done) {
+				api.get('/topics/' + postParent.topic.id + '/sub', function(err, results) {
+					var subTopics = JSON.parse(results.body);
+					assert.ok(!_.any(subTopics, function(t) {
+						return t.id = postChild.topic.id;
+					}));
+					done();
+				});
+			})
+
 		})
 
 	})
