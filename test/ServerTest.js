@@ -445,6 +445,48 @@ describe('Artoplasm REST Service', function() {
 
 	})
 
+	describe('DELETE /topics/:id/next with valid data', function() {
+
+		var postPrev = api.request();
+		var postNext = api.request();
+
+		before(function(done) {
+			postPrev.postTopic(function() {
+				postNext.postTopic(function() {
+					api.post('/topics/' + postPrev.topic.id + '/next', { toid: postNext.topic.id }, 
+						function(err, results) {
+							done(err);
+						}
+					);
+				})
+			});
+		})
+
+		it('returns status 200', function(done) {
+			api.del('/topics/' + postPrev.topic.id + '/next', { toid: postNext.topic.id }, 
+				function(err, results) {
+					assert.equal(results.statusCode, 200);
+					done(err);
+				}
+			);
+		});
+
+		describe('then GET /topics/:id/next', function() {
+
+			it('does not include the topic whose next relationship was deleted', function(done) {
+				api.get('/topics/' + postPrev.topic.id + '/next', function(err, results) {
+					var nextTopics = JSON.parse(results.body);
+					assert.ok(!_.any(nextTopics, function(t) {
+						return t.id === postNext.topic.id;
+					}));
+					done();
+				});
+			})
+
+		})
+
+	})
+
 	describe('DELETE /topics/:id/root', function() {
 
 		var rootPost = api.request();
