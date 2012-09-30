@@ -40,7 +40,14 @@ function DetailController($scope, $http, $routeParams) {
 		$scope.topic = topic;
 		$scope.topic.sub = $scope.topic.sub || [];
 		$scope.topic.next = $scope.topic.next || [];
+		$scope.editedTopicName = topic.name;
 	});
+
+	$scope.update = function() {
+		$http.put('/topics/' + $scope.topic.id, {name: $scope.editedTopicName}).success(function() {
+			$scope.topic.name = $scope.editedTopicName;
+		});
+	};
 }
 
 function SubTopicController($scope, $http) {

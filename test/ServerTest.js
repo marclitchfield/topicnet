@@ -3,6 +3,13 @@ var request = require('request');
 var _ = require('underscore');
 
 var api = {
+	get: function(path, callback) {
+		request({
+			uri: 'http://localhost:5000' + path,
+			method: 'GET',
+			headers: { 'Content-Type': 'application/json' }
+		}, callback);
+	},
 	post: function(path, body, callback) {
 		request({
 			uri: 'http://localhost:5000' + path,
@@ -11,10 +18,11 @@ var api = {
 			headers: { 'Content-Type': 'application/json' }
 		}, callback);
 	},
-	get: function(path, callback) {
+	put: function(path, body, callback) {
 		request({
 			uri: 'http://localhost:5000' + path,
-			method: 'GET',
+			method: 'PUT',
+			body: JSON.stringify(body),
 			headers: { 'Content-Type': 'application/json' }
 		}, callback);
 	},
@@ -44,7 +52,7 @@ var api = {
 					callback();
 				});
 			}
-		}
+		};
 	}
 };
 
@@ -165,6 +173,27 @@ describe('Artoplasm REST Service', function() {
 
 	})
 
+	describe('PUT /topics/:id', function() {
+		var post = api.request();
+
+		before(function(done) {
+			post.postTopic(function() {
+				api.put('/topics/' + post.topic.id, {name: 'updated'}, done);
+			});
+		})
+
+		describe('then GET /topics/:id', function() {
+			var get = api.request();
+			
+			before(function(done) {
+				get.getTopic(post.topic.id, done);
+			})
+
+			it('topic name has been updated', function() {
+				assert.equal(get.topic.name, 'updated');
+			})
+		})
+	})
 
 	describe('POST /topics/:id/root', function() {
 

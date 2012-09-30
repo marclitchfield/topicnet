@@ -61,6 +61,12 @@ app.post('/topics', function(request, response, next) {
 		errorHandler(response, next));
 });
 
+app.put('/topics/:id', function(request, response, next) {
+	topicService.update(request.params.id, request.body,
+		successHandler(response),
+		errorHandler(response, next));
+});
+
 app.get('/topics/:id', function(request, response, next) {
 	topicService.get(request.params.id,
 		successHandler(response),
