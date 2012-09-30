@@ -14,9 +14,7 @@ app.use(express.static('public'));
 
 function successHandler(response) {
 	return function(result) {
-		if (result === null) {
-			response.send(404);
-		} else if (result === undefined) {
+		if (result === undefined) {
 			response.send(200);
 		} else {
 			response.json(result);
@@ -24,9 +22,24 @@ function successHandler(response) {
 	};
 }
 
-function errorHandler(next) {
+function errorHandler(response, next) {
 	return function(err) {
-		next(new Error(err));
+		if (typeof err === 'object' && err.hasOwnProperty('name')) {
+			var statusCodes = {
+				'notfound': 404,
+				'duplicate': 400,
+			};
+
+			if (!(err.name in statusCodes)) {
+				next(err);
+			} else if (err.hasOwnProperty('message')) {
+				response.send(err.message, statusCodes[err.name]);
+			} else {
+				response.send(statusCodes[err.name]);
+			}
+		} else {
+			next(new Error(err));
+		}
 	};
 }
 
@@ -34,54 +47,54 @@ app.get('/topics', function(request, response, next) {
     if (request.query.q) {
         topicService.search(request.query.q,
             successHandler(response),
-            errorHandler(next));
+            errorHandler(response, next));
     } else {
         topicService.getRelated(0, 'root',
             successHandler(response),
-            errorHandler(next));
+            errorHandler(response, next));
     }
 });
 
 app.post('/topics', function(request, response, next) {
 	topicService.create(request.body,
 		successHandler(response),
-		errorHandler(next));
+		errorHandler(response, next));
 });
 
 app.get('/topics/:id', function(request, response, next) {
 	topicService.get(request.params.id,
 		successHandler(response),
-		errorHandler(next));
+		errorHandler(response, next));
 });
 
 app.get('/topics/:id/:rel', function(request, response, next) {
 	topicService.getRelated(request.params.id, request.params.rel,
 		successHandler(response),
-		errorHandler(next));
+		errorHandler(response, next));
 });
 
 app.post('/topics/:id/root', function(request, response, next) {
 	topicService.createRelationship(0, request.params.id, 'root',
 		successHandler(response),
-		errorHandler(next));
+		errorHandler(response, next));
 });
 
 app.post('/topics/:id/:rel', function(request, response, next) {
 	topicService.createRelationship(request.params.id, request.body.toid, request.params.rel,
 		successHandler(response),
-		errorHandler(next));
+		errorHandler(response, next));
 });
 
 app.delete('/topics/:id/root', function(request, response, next) {
 	topicService.deleteRelationship(0, request.params.id, 'root',
 		successHandler(response),
-		errorHandler(next));
+		errorHandler(response, next));
 });
 
 app.delete('/topics/:id/:rel', function(request, response, next) {
 	topicService.deleteRelationship(request.params.id, request.body.toid, request.params.rel,
 		successHandler(response),
-		errorHandler(next));
+		errorHandler(response, next));
 });
 
 var port = process.env.PORT || 5000;

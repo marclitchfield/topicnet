@@ -230,6 +230,26 @@ describe('Artoplasm REST Service', function() {
 
 		})
 
+		describe('then POST a duplicate subtopic to /topics/:id/sub', function() {
+			var duplicateResponse;
+
+			before(function(done) {
+				api.post('/topics/' + postParent.topic.id + '/sub',
+					{ toid: postChild.topic.id }, function(err, res) {
+					duplicateResponse = res;
+					done();
+				});
+			})
+
+			it('returns status 400', function() {
+				assert.equal(duplicateResponse.statusCode, 400);
+			})
+
+			it('returns error message', function() {
+				assert.notEqual(-1, duplicateResponse.body.indexOf('Relationship \'sub\' already exists'));
+			})
+		})
+
 	})
 
 	describe('POST /topics/:id/next', function() {

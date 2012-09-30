@@ -4,11 +4,17 @@ angular.module('artoplasm.directives', []).
         return function(scope, el, attrs) {
 			el.typeahead({
 				source: function(typeahead, query) {
-					var queryTopic = {name: query};
-					scope.$broadcast('topicSelected', queryTopic);
-
 					return $.get('/topics', {q: query.toLowerCase()}).success(function(topics) {
-						topics.push(queryTopic);
+						var foundTopic = _.find(topics, function(t) {
+							return t.name.toLowerCase() === query.toLowerCase();
+						});
+						
+						if (foundTopic === undefined) {
+							foundTopic = {name: query};
+							topics.push(foundTopic);
+						}
+
+						scope.$broadcast('topicSelected', foundTopic);
 						var response = typeahead.process(topics);
 						return response;
 					});
