@@ -97,6 +97,12 @@ app.delete('/topics/:id/:rel', function(request, response, next) {
 		errorHandler(response, next));
 });
 
+app.delete('/topics/:id', function(request, response, next) {
+	topicService.deleteTopic(request.params.id,
+		successHandler(response),
+		errorHandler(response, next));
+});
+
 var port = process.env.PORT || 5000;
 app.listen(port, function() {
 	console.log("Listening on " + port);

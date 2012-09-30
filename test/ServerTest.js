@@ -499,4 +499,43 @@ describe('Artoplasm REST Service', function() {
 		})
 	})
 
+	describe('DELETE /topics/:id with invalid id', function() {
+
+		it('returns status 404', function(done) {
+			api.del('/topics/-9999999', {}, function(err, res) {
+				assert.equal(res.statusCode, 404);
+				done(err);
+			});
+		})
+
+	})
+
+	describe('DELETE /topics/:id with valid id', function() {
+
+		var topicPost = api.request();
+
+		before(function(done) {
+			topicPost.postTopic(done);
+		})
+
+		it('returns status 200', function(done) {
+			api.del('/topics/' + topicPost.topic.id, {}, function(err, res) {
+				assert.equal(res.statusCode, 200);
+				done(err);
+			});
+		})
+
+		describe('then GET /topics/:id with the deleted id', function() {
+
+			it('returns status 404', function(done) {
+				api.get('/topics/' + topicPost.topic.id, function(err, res) {
+					assert.equal(res.statusCode, 404);
+					done(err);
+				});
+			})
+
+		})
+
+	})
+
 })
