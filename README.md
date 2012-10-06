@@ -7,11 +7,15 @@ topic CRUD
 <pre>
 	{ id: 1, 
 		name: "main node",
-		sub [ 
+		resources: [
+			{ id: 88, title: "Resource A", url: "http://example.url", source: "Source A" },
+			{ id: 77, title: "Resource B", url: "http://example.url", source: "Source B" },
+		],
+		sub: [ 
 			{ id: 2, name: "sub node" },
 			{ id: 78, name: "other sub node" } 
 		],
-		next [ 
+		next: [ 
 			{ id: 3, name: "next node" },
 			{ id: 10, name: "other next node" }
 		]
@@ -44,6 +48,23 @@ relationship CRUD
     { score:Z } 
 
 - DEL  /topics/:id/next/:toid  - delete a 'next' relationship
+
+resource CRUD
+-------------
+- GET  /resources/:id
+<pre>
+  {
+    id: 88,
+    title: "Resource Title",
+    url: "http://example.url",
+    source: "Resource Source"
+  }
+</pre>
+- GET /resources?url=http%3A%2F%2Fexample.com
+- GET /resources?title=some%20title
+- POST    /resources
+- PUT     /resources/:id
+- DELETE  /resources/:id
 
 graph API
 ---------
