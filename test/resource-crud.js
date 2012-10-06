@@ -36,12 +36,24 @@ describe('Resource CRUD', function() {
 
 	describe('POST to /resources with valid data', function() {
 
-		it('returns status 200', function(done) {
-			api.post('/resources', { title: 'test', url: 'http://example.com', source: 'example.com' }, function(err, res) {
-				assert.equal(res.statusCode, 200);
-				done();
-			});
+		var postResponse;
 
+		before(function(done) {
+			api.post('/resources', { title: 'test resource', url: 'http://example.com', source: 'example.com' }, function(err, res) {
+				postResponse = res;
+				done(err);
+			});
+		})
+
+		it('returns status 200', function() {
+			assert.equal(postResponse.statusCode, 200);
+		});
+
+		it('returns the resource with the expected attributes', function() {
+			var resource = JSON.parse(postResponse.body);
+			assert.equal(resource.title, 'test resource');
+			assert.equal(resource.url, 'http://example.com');
+			assert.equal(resource.source, 'example.com');
 		});
 
 	})
