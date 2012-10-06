@@ -5,7 +5,8 @@ var config = require('./config.js');
 var app = express.createServer(express.logger());
 var neo4jUrl = process.env.NEO4J_URL || 'http://localhost:' + config.neo4j.port;
 var graph = new neo4j.GraphDatabase(neo4jUrl);
-var topicService = require('./lib/TopicService').createService(graph);
+var topicService = require('./lib/topic-service').createService(graph);
+var resourceService = require('./lib/resource-service').createService(graph);
 
 console.log(config);
 
@@ -105,6 +106,12 @@ app.delete('/topics/:id/:rel', function(request, response, next) {
 
 app.delete('/topics/:id', function(request, response, next) {
 	topicService.deleteTopic(request.params.id,
+		successHandler(response),
+		errorHandler(response, next));
+});
+
+app.post('/resources', function(request, response, next) {
+	resourceService.create(request.body,
 		successHandler(response),
 		errorHandler(response, next));
 });
