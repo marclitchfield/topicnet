@@ -13,13 +13,6 @@ topic CRUD
 		],
 		sub: [ 
 			{ id: 2, name: "sub node" },
-			{ id: 78, name: "other sub node" } 
-		],
-		next: [ 
-			{ id: 3, name: "next node" },
-			{ id: 10, name: "other next node" }
-		]
-	}
 </pre>
 
 - GET  /topics/          - return root topics
@@ -37,6 +30,13 @@ topic CRUD
 relationship CRUD
 -----------------
 - GET  /topics/:fromid/next  - get next topics
+			{ id: 78, name: "other sub node" } 
+		],
+		next: [ 
+			{ id: 3, name: "next node" },
+			{ id: 10, name: "other next node" }
+		]
+	}
 - GET  /topics/:fromid/sub   - get subtopics
 - POST /topics/:id/root      - makes the node root
 - POST /topics/:fromid/next  - creates a 'next' relationship
@@ -48,6 +48,10 @@ relationship CRUD
     { score:Z } 
 
 - DEL  /topics/:id/next/:toid  - delete a 'next' relationship
+
+- POST /topics/:id/resources - links a resource to a topic
+    
+    { resid:X }
 
 resource CRUD
 -------------
