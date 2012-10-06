@@ -86,7 +86,7 @@ app.post('/topics/:id/root', function(request, response, next) {
 		errorHandler(response, next));
 });
 
-app.post('/topics/:id/resource', function(request, response, next) {
+app.post('/topics/:id/resources', function(request, response, next) {
 	topicService.linkResource(request.params.id, request.body.resid,
 		successHandler(response),
 		errorHandler(response, next));
@@ -118,6 +118,12 @@ app.delete('/topics/:id', function(request, response, next) {
 
 app.post('/resources', function(request, response, next) {
 	resourceService.create(request.body,
+		successHandler(response),
+		errorHandler(response, next));
+});
+
+app.get('/resources/:id', function(request, response, next) {
+	resourceService.get(request.params.id,
 		successHandler(response),
 		errorHandler(response, next));
 });

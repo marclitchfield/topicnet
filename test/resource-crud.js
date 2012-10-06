@@ -69,4 +69,53 @@ describe('Resource CRUD', function() {
 
 	})
 
+	describe('GET /resources/:id with invalid id', function() {
+		
+		it('returns status 404', function(done) {
+			api.get('/resources/-9999999', function(err, res) {
+				assert.equal(res.statusCode, 404);
+				done(err);
+			});
+		})
+
+	})
+
+	describe('GET /resources/:id with valid id', function() {
+
+		var resPost = api.request();
+		var getResponse;
+		var resource;
+
+		before(function(done) {
+			resPost.postResource(function() {
+				api.get('/resources/' + resPost.resource.id, function(err, res) {
+					getResponse = res;
+					resource = JSON.parse(res.body);
+					done();
+				});
+			})
+		})
+
+		it('returns status 200', function() {
+			assert.equal(getResponse.statusCode, 200);
+		})
+
+		it('returns the resource with the expected id', function() {
+			assert.equal(resource.id, resPost.resource.id);
+		})
+
+		it('returns the resource with the expected title', function() {
+			assert.equal(resource.title, 'test resource');
+		})
+
+		it('returns the resource with the expected url', function() {
+			assert.equal(resource.url, 'http://example.com');
+		})
+
+		it('returns the resourse with the exepected source', function() {
+			assert.equal(resource.source, 'example.com');
+		})
+
+	})
+
 })
