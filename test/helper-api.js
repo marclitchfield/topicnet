@@ -55,6 +55,16 @@ exports.request = function() {
 				self.topic = JSON.parse(res.body);
 				callback();
 			});
+		},
+
+		postResource: function(callback) {
+			var self = this;
+			exports.post('/resources', { title: 'test resource', url: 'http://example.com', source: 'example.com' },
+				function(err, res) {
+				self.response = res;
+				self.resource = JSON.parse(res.body);
+				callback();
+			});
 		}
 
 	};
