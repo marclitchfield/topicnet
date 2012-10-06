@@ -4,7 +4,7 @@ function AddController($scope, $http) {
 	});
 
 	$scope.add = function() {
-		if ($scope.selectedTopic.hasOwnProperty('id')) {
+		if ($scope.selectedTopic && $scope.selectedTopic.hasOwnProperty('id')) {
 			$scope.linkfn($scope.selectedTopic);
 		} else {
 			$http.post('/topics', { name: $scope.searchQuery }).success(function(topic) {
