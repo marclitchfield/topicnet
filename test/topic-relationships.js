@@ -28,9 +28,9 @@ describe('Topic Relationships', function() {
 	describe('POST /topics/:id/:rel with an invalid id', function() {
 
 		it('returns status 404', function(done) {
-			api.get('/topics/-9999999/sub', function(err, res) {
+			api.post('/topics/-9999999/sub', {}, function(err, res) {
 				assert.equal(res.statusCode, 404);
-				done();
+				done(err);
 			});
 		})
 

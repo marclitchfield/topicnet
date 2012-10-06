@@ -86,6 +86,12 @@ app.post('/topics/:id/root', function(request, response, next) {
 		errorHandler(response, next));
 });
 
+app.post('/topics/:id/resource', function(request, response, next) {
+	topicService.linkResource(request.params.id, request.body.resid,
+		successHandler(response),
+		errorHandler(response, next));
+});
+
 app.post('/topics/:id/:rel', function(request, response, next) {
 	topicService.createRelationship(request.params.id, request.body.toid, request.params.rel,
 		successHandler(response),
