@@ -1,6 +1,5 @@
 <div ng-controller="DetailController">
 	<div class="row">
-
 		<div class="span6">
 			<div class="well">
 				<h3 ng-hide="editingTitle" ng-dblclick="editingTitle=true">{{ topic.name }}</h3>
@@ -12,8 +11,12 @@
 					</form>
 				</h3>
 				<ul class="unstyled">
-					<li ng-repeat="resource in resources"></li>
+					<li ng-repeat="resource in topic.resources">
+						<a href="#/resources/{{ resource.id }}">{{ resource.title }}</a>
+						<p>{{ resource.source }}</p>
+					</li>
 				</ul>
+		        <button class="btn" data-toggle="modal" href="#resourceForm"><i class="icon-plus"></i></button>
 			</div>
 
 			<div ng-controller="SubTopicController">
@@ -25,7 +28,7 @@
 					</li>
 				</ul>
 
-				<div add-topic-form />
+				<div ng-include src="'partials/add-topic.html'" />
 			</div>
 		</div>
 
@@ -38,8 +41,25 @@
 				</li>
 			</ul>
 
-			<div add-topic-form />
+			<div ng-include src="'partials/add-topic.html'" />
 		</div>
 	</div>
-
 </div>
+
+
+<div id="resourceForm" class="modal fade">
+	<form>
+		<div class="modal-header">
+			<h4>Add a resource</h4>
+		</div>
+		<div class="modal-body" ng-controller="AddResourceController">
+			<input type="text" class="input-xlarge" ng-model="url" placeholder="URL"></input>
+			<input type="text" class="input-xlarge" ng-model="title" placeholder="Title"></input>
+			<input type="text" class="input-xlarge" ng-model="source" placeholder="Source"></input>
+		</div>
+		<div class="modal-footer">
+			<button class="btn btn-primary" data-dismiss="modal" ng-click="add()">Save</button>
+			<button class="btn" data-dismiss="modal">Cancel</button>
+		</div>
+	</form
+</div>	

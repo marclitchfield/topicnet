@@ -1,4 +1,4 @@
-function AddController($scope, $http) {
+function AddTopicController($scope, $http) {
 	$scope.$on('topicSelected', function(e, topic) {
 		$scope.selectedTopic = topic;
 	});
@@ -38,6 +38,11 @@ function RootController($scope, $http) {
 function DetailController($scope, $http, $routeParams) {
 	$http.get('/topics/' + $routeParams.topicId).success(function(topic) {
 		$scope.topic = topic;
+		$scope.topic.resources = [
+			{ id: 123, title: 'Herman Module', url: 'http://khaaaan.com', source: 'Internet' },
+			{ id: 124, title: 'Shire Baggins Module', url: 'http://khanacademy.com', source: 'Frodo' },
+			{ id: 126, title: 'Introductory Mesh Analysis', url: 'http://khanacademy.com', source: 'Toast Vision' }
+		];
 		$scope.topic.sub = $scope.topic.sub || [];
 		$scope.topic.next = $scope.topic.next || [];
 		$scope.editedTopicName = topic.name;

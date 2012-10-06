@@ -45,6 +45,7 @@ relationship CRUD
 
 - DEL  /topics/:id/next/:toid  - delete a 'next' relationship
 
+
 graph API
 ---------
 - GET /graph/:id?depth=3
