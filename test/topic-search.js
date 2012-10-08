@@ -7,7 +7,7 @@ describe('Topic Search', function() {
 	var topicToFind;
 
 	before(function(done) {
-		api.post('/topics', { name: 'testnode to find' }, function(err, res) {
+		api.post('/topics', { name: 'testnode to find!' }, function(err, res) {
 			topicToFind = JSON.parse(res.body);
 			done();
 		})
@@ -45,6 +45,20 @@ describe('Topic Search', function() {
 				return t.id === topicToFind.id;
 			}));
 		})
+	})
+
+	describe('GET /topics?q with !', function() {
+
+		it('returns existing topic', function(done) {
+			api.get('/topics?q=ind!', function(err, res) {
+				var searchResults = JSON.parse(res.body);
+				assert.ok(_.any(searchResults, function(t) {
+					return t.id === topicToFind.id;
+				}));
+				done();
+			});
+		})
+
 	})
 
 })
