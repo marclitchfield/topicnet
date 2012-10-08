@@ -128,6 +128,20 @@ app.get('/resources/:id', function(request, response, next) {
 		errorHandler(response, next));
 });
 
+app.get('/resources', function(request, response, next) {
+    if (request.query.title) {
+        resourceService.searchByTitle(request.query.title,
+            successHandler(response),
+            errorHandler(response, next));
+    } else if(request.query.url) {
+        resourceService.searchByUrl(request.query.url,
+            successHandler(response),
+            errorHandler(response, next));
+    } else {
+			response.send(404);
+		}
+});
+
 var port = process.env.PORT || 5000;
 app.listen(port, function() {
 	console.log("Listening on " + port);
