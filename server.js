@@ -142,6 +142,12 @@ app.get('/resources', function(request, response, next) {
 		}
 });
 
+app.put('/resources/:id', function(request, response, next) {
+	resourceService.update(request.params.id, request.body,
+		successHandler(response),
+		errorHandler(response, next));
+});
+
 var port = process.env.PORT || 5000;
 app.listen(port, function() {
 	console.log("Listening on " + port);
