@@ -65,6 +65,15 @@ exports.request = function() {
 				self.resource = JSON.parse(res.body);
 				callback();
 			});
+		},
+
+		getResource: function(id, callback) {
+			var self = this;
+			exports.get('/resources/' + id, function(err, res) {
+				self.response = res;
+				self.resource = JSON.parse(res.body);
+				callback();
+			});
 		}
 
 	};
