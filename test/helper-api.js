@@ -1,4 +1,5 @@
 var request = require('request');
+var guid = require('guid');
 
 exports.get = function(path, callback) {
 	request({
@@ -41,9 +42,10 @@ exports.request = function() {
 
 		postTopic: function(callback) {
 			var self = this;
-			exports.post('/topics', { name: 'testnode' }, function(err, res) {
+			self.postedTopic = { name: 'topic ' + guid.raw() };
+			exports.post('/topics', self.postedTopic, function(err, res) {
 				self.response = res;
-				self.topic = JSON.parse(res.body);
+				self.returnedTopic = JSON.parse(res.body);
 				callback();
 			});
 		},
@@ -52,17 +54,21 @@ exports.request = function() {
 			var self = this;
 			exports.get('/topics/' + id, function(err, res) {
 				self.response = res;
-				self.topic = JSON.parse(res.body);
+				self.returnedTopic = JSON.parse(res.body);
 				callback();
 			});
 		},
 
 		postResource: function(callback) {
 			var self = this;
-			exports.post('/resources', { title: 'test resource', url: 'http://example.com', source: 'example.com' },
+			self.postedResource = { title: 'resource ' + guid.raw(), 
+				url: 'http://example.com/' + guid.raw(),
+				source: 'example.com'
+			};
+			exports.post('/resources', self.postedResource, 
 				function(err, res) {
 				self.response = res;
-				self.resource = JSON.parse(res.body);
+				self.returnedResource = JSON.parse(res.body);
 				callback();
 			});
 		},
@@ -71,7 +77,7 @@ exports.request = function() {
 			var self = this;
 			exports.get('/resources/' + id, function(err, res) {
 				self.response = res;
-				self.resource = JSON.parse(res.body);
+				self.returnedResource = JSON.parse(res.body);
 				callback();
 			});
 		}

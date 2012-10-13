@@ -1,6 +1,7 @@
 var assert = require('assert');
 var _ = require('underscore');
 var api = require('./helper-api.js');
+var guid = require('guid');
 
 describe('Topic CRUD', function() {
 
@@ -27,11 +28,11 @@ describe('Topic CRUD', function() {
 		})
 
 		it('returns new topic with the name specified', function() {
-			assert.equal(r.topic.name, 'testnode');
+			assert.equal(r.returnedTopic.name, r.postedTopic.name);
 		})
 
 		it('returns new topic with a valid generated id', function() {
-			assert.ok(r.topic.id > 0);
+			assert.ok(r.returnedTopic.id > 0);
 		})
 
 	})
@@ -54,7 +55,7 @@ describe('Topic CRUD', function() {
 	
 		before(function(done) {
 			p.postTopic(function() {
-				g.getTopic(p.topic.id, done);
+				g.getTopic(p.returnedTopic.id, done);
 			});
 		})
 
@@ -63,33 +64,36 @@ describe('Topic CRUD', function() {
 		})
 
 		it('returns existing topic with the expected name', function() {
-			assert.equal(g.topic.name, 'testnode');
+			assert.equal(g.returnedTopic.name, p.postedTopic.name);
 		})
 
 		it('returns existing topic with the expected id', function() {
-			assert.equal(g.topic.id, p.topic.id);
+			assert.equal(g.returnedTopic.id, p.returnedTopic.id);
 		})
 
 	})
 
 	describe('PUT /topics/:id', function() {
-		var post = api.request();
+
+		var p = api.request();
+		var updatedTopic = { name: 'updated ' + guid.raw() };
 
 		before(function(done) {
-			post.postTopic(function() {
-				api.put('/topics/' + post.topic.id, {name: 'updated'}, done);
+			p.postTopic(function() {
+				api.put('/topics/' + p.returnedTopic.id, updatedTopic, done);
 			});
 		})
 
 		describe('then GET /topics/:id', function() {
-			var get = api.request();
+
+			var g = api.request();
 			
 			before(function(done) {
-				get.getTopic(post.topic.id, done);
+				g.getTopic(p.returnedTopic.id, done);
 			})
 
 			it('topic name has been updated', function() {
-				assert.equal(get.topic.name, 'updated');
+				assert.equal(g.returnedTopic.name, updatedTopic.name);
 			})
 		})
 	})
@@ -107,14 +111,14 @@ describe('Topic CRUD', function() {
 
 	describe('DELETE /topics/:id with valid id', function() {
 
-		var topicPost = api.request();
+		var p = api.request();
 
 		before(function(done) {
-			topicPost.postTopic(done);
+			p.postTopic(done);
 		})
 
 		it('returns status 200', function(done) {
-			api.del('/topics/' + topicPost.topic.id, {}, function(err, res) {
+			api.del('/topics/' + p.returnedTopic.id, {}, function(err, res) {
 				assert.equal(res.statusCode, 200);
 				done(err);
 			});
@@ -123,7 +127,7 @@ describe('Topic CRUD', function() {
 		describe('then GET /topics/:id with the deleted id', function() {
 
 			it('returns status 404', function(done) {
-				api.get('/topics/' + topicPost.topic.id, function(err, res) {
+				api.get('/topics/' + p.returnedTopic.id, function(err, res) {
 					assert.equal(res.statusCode, 404);
 					done(err);
 				});

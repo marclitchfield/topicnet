@@ -13,8 +13,8 @@ describe('Sub Topics', function() {
 		before(function(done) {
 			postParent.postTopic(function() {
 				postChild.postTopic(function() {
-					api.post('/topics/' + postParent.topic.id + '/sub',
-						{ toid: postChild.topic.id }, function(err, res) {
+					api.post('/topics/' + postParent.returnedTopic.id + '/sub',
+						{ toid: postChild.returnedTopic.id }, function(err, res) {
 						makeSubResponse = res;
 						done();
 					});
@@ -31,7 +31,7 @@ describe('Sub Topics', function() {
 			var getSubResponse;
 	
 			before(function(done) {
-				api.get('/topics/' + postParent.topic.id + '/sub', function(err, res) {
+				api.get('/topics/' + postParent.returnedTopic.id + '/sub', function(err, res) {
 					getSubResponse = res;
 					done();
 				});
@@ -44,18 +44,19 @@ describe('Sub Topics', function() {
 			it('returns the subtopic', function() {
 				var returnedTopics = JSON.parse(getSubResponse.body);
 				assert.ok(_.any(returnedTopics, function(t) {
-					return t.id === postChild.topic.id;
+					return t.id === postChild.returnedTopic.id;
 				}));
 			})
 
 		})
 
 		describe('then POST a duplicate subtopic to /topics/:id/sub', function() {
+
 			var duplicateResponse;
 
 			before(function(done) {
-				api.post('/topics/' + postParent.topic.id + '/sub',
-					{ toid: postChild.topic.id }, function(err, res) {
+				api.post('/topics/' + postParent.returnedTopic.id + '/sub',
+					{ toid: postChild.returnedTopic.id }, function(err, res) {
 					duplicateResponse = res;
 					done();
 				});
@@ -85,14 +86,14 @@ describe('Sub Topics', function() {
 
 	describe('DELETE /topics/:id/sub with an invalid toid', function() {
 
-		var post = api.request();
+		var p = api.request();
 
 		before(function(done) {
-			post.postTopic(done);
+			p.postTopic(done);
 		})
 
 		it('returns status 404', function(done) {
-			api.del('/topics/' + post.topic.id + '/sub', { toid: -9999999 }, function(err, res) {
+			api.del('/topics/' + p.returnedTopic.id + '/sub', { toid: -9999999 }, function(err, res) {
 				assert.equal(res.statusCode, 404);
 				done();
 			});
@@ -108,7 +109,7 @@ describe('Sub Topics', function() {
 		before(function(done) {
 			postParent.postTopic(function() {
 				postChild.postTopic(function() {
-					api.post('/topics/' + postParent.topic.id + '/sub', { toid: postChild.topic.id },
+					api.post('/topics/' + postParent.returnedTopic.id + '/sub', { toid: postChild.returnedTopic.id }, 
 						function(err, results) {
 							done(err);
 						}
@@ -118,7 +119,7 @@ describe('Sub Topics', function() {
 		})
 
 		it('returns status 200', function(done) {
-			api.del('/topics/' + postParent.topic.id + '/sub', { toid: postChild.topic.id },
+			api.del('/topics/' + postParent.returnedTopic.id + '/sub', { toid: postChild.returnedTopic.id }, 
 				function(err, results) {
 					assert.equal(results.statusCode, 200);
 					done(err);
@@ -129,10 +130,10 @@ describe('Sub Topics', function() {
 		describe('then GET /topics/:id/sub', function() {
 
 			it('does not include the topic whose sub relationship was deleted', function(done) {
-				api.get('/topics/' + postParent.topic.id + '/sub', function(err, results) {
+				api.get('/topics/' + postParent.returnedTopic.id + '/sub', function(err, results) {
 					var subTopics = JSON.parse(results.body);
 					assert.ok(!_.any(subTopics, function(t) {
-						return t.id === postChild.topic.id;
+						return t.id === postChild.returnedTopic.id;
 					}));
 					done();
 				});

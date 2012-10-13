@@ -13,8 +13,8 @@ describe('Next Topics', function() {
 		before(function(done) {
 			postPrev.postTopic(function() {
 				postNext.postTopic(function() {
-					api.post('/topics/' + postPrev.topic.id + '/next',
-						{ toid: postNext.topic.id }, function(err, res) {
+					api.post('/topics/' + postPrev.returnedTopic.id + '/next',
+						{ toid: postNext.returnedTopic.id }, function(err, res) {
 						makeNextResponse = res;
 						done();
 					});
@@ -31,7 +31,7 @@ describe('Next Topics', function() {
 			var getNextResponse;		
 	
 			before(function(done) {
-				api.get('/topics/' + postPrev.topic.id + '/next', function(err, res) {
+				api.get('/topics/' + postPrev.returnedTopic.id + '/next', function(err, res) {
 					getNextResponse = res;
 					done();
 				});
@@ -44,7 +44,7 @@ describe('Next Topics', function() {
 			it('returns the next topic', function() {
 				var returnedTopics = JSON.parse(getNextResponse.body);
 				assert.ok(_.any(returnedTopics, function(t) {
-					return t.id === postNext.topic.id;
+					return t.id === postNext.returnedTopic.id;
 				}));
 			})
 
@@ -60,7 +60,7 @@ describe('Next Topics', function() {
 		before(function(done) {
 			postPrev.postTopic(function() {
 				postNext.postTopic(function() {
-					api.post('/topics/' + postPrev.topic.id + '/next', { toid: postNext.topic.id }, 
+					api.post('/topics/' + postPrev.returnedTopic.id + '/next', { toid: postNext.returnedTopic.id }, 
 						function(err, results) {
 							done(err);
 						}
@@ -70,7 +70,7 @@ describe('Next Topics', function() {
 		})
 
 		it('returns status 200', function(done) {
-			api.del('/topics/' + postPrev.topic.id + '/next', { toid: postNext.topic.id }, 
+			api.del('/topics/' + postPrev.returnedTopic.id + '/next', { toid: postNext.returnedTopic.id }, 
 				function(err, results) {
 					assert.equal(results.statusCode, 200);
 					done(err);
@@ -81,10 +81,10 @@ describe('Next Topics', function() {
 		describe('then GET /topics/:id/next', function() {
 
 			it('does not include the topic whose next relationship was deleted', function(done) {
-				api.get('/topics/' + postPrev.topic.id + '/next', function(err, results) {
+				api.get('/topics/' + postPrev.returnedTopic.id + '/next', function(err, results) {
 					var nextTopics = JSON.parse(results.body);
 					assert.ok(!_.any(nextTopics, function(t) {
-						return t.id === postNext.topic.id;
+						return t.id === postNext.returnedTopic.id;
 					}));
 					done();
 				});

@@ -11,7 +11,7 @@ describe('Root Topics', function() {
 
 		before(function(done) {
 			p.postTopic(function() {
-				api.post('/topics/' + p.topic.id + '/root', {}, function(err, res) {
+				api.post('/topics/' + p.returnedTopic.id + '/root', {}, function(err, res) {
 					rootResponse = res;
 					done();
 				});
@@ -40,7 +40,7 @@ describe('Root Topics', function() {
 			it('returns all root topics including our topic', function() {
 				var rootTopics = JSON.parse(rootTopicsResponse.body);
 				assert.ok(_.any(rootTopics, function(t) {
-					return t.id === p.topic.id;
+					return t.id === p.returnedTopic.id;
 				}));
 			})
 
@@ -54,7 +54,7 @@ describe('Root Topics', function() {
 
 		before(function(done) {
 			rootPost.postTopic(function() {
-				api.post('/topics/' + rootPost.topic.id + '/root', {}, 
+				api.post('/topics/' + rootPost.returnedTopic.id + '/root', {}, 
 					function(err, results) {
 						done(err);
 					}
@@ -63,7 +63,7 @@ describe('Root Topics', function() {
 		})
 
 		it('returns status 200', function(done) {
-			api.del('/topics/' + rootPost.topic.id + '/root', {}, 
+			api.del('/topics/' + rootPost.returnedTopic.id + '/root', {}, 
 				function(err, results) {
 					assert.equal(results.statusCode, 200);
 					done(err);
@@ -77,7 +77,7 @@ describe('Root Topics', function() {
 				api.get('/topics', function(err, results) {
 					var rootTopics = JSON.parse(results.body);
 					assert.ok(!_.any(rootTopics, function(t) {
-						return t.id === rootPost.topic.id;
+						return t.id === rootPost.returnedTopic.id;
 					}));
 					done();
 				});
