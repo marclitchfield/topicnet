@@ -15,6 +15,10 @@ function AddTopicController($scope, $http) {
 	};
 }
 
+function AddResourceController($scope, $http) {
+	
+}
+
 function RootController($scope, $http) {
 	$http.get('/topics').success(function(topics) {
 		$scope.rootTopics = topics;

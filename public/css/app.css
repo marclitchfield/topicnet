@@ -13,3 +13,11 @@ li .close {
 li:hover .close {
 	visibility: visible;
 }
+
+.nav-area {
+	margin-top: 32px;
+}
+
+.add-resource-modal {
+	width: 580px;
+}

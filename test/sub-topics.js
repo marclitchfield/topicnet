@@ -28,7 +28,7 @@ describe('Sub Topics', function() {
 
 		describe('then GET /topics/:id/sub', function() {
 
-			var getSubResponse;		
+			var getSubResponse;
 	
 			before(function(done) {
 				api.get('/topics/' + postParent.topic.id + '/sub', function(err, res) {
@@ -108,7 +108,7 @@ describe('Sub Topics', function() {
 		before(function(done) {
 			postParent.postTopic(function() {
 				postChild.postTopic(function() {
-					api.post('/topics/' + postParent.topic.id + '/sub', { toid: postChild.topic.id }, 
+					api.post('/topics/' + postParent.topic.id + '/sub', { toid: postChild.topic.id },
 						function(err, results) {
 							done(err);
 						}
@@ -118,7 +118,7 @@ describe('Sub Topics', function() {
 		})
 
 		it('returns status 200', function(done) {
-			api.del('/topics/' + postParent.topic.id + '/sub', { toid: postChild.topic.id }, 
+			api.del('/topics/' + postParent.topic.id + '/sub', { toid: postChild.topic.id },
 				function(err, results) {
 					assert.equal(results.statusCode, 200);
 					done(err);
