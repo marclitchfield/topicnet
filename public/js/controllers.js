@@ -3,6 +3,10 @@ function AddTopicController($scope, $http) {
 		$scope.selectedTopic = topic;
 	});
 
+	$scope.show = function() {
+		$scope.formVisible = true;
+	};
+
 	$scope.add = function() {
 		if ($scope.selectedTopic && $scope.selectedTopic.hasOwnProperty('id')) {
 			$scope.linkfn($scope.selectedTopic);
@@ -11,6 +15,12 @@ function AddTopicController($scope, $http) {
 				$scope.linkfn(topic);
 			});
 		}
+		
+		$scope.clear();
+	};
+
+	$scope.clear = function() {
+		$scope.formVisible = false;
 		$scope.searchQuery = '';
 	};
 }
@@ -21,8 +31,15 @@ function AddResourceController($scope, $http) {
 		$http.post('/resources', data).success(function(resource) {
 			$http.post('/topics/' + $scope.topic.id + '/resources', { resid: resource.id }).success(function() {
 				$scope.topic.resources.push(resource);
+				$scope.clear();
 			});
 		});
+	};
+
+	$scope.clear = function() {
+		$scope.title = '';
+		$scope.url = '';
+		$scope.source = '';
 	};
 }
 

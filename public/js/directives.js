@@ -27,11 +27,15 @@ angular.module('artoplasm.directives', []).
         };
     }).
 
-    directive('gestureSwipe', function() {
-		return function(scope, el, attrs) {
-			el.bind('touchy-swipe', function() {
-				scope.$eval(attrs.gestureSwipe);
-				scope.$apply();
+	directive('focusOn', function() {
+		return function (scope, element, attrs) {
+			scope.$watch(attrs.focusOn, function(value) {
+				if(attrs.focusOn) {
+					window.setTimeout(function() {
+						element.focus();
+					}, 0);
+				}
 			});
 		};
-    });
+	});
+
