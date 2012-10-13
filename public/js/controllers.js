@@ -16,7 +16,14 @@ function AddTopicController($scope, $http) {
 }
 
 function AddResourceController($scope, $http) {
-	
+	$scope.add = function() {
+		var data = { title: $scope.title, url: $scope.url, source: $scope.source };
+		$http.post('/resources', data).success(function(resource) {
+			$http.post('/topics/' + $scope.topic.id + '/resources', { resid: resource.id }).success(function() {
+				$scope.topic.resources.push(resource);
+			});
+		});
+	};
 }
 
 function RootController($scope, $http) {
@@ -42,11 +49,7 @@ function RootController($scope, $http) {
 function DetailController($scope, $http, $routeParams) {
 	$http.get('/topics/' + $routeParams.topicId).success(function(topic) {
 		$scope.topic = topic;
-		$scope.topic.resources = [
-			{ id: 123, title: 'Herman Module', url: 'http://khaaaan.com', source: 'Internet' },
-			{ id: 124, title: 'Shire Baggins Module', url: 'http://khanacademy.com', source: 'Frodo' },
-			{ id: 126, title: 'Introductory Mesh Analysis', url: 'http://khanacademy.com', source: 'Toast Vision' }
-		];
+		$scope.topic.resources = $scope.topic.resources || [];
 		$scope.topic.sub = $scope.topic.sub || [];
 		$scope.topic.next = $scope.topic.next || [];
 		$scope.editedTopicName = topic.name;
