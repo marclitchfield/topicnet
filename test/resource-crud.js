@@ -1,6 +1,7 @@
 var assert = require('assert');
 var _ = require('underscore');
 var api = require('./helper-api.js');
+var guid = require('guid');
 
 describe('Resource CRUD', function() {
 
@@ -36,35 +37,30 @@ describe('Resource CRUD', function() {
 
 	describe('POST /resources with valid data', function() {
 
-		var postResponse;
-		var resource;
+		var p = api.request();
 
 		before(function(done) {
-			api.post('/resources', { title: 'test resource', url: 'http://example.com', source: 'example.com' }, function(err, res) {
-				postResponse = res;
-				resource = JSON.parse(postResponse.body);
-				done(err);
-			});
+			p.postResource(done);
 		})
 
 		it('returns status 200', function() {
-			assert.equal(postResponse.statusCode, 200);
+			assert.equal(p.response.statusCode, 200);
 		})
 
 		it('returns the resource with a valid generated id', function() {
-			assert.ok(resource.id > 0);
+			assert.ok(p.returnedResource.id > 0);
 		})
 
 		it('returns the resource with the expected title', function() {
-			assert.equal(resource.title, 'test resource');
+			assert.equal(p.returnedResource.title, p.postedResource.title);
 		})
 
 		it('returns the resource with the expected url', function() {
-			assert.equal(resource.url, 'http://example.com');
+			assert.equal(p.returnedResource.url, p.postedResource.url);
 		})
 
 		it('returns the resourse with the exepected source', function() {
-			assert.equal(resource.source, 'example.com');
+			assert.equal(p.returnedResource.source, p.postedResource.source);
 		})
 
 	})
@@ -82,57 +78,53 @@ describe('Resource CRUD', function() {
 
 	describe('GET /resources/:id with valid id', function() {
 
-		var resPost = api.request();
-		var getResponse;
-		var resource;
+		var p = api.request();
+		var g = api.request();
 
 		before(function(done) {
-			resPost.postResource(function() {
-				api.get('/resources/' + resPost.resource.id, function(err, res) {
-					getResponse = res;
-					resource = JSON.parse(res.body);
-					done();
-				});
-			})
+			p.postResource(function() {
+				g.getResource(p.returnedResource.id, done);
+			});
 		})
 
 		it('returns status 200', function() {
-			assert.equal(getResponse.statusCode, 200);
+			assert.equal(g.response.statusCode, 200);
 		})
 
 		it('returns the resource with the expected id', function() {
-			assert.equal(resource.id, resPost.resource.id);
+			assert.equal(g.returnedResource.id, p.returnedResource.id);
 		})
 
 		it('returns the resource with the expected title', function() {
-			assert.equal(resource.title, 'test resource');
+			assert.equal(g.returnedResource.title, p.postedResource.title);
 		})
 
 		it('returns the resource with the expected url', function() {
-			assert.equal(resource.url, 'http://example.com');
+			assert.equal(g.returnedResource.url, p.postedResource.url);
 		})
 
 		it('returns the resourse with the exepected source', function() {
-			assert.equal(resource.source, 'example.com');
+			assert.equal(g.returnedResource.source, p.postedResource.source);
 		})
 
 	})
 
 	describe('PUT /resources/:id', function() {
 
-		var post = api.request();
+		var p = api.request();
+		var resourceUpdate = { title: 'updated ' + guid.raw(), 
+			url: 'http://updatedexample.com/' + guid.raw(),
+			source: 'updatedexample.com' };
 		var putResponse;
-		var resource;
+		var returnedResource;
 
 		before(function(done) {
-			post.postResource(function() {
-				api.put('/resources/' + post.resource.id, 
-					{ title: 'updated title', 
-						url: 'http://updatedexample.com', 
-						source: 'updatedexample.com' },
+			p.postResource(function() {
+				api.put('/resources/' + p.returnedResource.id,
+					resourceUpdate,
 					function(err, res) {
 						putResponse = res;
-						resource = JSON.parse(res.body);
+						returnedResource = JSON.parse(res.body);
 						done();
 				});
 			});
@@ -143,35 +135,35 @@ describe('Resource CRUD', function() {
 		})
 
 		it('returns resource with updated title', function() {
-			assert.equal(resource.title, 'updated title');
+			assert.equal(returnedResource.title, resourceUpdate.title);
 		})
 
 		it('returns resource with updated url', function() {
-			assert.equal(resource.url, 'http://updatedexample.com');
+			assert.equal(returnedResource.url, resourceUpdate.url);
 		})
 
 		it('returns resource with updated source', function() {
-			assert.equal(resource.source, 'updatedexample.com');
+			assert.equal(returnedResource.source, resourceUpdate.source);
 		})
 
 		describe('then GET /resources/:id', function() {
 
-			var get = api.request();
+			var g = api.request();
 			
 			before(function(done) {
-				get.getResource(post.resource.id, done);
+				g.getResource(p.returnedResource.id, done);
 			})
 
 			it('returns resource with updated title', function() {
-				assert.equal(get.resource.title, 'updated title');
+				assert.equal(g.returnedResource.title, resourceUpdate.title);
 			})
 
 			it('returns resource with updated url', function() {
-				assert.equal(get.resource.url, 'http://updatedexample.com');
+				assert.equal(g.returnedResource.url, resourceUpdate.url);
 			})
 
 			it('returns resource with updated source', function() {
-				assert.equal(get.resource.source, 'updatedexample.com');
+				assert.equal(g.returnedResource.source, resourceUpdate.source);
 			})
 
 		})
@@ -191,15 +183,15 @@ describe('Resource CRUD', function() {
 
 	describe('PUT /resources/:id without required attributes', function() {
 
-		var post = api.request();
+		var p = api.request();
 
 		before(function(done) {
-			post.postResource(done);
+			p.postResource(done);
 		})
 
 		describe('without title', function() {
 			it('returns status 500 and error message', function(done) {
-				api.put('/resources/' + post.resource.id, {}, function(err, res) {
+				api.put('/resources/' + p.returnedResource.id, {}, function(err, res) {
 					assert.equal(res.statusCode, 500);
 					assert.notEqual(-1, res.body.indexOf('title is required'));
 					done();
@@ -209,7 +201,7 @@ describe('Resource CRUD', function() {
 
 		describe('without url', function() {
 			it('returns status 500 and error message', function(done) {
-				api.put('/resources/' + post.resource.id, { title: 'updated resource' }, function(err, res) {
+				api.put('/resources/' + p.returnedResource.id, { title: 'updated resource ' + guid.raw() }, function(err, res) {
 					assert.equal(res.statusCode, 500);
 					assert.notEqual(-1, res.body.indexOf('url is required'));
 					done();
@@ -219,8 +211,8 @@ describe('Resource CRUD', function() {
 
 		describe('without source', function() {
 			it('returns status 500 and error message', function(done) {
-				api.put('/resources/' + post.resource.id, 
-					{ title: 'updated resource', url: 'http://updatedexample.com' }, function(err, res) {
+				api.put('/resources/' + p.returnedResource.id, 
+					{ title: 'updated resource ' + guid.raw(), url: 'http://updatedexample.com/' + guid.raw() }, function(err, res) {
 					assert.equal(res.statusCode, 500);
 					assert.notEqual(-1, res.body.indexOf('source is required'));
 					done();
