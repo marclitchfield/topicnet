@@ -5,7 +5,8 @@ var config = require('./config.js');
 var app = express.createServer(express.logger());
 var neo4jUrl = process.env.NEO4J_URL || 'http://localhost:' + config.neo4j.port;
 var graph = new neo4j.GraphDatabase(neo4jUrl);
-var topicService = require('./lib/TopicService').createService(graph);
+var topicService = require('./lib/topic-service').createService(graph);
+var resourceService = require('./lib/resource-service').createService(graph);
 
 console.log(config);
 
@@ -85,6 +86,12 @@ app.post('/topics/:id/root', function(request, response, next) {
 		errorHandler(response, next));
 });
 
+app.post('/topics/:id/resources', function(request, response, next) {
+	topicService.linkResource(request.params.id, request.body.resid,
+		successHandler(response),
+		errorHandler(response, next));
+});
+
 app.post('/topics/:id/:rel', function(request, response, next) {
 	topicService.createRelationship(request.params.id, request.body.toid, request.params.rel,
 		successHandler(response),
@@ -105,6 +112,38 @@ app.delete('/topics/:id/:rel', function(request, response, next) {
 
 app.delete('/topics/:id', function(request, response, next) {
 	topicService.deleteTopic(request.params.id,
+		successHandler(response),
+		errorHandler(response, next));
+});
+
+app.post('/resources', function(request, response, next) {
+	resourceService.create(request.body,
+		successHandler(response),
+		errorHandler(response, next));
+});
+
+app.get('/resources/:id', function(request, response, next) {
+	resourceService.get(request.params.id,
+		successHandler(response),
+		errorHandler(response, next));
+});
+
+app.get('/resources', function(request, response, next) {
+    if (request.query.title) {
+        resourceService.searchByTitle(request.query.title,
+            successHandler(response),
+            errorHandler(response, next));
+    } else if(request.query.url) {
+        resourceService.searchByUrl(request.query.url,
+            successHandler(response),
+            errorHandler(response, next));
+    } else {
+			response.send(404);
+		}
+});
+
+app.put('/resources/:id', function(request, response, next) {
+	resourceService.update(request.params.id, request.body,
 		successHandler(response),
 		errorHandler(response, next));
 });

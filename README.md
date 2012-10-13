@@ -7,15 +7,12 @@ topic CRUD
 <pre>
 	{ id: 1, 
 		name: "main node",
-		sub [ 
-			{ id: 2, name: "sub node" },
-			{ id: 78, name: "other sub node" } 
+		resources: [
+			{ id: 88, title: "Resource A", url: "http://example.url", source: "Source A" },
+			{ id: 77, title: "Resource B", url: "http://example.url", source: "Source B" },
 		],
-		next [ 
-			{ id: 3, name: "next node" },
-			{ id: 10, name: "other next node" }
-		]
-	}
+		sub: [ 
+			{ id: 2, name: "sub node" },
 </pre>
 
 - GET  /topics/          - return root topics
@@ -33,6 +30,13 @@ topic CRUD
 relationship CRUD
 -----------------
 - GET  /topics/:fromid/next  - get next topics
+			{ id: 78, name: "other sub node" } 
+		],
+		next: [ 
+			{ id: 3, name: "next node" },
+			{ id: 10, name: "other next node" }
+		]
+	}
 - GET  /topics/:fromid/sub   - get subtopics
 - POST /topics/:id/root      - makes the node root
 - POST /topics/:fromid/next  - creates a 'next' relationship
@@ -45,6 +49,26 @@ relationship CRUD
 
 - DEL  /topics/:id/next/:toid  - delete a 'next' relationship
 
+- POST /topics/:id/resources - links a resource to a topic
+    
+    { resid:X }
+
+resource CRUD
+-------------
+- GET  /resources/:id
+<pre>
+  {
+    id: 88,
+    title: "Resource Title",
+    url: "http://example.url",
+    source: "Resource Source"
+  }
+</pre>
+- GET /resources?url=http%3A%2F%2Fexample.com
+- GET /resources?title=some%20title
+- POST    /resources
+- PUT     /resources/:id
+- DELETE  /resources/:id
 
 graph API
 ---------
