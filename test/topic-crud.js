@@ -17,22 +17,46 @@ describe('Topic CRUD', function() {
 
 	describe('POST to /topics with valid data', function() {
 
-		var r = api.request();
+		var p = api.request();
 
 		before(function(done) {
-			r.postTopic(done);
+			p.postTopic(done);
 		})
 
 		it('returns status 200', function() {
-			assert.equal(r.response.statusCode, 200);
+			assert.equal(p.response.statusCode, 200);
 		})
 
 		it('returns new topic with the name specified', function() {
-			assert.equal(r.returnedTopic.name, r.postedTopic.name);
+			assert.equal(p.returnedTopic.name, p.postedTopic.name);
 		})
 
 		it('returns new topic with a valid generated id', function() {
-			assert.ok(r.returnedTopic.id > 0);
+			assert.ok(p.returnedTopic.id > 0);
+		})
+
+	})
+
+	describe('POST to /topics with duplicate topic name', function() {
+
+		var p = api.request();
+		var duplicatePostResponse;		
+
+		before(function(done) {
+			p.postTopic(function() {
+				api.post('/topics', p.postedTopic, function(err, res) {
+					duplicatePostResponse = res;
+					done();
+				});
+			});
+		})
+
+		it('returns status 400', function() {
+			assert.equal(duplicatePostResponse.statusCode, 400);
+		})
+
+		it('returns an appropriate error message', function() {
+			assert.notEqual(-1, duplicatePostResponse.body.indexOf('A topic with the specified name already exists'));
 		})
 
 	})
