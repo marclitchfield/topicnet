@@ -28,7 +28,7 @@ describe('Sub Topics', function() {
 
 		describe('then GET /topics/:id/sub', function() {
 
-			var getSubResponse;		
+			var getSubResponse;
 	
 			before(function(done) {
 				api.get('/topics/' + postParent.returnedTopic.id + '/sub', function(err, res) {

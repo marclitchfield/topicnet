@@ -1,10 +1,10 @@
-function AddController($scope, $http) {
+function AddTopicController($scope, $http) {
 	$scope.$on('topicSelected', function(e, topic) {
 		$scope.selectedTopic = topic;
 	});
 
 	$scope.add = function() {
-		if ($scope.selectedTopic.hasOwnProperty('id')) {
+		if ($scope.selectedTopic && $scope.selectedTopic.hasOwnProperty('id')) {
 			$scope.linkfn($scope.selectedTopic);
 		} else {
 			$http.post('/topics', { name: $scope.searchQuery }).success(function(topic) {
@@ -12,6 +12,17 @@ function AddController($scope, $http) {
 			});
 		}
 		$scope.searchQuery = '';
+	};
+}
+
+function AddResourceController($scope, $http) {
+	$scope.add = function() {
+		var data = { title: $scope.title, url: $scope.url, source: $scope.source };
+		$http.post('/resources', data).success(function(resource) {
+			$http.post('/topics/' + $scope.topic.id + '/resources', { resid: resource.id }).success(function() {
+				$scope.topic.resources.push(resource);
+			});
+		});
 	};
 }
 
@@ -38,6 +49,7 @@ function RootController($scope, $http) {
 function DetailController($scope, $http, $routeParams) {
 	$http.get('/topics/' + $routeParams.topicId).success(function(topic) {
 		$scope.topic = topic;
+		$scope.topic.resources = $scope.topic.resources || [];
 		$scope.topic.sub = $scope.topic.sub || [];
 		$scope.topic.next = $scope.topic.next || [];
 		$scope.editedTopicName = topic.name;

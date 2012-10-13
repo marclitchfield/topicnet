@@ -1,45 +1,70 @@
 <div ng-controller="DetailController">
 	<div class="row">
-
 		<div class="span6">
-			<div class="well">
-				<h3 ng-hide="editingTitle" ng-dblclick="editingTitle=true">{{ topic.name }}</h3>
-				<h3 ng-show="editingTitle">
-					<form class="form-inline">
-						<input type="text" class="input-large" ng-model="editedTopicName"></input>
-						<button class="btn btn-primary" ng-click="update(); editingTitle=false">Save</button>
-						<button class="close" ng-click="editingTitle=false">&times;</button>
-					</form>
-				</h3>
-				<ul class="unstyled">
-					<li ng-repeat="resource in resources"></li>
-				</ul>
-			</div>
-
-			<div ng-controller="SubTopicController">
-				<h4>sub topics</h4>
-				<ul class="unstyled">
-					<li ng-repeat="subTopic in topic.sub">
-						<a href="#/detail/{{ subTopic.id }}">{{ subTopic.name }}</a>
-						<button class="close" ng-click="removeLink(topic, subTopic)">&times;</button>
-					</li>
-				</ul>
-
-				<div add-topic-form />
-			</div>
-		</div>
-
-		<div class="span3" ng-controller="NextTopicController">
-			<h4>next</h4>
+			<h3 ng-hide="editingTitle" ng-dblclick="editingTitle=true">{{ topic.name }}</h3>
+			<h3 ng-show="editingTitle">
+				<form class="form-inline">
+					<input type="text" class="input-large" ng-model="editedTopicName"></input>
+					<button class="btn btn-primary" ng-click="update(); editingTitle=false">Save</button>
+					<button class="close" ng-click="editingTitle=false">&times;</button>
+				</form>
+			</h3>
 			<ul class="unstyled">
-				<li ng-repeat="nextTopic in topic.next">
-					<a href="#/detail/{{ nextTopic.id }}">{{ nextTopic.name }}</a>
-					<button class="close" ng-click="removeLink(topic, nextTopic)">&times;</button>
+				<li ng-repeat="resource in topic.resources">
+					<a href="#/resources/{{ resource.id }}">{{ resource.title }}</a>
+					<small>{{ resource.source }}</small>
 				</li>
 			</ul>
-
-			<div add-topic-form />
+	        <button class="btn" data-toggle="modal" href="#resourceForm"><i class="icon-plus"></i>Add Resource</button>
 		</div>
 	</div>
 
+	<div class="row nav-area tabbable">
+		<div class="span6">
+			<ul class="nav nav-tabs">
+				<li class="active"><a href="#sub-topic-pane" data-toggle="tab">sub topics</a></li>
+				<li><a href="#next-topic-pane" data-toggle="tab">next</a></li>
+			</ul>
+
+			<div class="tab-content">
+				<div class="tab-pane active" id="sub-topic-pane" ng-controller="SubTopicController">
+					<ul class="unstyled">
+						<li ng-repeat="subTopic in topic.sub">
+							<a href="#/detail/{{ subTopic.id }}">{{ subTopic.name }}</a>
+							<button class="close" ng-click="removeLink(topic, subTopic)">&times;</button>
+						</li>
+					</ul>
+					<div ng-include src="'partials/add-topic.html'" />
+				</div>
+
+				<div class="tab-pane" id="next-topic-pane" ng-controller="NextTopicController">
+					<ul class="unstyled">
+						<li ng-repeat="nextTopic in topic.next">
+							<a href="#/detail/{{ nextTopic.id }}">{{ nextTopic.name }}</a>
+							<button class="close" ng-click="removeLink(topic, nextTopic)">&times;</button>
+						</li>
+					</ul>
+					<div ng-include src="'partials/add-topic.html'" />
+				</div>
+			</div>
+		</div>
+	</div>
+
+	<div id="resourceForm" class="modal fade add-resource-modal">
+		<form ng-controller="AddResourceController">
+			<div class="modal-header">
+				<h4>Add a resource</h4>
+			</div>
+			<div class="modal-body">
+				<input type="text" class="input-xxlarge" ng-model="url" placeholder="URL"></input>
+				<input type="text" class="input-xxlarge" ng-model="title" placeholder="Title"></input>
+				<input type="text" class="input-xlarge" ng-model="source" placeholder="Source"></input>
+			</div>
+			<div class="modal-footer">
+				<button class="btn btn-primary" data-dismiss="modal" ng-click="add()">Save</button>
+				<button class="btn" data-dismiss="modal">Cancel</button>
+			</div>
+		</form>
+	</div>		
 </div>
+
