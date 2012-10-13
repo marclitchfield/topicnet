@@ -1,13 +1,14 @@
 var assert = require('assert');
 var _ = require('underscore');
 var api = require('./helper-api.js');
+var guid = require('guid');
 
 describe('Topic Search', function() {
 
 	var topicToFind;
 
 	before(function(done) {
-		api.post('/topics', { name: 'testnode to find!' }, function(err, res) {
+		api.post('/topics', { name: 'testnode to find! ' + guid.raw() }, function(err, res) {
 			topicToFind = JSON.parse(res.body);
 			done();
 		})
