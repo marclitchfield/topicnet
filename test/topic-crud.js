@@ -122,6 +122,34 @@ describe('Topic CRUD', function() {
 		})
 	})
 
+	describe('PUT /topics/:id with name that would be a duplicate', function() {
+
+		var p1 = api.request();
+		var p2 = api.request();
+		var putResponse;
+
+		before(function(done) {
+			p1.postTopic(function() {
+				p2.postTopic(function() {
+					api.put('/topics/' + p2.returnedTopic.id, { name: p1.returnedTopic.name },
+						function(err, res) {
+							putResponse = res;
+							done();
+					});
+				});
+			});
+		})
+
+		it('returns status 400', function() {
+			assert.equal(putResponse.statusCode, 400);
+		})
+
+		it('returns an appropriate error message', function() {
+			assert.notEqual(-1, putResponse.body.indexOf('Another topic exists with the specified name'));
+		})
+
+	})
+
 	describe('DELETE /topics/:id with invalid id', function() {
 
 		it('returns status 404', function(done) {
