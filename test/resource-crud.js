@@ -65,6 +65,62 @@ describe('Resource CRUD', function() {
 
 	})
 
+	describe('POST /resources with duplicate title', function() {
+
+		var p = api.request();
+		var duplicatePostResults;
+
+		before(function(done) {
+			p.postResource(function() {
+				api.post('/resources', { title: p.postedResource.title,
+					url: 'http://uniqueurl/' + guid.raw(),
+					source: 'example.com' },
+					function(err, res) {
+						duplicatePostResults = res;
+						done();
+					}
+				);		
+			});	
+		});
+
+		it('returns status 400', function() {
+			assert.equal(duplicatePostResults.statusCode, 400);
+		});
+
+		it('returns an appropriate error message', function() {
+			assert.notEqual(-1, duplicatePostResults.body.indexOf('A resource with the specified title already exists'));
+		});
+
+	})
+
+	describe('POST /resources with duplicate url', function() {
+
+		var p = api.request();
+		var duplicatePostResults;
+
+		before(function(done) {
+			p.postResource(function() {
+				api.post('/resources', { title: 'unique title ' + guid.raw(),
+					url: p.postedResource.url,
+					source: 'example.com' },
+					function(err, res) {
+						duplicatePostResults = res;
+						done();
+					}
+				);		
+			});	
+		});
+
+		it('returns status 400', function() {
+			assert.equal(duplicatePostResults.statusCode, 400);
+		});
+
+		it('returns an appropriate error message', function() {
+			assert.notEqual(-1, duplicatePostResults.body.indexOf('A resource with the specified url already exists'));
+		});
+
+	})
+
 	describe('GET /resources/:id with invalid id', function() {
 		
 		it('returns status 404', function(done) {

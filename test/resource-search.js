@@ -1,13 +1,15 @@
 var assert = require('assert');
 var _ = require('underscore');
 var api = require('./helper-api.js');
+var guid = require('guid');
 
 describe('Resource Search', function() {
 
 	var resourceToFind;
 
 	before(function(done) {
-		api.post('/resources', { title: 'resource to find!', url: 'http://example.com', source: 'example.com' }, 
+		api.post('/resources', { title: 'resource to find! ' + guid.raw(), 
+			url: 'http://example.com/' + guid.raw(), source: 'example.com' }, 
 			function(err, res) {
 			resourceToFind = JSON.parse(res.body);
 			done(err);
