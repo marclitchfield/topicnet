@@ -50,21 +50,20 @@
 		</div>
 	</div>
 
-	<div id="resourceForm" class="modal fade add-resource-modal">
+	<div id="resourceForm" class="modal fade add-resource-modal" modal-autofocus>
 		<form ng-controller="AddResourceController">
 			<div class="modal-header">
 				<h4>Add a resource</h4>
 			</div>
 			<div class="modal-body">
-				<input type="text" class="input-xxlarge" ng-model="url" placeholder="URL"></input>
+				<input type="text" class="input-xxlarge" ng-model="url" placeholder="URL" autofocus></input>
 				<input type="text" class="input-xxlarge" ng-model="title" placeholder="Title"></input>
 				<input type="text" class="input-xlarge" ng-model="source" placeholder="Source"></input>
 			</div>
 			<div class="modal-footer">
 				<button class="btn btn-primary" data-dismiss="modal" ng-click="add()">Save</button>
-				<button class="btn" data-dismiss="modal">Cancel</button>
+				<button class="btn" data-dismiss="modal" ng-click="clear()">Cancel</button>
 			</div>
 		</form>
-	</div>		
+	</div>
 </div>
-
