@@ -20,11 +20,11 @@ describe('Next Topics', function() {
 					});
 				});
 			});
-		})
+		});
 
 		it('returns status 200', function() {
 			assert.equal(makeNextResponse.statusCode, 200);
-		})
+		});
 
 		describe('then GET /topics/:id/next', function() {
 
@@ -35,22 +35,22 @@ describe('Next Topics', function() {
 					getNextResponse = res;
 					done();
 				});
-			})
+			});
 
 			it('returns status 200', function() {
 				assert.equal(getNextResponse.statusCode, 200);
-			})
+			});
 
 			it('returns the next topic', function() {
 				var returnedTopics = JSON.parse(getNextResponse.body);
 				assert.ok(_.any(returnedTopics, function(t) {
 					return t.id === postNext.returnedTopic.id;
 				}));
-			})
+			});
 
-		})
+		});
 
-	})
+	});
 
 	describe('DELETE /topics/:id/next with valid data', function() {
 
@@ -65,9 +65,9 @@ describe('Next Topics', function() {
 							done(err);
 						}
 					);
-				})
+				});
 			});
-		})
+		});
 
 		it('returns status 200', function(done) {
 			api.del('/topics/' + postPrev.returnedTopic.id + '/next', { toid: postNext.returnedTopic.id }, 
@@ -88,10 +88,10 @@ describe('Next Topics', function() {
 					}));
 					done();
 				});
-			})
+			});
 
-		})
+		});
 
-	})
+	});
 
-})
+});

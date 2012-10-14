@@ -20,11 +20,11 @@ describe('Sub Topics', function() {
 					});
 				});
 			});
-		})
+		});
 
 		it('returns status 200', function() {
 			assert.equal(makeSubResponse.statusCode, 200);
-		})
+		});
 
 		describe('then GET /topics/:id/sub', function() {
 
@@ -35,20 +35,20 @@ describe('Sub Topics', function() {
 					getSubResponse = res;
 					done();
 				});
-			})
+			});
 
 			it('returns status 200', function() {
 				assert.equal(getSubResponse.statusCode, 200);
-			})
+			});
 
 			it('returns the subtopic', function() {
 				var returnedTopics = JSON.parse(getSubResponse.body);
 				assert.ok(_.any(returnedTopics, function(t) {
 					return t.id === postChild.returnedTopic.id;
 				}));
-			})
+			});
 
-		})
+		});
 
 		describe('then POST a duplicate subtopic to /topics/:id/sub', function() {
 
@@ -60,18 +60,18 @@ describe('Sub Topics', function() {
 					duplicateResponse = res;
 					done();
 				});
-			})
+			});
 
 			it('returns status 400', function() {
 				assert.equal(duplicateResponse.statusCode, 400);
-			})
+			});
 
 			it('returns error message', function() {
 				assert.notEqual(-1, duplicateResponse.body.indexOf('Relationship \'sub\' already exists'));
-			})
-		})
+			});
+		});
 
-	})
+	});
 
 	describe('DELETE /topics/:id/sub with an invalid id', function() {
 
@@ -80,9 +80,9 @@ describe('Sub Topics', function() {
 				assert.equal(res.statusCode, 404);
 				done();
 			});
-		})
+		});
 
-	}) 
+	});
 
 	describe('DELETE /topics/:id/sub with an invalid toid', function() {
 
@@ -90,16 +90,16 @@ describe('Sub Topics', function() {
 
 		before(function(done) {
 			p.postTopic(done);
-		})
+		});
 
 		it('returns status 404', function(done) {
 			api.del('/topics/' + p.returnedTopic.id + '/sub', { toid: -9999999 }, function(err, res) {
 				assert.equal(res.statusCode, 404);
 				done();
 			});
-		})
+		});
 
-	})
+	});
 
 	describe('DELETE /topics/:id/sub with valid data', function() {
 
@@ -114,9 +114,9 @@ describe('Sub Topics', function() {
 							done(err);
 						}
 					);
-				})
+				});
 			});
-		})
+		});
 
 		it('returns status 200', function(done) {
 			api.del('/topics/' + postParent.returnedTopic.id + '/sub', { toid: postChild.returnedTopic.id }, 
@@ -137,10 +137,10 @@ describe('Sub Topics', function() {
 					}));
 					done();
 				});
-			})
+			});
 
-		})
+		});
 
-	})
+	});
 
-})
+});

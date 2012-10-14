@@ -16,11 +16,11 @@ describe('Root Topics', function() {
 					done();
 				});
 			});
-		})
+		});
 
 		it('returns status 200', function() {
 			assert.equal(rootResponse.statusCode, 200);
-		})
+		});
 
 		describe('then GET /topics', function() {
 
@@ -31,22 +31,22 @@ describe('Root Topics', function() {
 					rootTopicsResponse = res;
 					done();
 				});
-			})
+			});
 
 			it('returns status 200', function() {
 				assert.equal(rootTopicsResponse.statusCode, 200);
-			})
+			});
 
 			it('returns all root topics including our topic', function() {
 				var rootTopics = JSON.parse(rootTopicsResponse.body);
 				assert.ok(_.any(rootTopics, function(t) {
 					return t.id === p.returnedTopic.id;
 				}));
-			})
+			});
 
-		})
+		});
 
-	})
+	});
 
 	describe('DELETE /topics/:id/root', function() {
 
@@ -59,8 +59,8 @@ describe('Root Topics', function() {
 						done(err);
 					}
 				);
-			})
-		})
+			});
+		});
 
 		it('returns status 200', function(done) {
 			api.del('/topics/' + rootPost.returnedTopic.id + '/root', {}, 
@@ -81,9 +81,9 @@ describe('Root Topics', function() {
 					}));
 					done();
 				});
-			})
+			});
 
-		})
-	})
+		});
+	});
 
-})
+});

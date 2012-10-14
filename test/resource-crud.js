@@ -12,8 +12,8 @@ describe('Resource CRUD', function() {
 				assert.notEqual(-1, res.body.indexOf('title is required'));
 				done();
 			});
-		})
-	})
+		});
+	});
 
 	describe('POST /resources without url', function() {
 		it('returns status 500 and error message', function(done) {
@@ -22,8 +22,8 @@ describe('Resource CRUD', function() {
 				assert.notEqual(-1, res.body.indexOf('url is required'));
 				done();
 			});
-		})
-	})
+		});
+	});
 
 	describe('POST /resources without source', function() {
 		it('returns status 500 and error message', function(done) {
@@ -32,8 +32,8 @@ describe('Resource CRUD', function() {
 				assert.notEqual(-1, res.body.indexOf('source is required'));
 				done();
 			});
-		})
-	})
+		});
+	});
 
 	describe('POST /resources with valid data', function() {
 
@@ -41,29 +41,29 @@ describe('Resource CRUD', function() {
 
 		before(function(done) {
 			p.postResource(done);
-		})
+		});
 
 		it('returns status 200', function() {
 			assert.equal(p.response.statusCode, 200);
-		})
+		});
 
 		it('returns the resource with a valid generated id', function() {
 			assert.ok(p.returnedResource.id > 0);
-		})
+		});
 
 		it('returns the resource with the expected title', function() {
 			assert.equal(p.returnedResource.title, p.postedResource.title);
-		})
+		});
 
 		it('returns the resource with the expected url', function() {
 			assert.equal(p.returnedResource.url, p.postedResource.url);
-		})
+		});
 
 		it('returns the resourse with the exepected source', function() {
 			assert.equal(p.returnedResource.source, p.postedResource.source);
-		})
+		});
 
-	})
+	});
 
 	describe('POST /resources with duplicate title', function() {
 
@@ -91,7 +91,7 @@ describe('Resource CRUD', function() {
 			assert.notEqual(-1, duplicatePostResults.body.indexOf('A resource with the specified title already exists'));
 		});
 
-	})
+	});
 
 	describe('POST /resources with duplicate url', function() {
 
@@ -119,7 +119,7 @@ describe('Resource CRUD', function() {
 			assert.notEqual(-1, duplicatePostResults.body.indexOf('A resource with the specified url already exists'));
 		});
 
-	})
+	});
 
 	describe('GET /resources/:id with invalid id', function() {
 		
@@ -128,9 +128,9 @@ describe('Resource CRUD', function() {
 				assert.equal(res.statusCode, 404);
 				done(err);
 			});
-		})
+		});
 
-	})
+	});
 
 	describe('GET /resources/:id with valid id', function() {
 
@@ -141,29 +141,29 @@ describe('Resource CRUD', function() {
 			p.postResource(function() {
 				g.getResource(p.returnedResource.id, done);
 			});
-		})
+		});
 
 		it('returns status 200', function() {
 			assert.equal(g.response.statusCode, 200);
-		})
+		});
 
 		it('returns the resource with the expected id', function() {
 			assert.equal(g.returnedResource.id, p.returnedResource.id);
-		})
+		});
 
 		it('returns the resource with the expected title', function() {
 			assert.equal(g.returnedResource.title, p.postedResource.title);
-		})
+		});
 
 		it('returns the resource with the expected url', function() {
 			assert.equal(g.returnedResource.url, p.postedResource.url);
-		})
+		});
 
 		it('returns the resourse with the exepected source', function() {
 			assert.equal(g.returnedResource.source, p.postedResource.source);
-		})
+		});
 
-	})
+	});
 
 	describe('PUT /resources/:id with valid data', function() {
 
@@ -184,23 +184,23 @@ describe('Resource CRUD', function() {
 						done();
 				});
 			});
-		})
+		});
 
 		it('returns status 200', function() {
 			assert.equal(putResponse.statusCode, 200);
-		})
+		});
 
 		it('returns resource with updated title', function() {
 			assert.equal(returnedResource.title, resourceUpdate.title);
-		})
+		});
 
 		it('returns resource with updated url', function() {
 			assert.equal(returnedResource.url, resourceUpdate.url);
-		})
+		});
 
 		it('returns resource with updated source', function() {
 			assert.equal(returnedResource.source, resourceUpdate.source);
-		})
+		});
 
 		describe('then GET /resources/:id', function() {
 
@@ -208,23 +208,23 @@ describe('Resource CRUD', function() {
 			
 			before(function(done) {
 				g.getResource(p.returnedResource.id, done);
-			})
+			});
 
 			it('returns resource with updated title', function() {
 				assert.equal(g.returnedResource.title, resourceUpdate.title);
-			})
+			});
 
 			it('returns resource with updated url', function() {
 				assert.equal(g.returnedResource.url, resourceUpdate.url);
-			})
+			});
 
 			it('returns resource with updated source', function() {
 				assert.equal(g.returnedResource.source, resourceUpdate.source);
-			})
+			});
 
-		})
+		});
 
-	})
+	});
 
 	describe('PUT /resources/:id with invalid id', function() {
 
@@ -233,9 +233,9 @@ describe('Resource CRUD', function() {
 				assert.equal(res.statusCode, 404);
 				done();
 			});
-		})
+		});
 
-	})
+	});
 
 	describe('PUT /resources/:id without required attributes', function() {
 
@@ -243,7 +243,7 @@ describe('Resource CRUD', function() {
 
 		before(function(done) {
 			p.postResource(done);
-		})
+		});
 
 		describe('without title', function() {
 			it('returns status 500 and error message', function(done) {
@@ -252,8 +252,8 @@ describe('Resource CRUD', function() {
 					assert.notEqual(-1, res.body.indexOf('title is required'));
 					done();
 				});
-			})
-		})
+			});
+		});
 
 		describe('without url', function() {
 			it('returns status 500 and error message', function(done) {
@@ -262,8 +262,8 @@ describe('Resource CRUD', function() {
 					assert.notEqual(-1, res.body.indexOf('url is required'));
 					done();
 				});
-			})
-		})
+			});
+		});
 
 		describe('without source', function() {
 			it('returns status 500 and error message', function(done) {
@@ -273,10 +273,10 @@ describe('Resource CRUD', function() {
 					assert.notEqual(-1, res.body.indexOf('source is required'));
 					done();
 				});
-			})
-		})
+			});
+		});
 
-	})
+	});
 
 	describe('PUT /resources/:id with a title that would be a duplicate', function() {
 		
@@ -342,4 +342,4 @@ describe('Resource CRUD', function() {
 
 	});
 
-})
+});

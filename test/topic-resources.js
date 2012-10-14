@@ -11,9 +11,9 @@ describe('Topic Resources', function() {
 				assert.equal(res.statusCode, 404);
 				done(err);
 			});
-		})
+		});
 
-	})
+	});
 
 	describe('POST /topics/:id/resources with invalid resid', function() {
 
@@ -21,7 +21,7 @@ describe('Topic Resources', function() {
 
 		before(function(done) {
 			p.postTopic(done);
-		})		
+		});		
 		
 		it('returns status 404', function(done) {
 			api.post('/topics/' + p.returnedTopic.id + '/resources', { resid: -9999999 },
@@ -29,9 +29,9 @@ describe('Topic Resources', function() {
 				assert.equal(res.statusCode, 404);
 				done(err);
 			});
-		})
+		});
 
-	})
+	});
 
 	describe('POST /topics/:id/resources with valid data', function() {
 
@@ -49,7 +49,7 @@ describe('Topic Resources', function() {
 						});
 				});
 			});
-		})
+		});
 
 		describe('then GET /topics/:id', function() {
 
@@ -62,10 +62,10 @@ describe('Topic Resources', function() {
 					}));
 					done();
 				});
-			})
+			});
 
-		})
+		});
 
-	})
+	});
 
-})
+});

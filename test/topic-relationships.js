@@ -13,17 +13,17 @@ describe('Topic Relationships', function() {
 				r = res;
 				done();
 			});
-		})
+		});
 
 		it('returns status 500', function() {
 			assert.equal(r.statusCode, 500);
-		})
+		});
 
 		it('returns error message', function() {
 			assert.notEqual(-1, r.body.indexOf('invalid relationship'));
-		})
+		});
 
-	})
+	});
 
 	describe('POST /topics/:id/:rel with an invalid id', function() {
 
@@ -32,9 +32,9 @@ describe('Topic Relationships', function() {
 				assert.equal(res.statusCode, 404);
 				done(err);
 			});
-		})
+		});
 
-	})
+	});
 
 	describe('DELETE /topics/:id/:rel with an invalid relationship type', function() {
 
@@ -42,15 +42,15 @@ describe('Topic Relationships', function() {
 		
 		before(function(done) {
 			post.postTopic(done);
-		})
+		});
 
 		it('returns status 500', function(done) {
 			api.del('/topics/' + post.returnedTopic.id + '/invalidrel', { toid: -9999999 }, function(err, res) {
 				assert.equal(res.statusCode, 500);
 				done();
 			});
-		})
+		});
 
-	})
+	});
 
-})
+});

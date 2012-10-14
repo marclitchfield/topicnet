@@ -11,8 +11,8 @@ describe('Topic Search', function() {
 		api.post('/topics', { name: 'testnode to find! ' + guid.raw() }, function(err, res) {
 			topicToFind = JSON.parse(res.body);
 			done();
-		})
-	})
+		});
+	});
 
 	describe('GET /topics?q with substring', function() {
 		var searchResults;
@@ -21,15 +21,15 @@ describe('Topic Search', function() {
 			api.get('/topics?q=estnod', function(err, res) {
 				searchResults = JSON.parse(res.body);
 				done();
-			})
-		})
+			});
+		});
 
 		it('returns existing topic', function() {
 			assert.ok(_.any(searchResults, function(t) {
 				return t.id === topicToFind.id;
 			}));
-		})
-	})
+		});
+	});
 
 	describe('GET /topics?q with spaces', function() {
 		var searchResults;
@@ -38,15 +38,15 @@ describe('Topic Search', function() {
 			api.get('/topics?q=testnode to f', function(err, res) {
 				searchResults = JSON.parse(res.body);
 				done();
-			})
-		})
+			});
+		});
 
 		it('returns existing topic', function() {
 			assert.ok(_.any(searchResults, function(t) {
 				return t.id === topicToFind.id;
 			}));
-		})
-	})
+		});
+	});
 
 	describe('GET /topics?q with !', function() {
 
@@ -58,8 +58,8 @@ describe('Topic Search', function() {
 				}));
 				done();
 			});
-		})
+		});
 
-	})
+	});
 
-})
+});

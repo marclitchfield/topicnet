@@ -13,8 +13,8 @@ describe('Resource Search', function() {
 			function(err, res) {
 			resourceToFind = JSON.parse(res.body);
 			done(err);
-		})
-	})
+		});
+	});
 
 	describe('GET /resources?invalid', function() {
 
@@ -23,9 +23,9 @@ describe('Resource Search', function() {
 				assert.equal(res.statusCode, 404);
 				done();
 			});
-		})
+		});
 
-	})
+	});
 
 	describe('GET /resources?title with substring', function() {
 
@@ -37,9 +37,9 @@ describe('Resource Search', function() {
 				}));
 				done();
 			});
-		})
+		});
 
-	})
+	});
 
 	describe('GET /resources?title with ! in query', function() {
 
@@ -51,9 +51,9 @@ describe('Resource Search', function() {
 				}));
 				done();
 			});
-		})
+		});
 
-	})
+	});
 
 	describe('GET /resources?url with substring including : character', function() {
 
@@ -65,8 +65,8 @@ describe('Resource Search', function() {
 				}));	
 				done();
 			});
-		})
+		});
 
-	})
+	});
 
-})
+});

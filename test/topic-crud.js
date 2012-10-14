@@ -12,8 +12,8 @@ describe('Topic CRUD', function() {
 				assert.notEqual(-1, res.body.indexOf('name is required'));
 				done();
 			});
-		})
-	})
+		});
+	});
 
 	describe('POST to /topics with valid data', function() {
 
@@ -21,21 +21,21 @@ describe('Topic CRUD', function() {
 
 		before(function(done) {
 			p.postTopic(done);
-		})
+		});
 
 		it('returns status 200', function() {
 			assert.equal(p.response.statusCode, 200);
-		})
+		});
 
 		it('returns new topic with the name specified', function() {
 			assert.equal(p.returnedTopic.name, p.postedTopic.name);
-		})
+		});
 
 		it('returns new topic with a valid generated id', function() {
 			assert.ok(p.returnedTopic.id > 0);
-		})
+		});
 
-	})
+	});
 
 	describe('POST to /topics with duplicate topic name', function() {
 
@@ -49,17 +49,17 @@ describe('Topic CRUD', function() {
 					done();
 				});
 			});
-		})
+		});
 
 		it('returns status 400', function() {
 			assert.equal(duplicatePostResponse.statusCode, 400);
-		})
+		});
 
 		it('returns an appropriate error message', function() {
 			assert.notEqual(-1, duplicatePostResponse.body.indexOf('A topic with the specified name already exists'));
-		})
+		});
 
-	})
+	});
 
 	describe('GET /topics/:id with invalid id', function() {
 
@@ -68,9 +68,9 @@ describe('Topic CRUD', function() {
 				assert.equal(res.statusCode, 404);
 				done();
 			});
-		})
+		});
 
-	})
+	});
 
 	describe('GET /topics/:id with valid id', function() {
 		
@@ -81,21 +81,21 @@ describe('Topic CRUD', function() {
 			p.postTopic(function() {
 				g.getTopic(p.returnedTopic.id, done);
 			});
-		})
+		});
 
 		it('returns status 200', function() {
 			assert.equal(g.response.statusCode, 200);
-		})
+		});
 
 		it('returns existing topic with the expected name', function() {
 			assert.equal(g.returnedTopic.name, p.postedTopic.name);
-		})
+		});
 
 		it('returns existing topic with the expected id', function() {
 			assert.equal(g.returnedTopic.id, p.returnedTopic.id);
-		})
+		});
 
-	})
+	});
 
 	describe('PUT /topics/:id', function() {
 
@@ -106,7 +106,7 @@ describe('Topic CRUD', function() {
 			p.postTopic(function() {
 				api.put('/topics/' + p.returnedTopic.id, updatedTopic, done);
 			});
-		})
+		});
 
 		describe('then GET /topics/:id', function() {
 
@@ -114,13 +114,13 @@ describe('Topic CRUD', function() {
 			
 			before(function(done) {
 				g.getTopic(p.returnedTopic.id, done);
-			})
+			});
 
 			it('topic name has been updated', function() {
 				assert.equal(g.returnedTopic.name, updatedTopic.name);
-			})
-		})
-	})
+			});
+		});
+	});
 
 	describe('PUT /topics/:id with name that would be a duplicate', function() {
 
@@ -138,17 +138,17 @@ describe('Topic CRUD', function() {
 					});
 				});
 			});
-		})
+		});
 
 		it('returns status 400', function() {
 			assert.equal(putResponse.statusCode, 400);
-		})
+		});
 
 		it('returns an appropriate error message', function() {
 			assert.notEqual(-1, putResponse.body.indexOf('Another topic exists with the specified name'));
-		})
+		});
 
-	})
+	});
 
 	describe('DELETE /topics/:id with invalid id', function() {
 
@@ -157,9 +157,9 @@ describe('Topic CRUD', function() {
 				assert.equal(res.statusCode, 404);
 				done(err);
 			});
-		})
+		});
 
-	})
+	});
 
 	describe('DELETE /topics/:id with valid id', function() {
 
@@ -167,14 +167,14 @@ describe('Topic CRUD', function() {
 
 		before(function(done) {
 			p.postTopic(done);
-		})
+		});
 
 		it('returns status 200', function(done) {
 			api.del('/topics/' + p.returnedTopic.id, {}, function(err, res) {
 				assert.equal(res.statusCode, 200);
 				done(err);
 			});
-		})
+		});
 
 		describe('then GET /topics/:id with the deleted id', function() {
 
@@ -183,10 +183,10 @@ describe('Topic CRUD', function() {
 					assert.equal(res.statusCode, 404);
 					done(err);
 				});
-			})
+			});
 
-		})
+		});
 
-	})
+	});
 
-})
+});
