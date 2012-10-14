@@ -4,7 +4,7 @@ var api = require('./helper-api.js');
 
 describe('Next Topics', function() {
 
-	describe('POST /topics/:id/next', function() {
+	describe('POST to /topics/:id/next', function() {
 
 		var postPrev = api.request();
 		var postNext = api.request();

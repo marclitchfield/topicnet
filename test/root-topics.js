@@ -4,7 +4,7 @@ var api = require('./helper-api.js');
 
 describe('Root Topics', function() {
 
-	describe('POST /topics/:id/root', function() {
+	describe('POST to /topics/:id/root', function() {
 
 		var p = api.request();
 		var rootResponse;

@@ -4,7 +4,7 @@ var api = require('./helper-api.js');
 
 describe('Topic Resources', function() {
 
-	describe('POST /topics/:id/resources with invalid id', function() {
+	describe('POST to /topics/:id/resources with invalid id', function() {
 
 		it('returns status 404', function(done) {
 			api.post('/topics/-9999999/resources', {}, function(err, res) {
@@ -15,7 +15,7 @@ describe('Topic Resources', function() {
 
 	});
 
-	describe('POST /topics/:id/resources with invalid resid', function() {
+	describe('POST to /topics/:id/resources with invalid resid', function() {
 
 		var p = api.request();
 
@@ -33,7 +33,7 @@ describe('Topic Resources', function() {
 
 	});
 
-	describe('POST /topics/:id/resources with valid data', function() {
+	describe('POST to /topics/:id/resources with valid data', function() {
 
 		var topicPost = api.request();
 		var resPost = api.request();

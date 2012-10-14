@@ -4,7 +4,7 @@ var api = require('./helper-api.js');
 
 describe('Topic Relationships', function() {
 
-	describe('POST /topics/:id/:rel with an invalid relationship', function() {
+	describe('POST to /topics/:id/:rel with an invalid relationship', function() {
 		
 		var r;
 
@@ -25,7 +25,7 @@ describe('Topic Relationships', function() {
 
 	});
 
-	describe('POST /topics/:id/:rel with an invalid id', function() {
+	describe('POST to /topics/:id/:rel with an invalid id', function() {
 
 		it('returns status 404', function(done) {
 			api.post('/topics/-9999999/sub', {}, function(err, res) {

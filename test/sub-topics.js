@@ -4,7 +4,7 @@ var api = require('./helper-api.js');
 
 describe('Sub Topics', function() {
 
-	describe('POST /topics/:id/sub', function() {
+	describe('POST to /topics/:id/sub', function() {
 
 		var postParent = api.request();
 		var postChild = api.request();

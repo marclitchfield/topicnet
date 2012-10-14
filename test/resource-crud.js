@@ -5,7 +5,7 @@ var guid = require('guid');
 
 describe('Resource CRUD', function() {
 
-	describe('POST /resources without title', function() {
+	describe('POST to /resources without title', function() {
 		it('returns status 500 and error message', function(done) {
 			api.post('/resources', {}, function(err, res) {
 				assert.equal(res.statusCode, 500);
@@ -15,7 +15,7 @@ describe('Resource CRUD', function() {
 		});
 	});
 
-	describe('POST /resources without url', function() {
+	describe('POST to /resources without url', function() {
 		it('returns status 500 and error message', function(done) {
 			api.post('/resources', { title: 'test resource' }, function(err, res) {
 				assert.equal(res.statusCode, 500);
@@ -25,7 +25,7 @@ describe('Resource CRUD', function() {
 		});
 	});
 
-	describe('POST /resources without source', function() {
+	describe('POST to /resources without source', function() {
 		it('returns status 500 and error message', function(done) {
 			api.post('/resources', { title: 'test resource', url: 'http://example.com' }, function(err, res) {
 				assert.equal(res.statusCode, 500);
@@ -35,7 +35,7 @@ describe('Resource CRUD', function() {
 		});
 	});
 
-	describe('POST /resources with valid data', function() {
+	describe('POST to /resources with valid data', function() {
 
 		var p = api.request();
 
@@ -65,7 +65,7 @@ describe('Resource CRUD', function() {
 
 	});
 
-	describe('POST /resources with duplicate title', function() {
+	describe('POST to /resources with duplicate title', function() {
 
 		var p = api.request();
 		var duplicatePostResults;
@@ -93,7 +93,7 @@ describe('Resource CRUD', function() {
 
 	});
 
-	describe('POST /resources with duplicate url', function() {
+	describe('POST to /resources with duplicate url', function() {
 
 		var p = api.request();
 		var duplicatePostResults;
