@@ -165,7 +165,7 @@ describe('Resource CRUD', function() {
 
 	})
 
-	describe('PUT /resources/:id', function() {
+	describe('PUT /resources/:id with valid data', function() {
 
 		var p = api.request();
 		var resourceUpdate = { title: 'updated ' + guid.raw(), 
@@ -277,5 +277,69 @@ describe('Resource CRUD', function() {
 		})
 
 	})
+
+	describe('PUT /resources/:id with a title that would be a duplicate', function() {
+		
+		var p1 = api.request();
+		var p2 = api.request();
+		var duplicatePutResults;
+
+		before(function(done) {
+			p1.postResource(function() {
+				p2.postResource(function() {
+					api.put('/resources/' + p2.returnedResource.id,
+						{ title: p1.postedResource.title, 
+							url: 'http://uniqueurl/' + guid.raw(),
+							source: 'example.com' },
+						function(err, res) {
+							duplicatePutResults = res;
+							done();
+						}
+					);
+				});
+			});
+		});
+
+		it('returns status 400', function() {
+			assert.equal(duplicatePutResults.statusCode, 400);
+		});
+
+		it('returns an appropriate error message', function() {
+			assert.notEqual(-1, duplicatePutResults.body.indexOf('Another resource exists with the specified title'));
+		});
+
+	});
+
+	describe('PUT /resources/:id with a url that would be a duplicate', function() {
+		
+		var p1 = api.request();
+		var p2 = api.request();
+		var duplicatePutResults;
+
+		before(function(done) {
+			p1.postResource(function() {
+				p2.postResource(function() {
+					api.put('/resources/' + p2.returnedResource.id,
+						{ title: 'unique title ' + guid.raw(), 
+							url: p1.postedResource.url,
+							source: 'example.com' },
+						function(err, res) {
+							duplicatePutResults = res;
+							done();
+						}
+					);
+				});
+			});
+		});
+
+		it('returns status 400', function() {
+			assert.equal(duplicatePutResults.statusCode, 400);
+		});
+
+		it('returns an appropriate error message', function() {
+			assert.notEqual(-1, duplicatePutResults.body.indexOf('Another resource exists with the specified url'));
+		});
+
+	});
 
 })
