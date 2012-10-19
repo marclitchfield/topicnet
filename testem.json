@@ -1,13 +1,5 @@
 {
 	"framework": "jasmine",
-	"launch_in_dev": [
-		"Chrome",
-		"PhantomJS"
-	],
-	"launch_in_ci": [
-		"Chrome",
-		"PhantomJS"
-	],
 	"src_files": [
 		"public/js/vendor/angular.js",
 		"public/js/vendor/angular-mocks.js",
