@@ -13,15 +13,15 @@ describe('RootController', function() {
 			rootTopics = [{name:'topic1', id:1}, {name:'topic2', id:2}];
 			httpBackend.expectGET('/topics').respond(rootTopics);
 			controller = $controller(RootController, {$scope: scope});
+			httpBackend.flush();
 		}));
 
 		it('gets the root topics and stores them in scope', function() {
-			httpBackend.flush();
 			expect(scope.rootTopics).toEqual(rootTopics);
 		});
 	});
 
-	describe('link function', function() {
+	describe('when link function is called', function() {
 		var topic = { id: 1, name: 'topic' };
 
 		beforeEach(inject(function($controller) {
@@ -29,20 +29,19 @@ describe('RootController', function() {
 			httpBackend.expectPOST('/topics/1/root').respond(200, {});
 			$controller(RootController, {$scope: scope});
 			scope.linkfn(topic);
+			httpBackend.flush();
 		}));
 
 		it('makes the topic a root topic', function() {
-			httpBackend.flush();
 			httpBackend.verifyNoOutstandingExpectation();
 		});
 
 		it('adds the topic to the rootTopics list', function() {
-			httpBackend.flush();
 			expect(scope.rootTopics).toEqual([topic]);
 		});
 	});
 
-	describe('removeRoot', function() {
+	describe('when removeRoot is called', function() {
 		var topic = { id: 1, name: 'topic' };
 
 		beforeEach(inject(function($controller) {
@@ -50,15 +49,14 @@ describe('RootController', function() {
 			httpBackend.expect('DELETE', '/topics/1/root').respond(200, {});
 			$controller(RootController, {$scope: scope});
 			scope.removeRoot(topic);
+			httpBackend.flush();
 		}));
 
 		it('deletes the root-topic relationship', function() {
-			httpBackend.flush();
 			httpBackend.verifyNoOutstandingExpectation();
 		});
 
 		it('removes the topic from the rootTopics list', function() {
-			httpBackend.flush();
 			expect(scope.rootTopics).toEqual([]);
 		});
 	});

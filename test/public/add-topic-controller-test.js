@@ -19,9 +19,9 @@ describe('AddTopicController', function() {
 
 	});
 
-	describe('add', function() {
+	describe('when add is called', function() {
 
-		describe('a topic without an id property', function() {
+		describe('with a topic that does not have an id property', function() {
 			var createdTopic;
 
 			beforeEach(inject(function($controller) {
@@ -31,20 +31,23 @@ describe('AddTopicController', function() {
 				httpBackend.expectPOST('/topics', selectedTopic).respond(createdTopic);
 				$controller(AddTopicController, {$scope: scope});
 				scope.add();
+				httpBackend.flush();
 			}));
 
 			it('creates a new topic', function() {
-				httpBackend.flush();
 				httpBackend.verifyNoOutstandingExpectation();
 			});
 
 			it('calls the link function', function() {
-				httpBackend.flush();
 				expect(scope.linkfn).toHaveBeenCalledWith(createdTopic);
+			});
+
+			it('clears the search query', function() {
+				expect(scope.searchQuery).toEqual('');
 			});
 		});
 
-		describe('a topic with an id property', function() {
+		describe('with topic that has an id property', function() {
 		
 			beforeEach(inject(function($controller) {
 				$controller(AddTopicController, {$scope: scope});
@@ -54,6 +57,10 @@ describe('AddTopicController', function() {
 
 			it('just calls the link function', function() {
 				expect(scope.linkfn).toHaveBeenCalledWith(scope.selectedTopic);
+			});
+
+			it('clears the search query', function() {
+				expect(scope.searchQuery).toEqual('');
 			});
 		});
 	});
