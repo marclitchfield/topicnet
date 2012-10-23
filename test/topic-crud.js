@@ -161,7 +161,49 @@ describe('Topic CRUD', function() {
 
 	});
 
-	describe('DELETE /topics/:id with valid id', function() {
+	describe('DELETE /topics/:id when the topic has an associated resource', function() {
+
+		var pTopic = api.request();
+		var pResource = api.request();
+		var delResponse;
+		
+		before(function(done) {
+			pTopic.postTopic(function() {
+				pResource.postResource(function() {
+					api.post('/topics/' + pTopic.returnedTopic.id + '/resources/',
+						{ resid: pResource.returnedResource.id },
+						function(err, res) {
+							api.del('/topics/' + pTopic.returnedTopic.id, {},
+								function(err, res) {
+									delResponse = res;
+									done();
+								}
+							);
+						}
+					);
+				});
+			});
+		});
+
+		it('returns status 500', function() {
+			assert.equal(delResponse.statusCode, 500);
+		});
+
+		describe('then GET /topics/:id', function() {
+
+			it('returns the topic', function(done) {
+				api.get('/topics/' + pTopic.returnedTopic.id, function(err, res) {
+					var topic = JSON.parse(res.body);
+					assert.equal(topic.id, pTopic.returnedTopic.id);
+					done();
+				});
+			});
+
+		});
+
+	});
+
+	describe('DELETE /topics/:id with no relationships', function() {
 
 		var p = api.request();
 

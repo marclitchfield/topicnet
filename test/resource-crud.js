@@ -381,6 +381,18 @@ describe('Resource CRUD', function() {
 			assert.equal(delResponse.statusCode, 500);
 		});
 
+		describe('then GET /resources/:id', function() {
+
+			it('returns the resource', function(done) {
+				api.get('/resources/' + pResource.returnedResource.id, function(err, res) {
+					resource = JSON.parse(res.body);
+					assert.equal(resource.id, pResource.returnedResource.id);
+					done();
+				});
+			});
+
+		});
+
 		describe('then GET /topic/:id that the resource was attatched to', function() {
 
 			it('returns the topic including the not deleted resource', function(done) {
