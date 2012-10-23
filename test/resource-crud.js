@@ -342,4 +342,87 @@ describe('Resource CRUD', function() {
 
 	});
 
+	describe('DELETE /resources/:id with invalid id', function() {
+
+		it('returns status 404', function(done) {
+			api.del('/resources/-9999999', {}, function(err, res) {
+				assert.equal(res.statusCode, 404);
+				done();	
+			});
+		});
+
+	});
+
+	describe('DELETE /resources/:id where resource is associated with topic', function() {
+		
+		var pTopic = api.request();
+		var pResource = api.request();
+		var delResponse;		
+
+		before(function(done) {
+			pTopic.postTopic(function() {
+				pResource.postResource(function() {
+					api.post('/topics/' + pTopic.returnedTopic.id + '/resources',
+						{ resid: pResource.returnedResource.id },
+						function(err, res) {
+							api.del('/resources/' + pResource.returnedResource.id, {},
+								function(err, res) {
+									delResponse = res;
+									done();
+								}
+							);	
+						}
+					);
+				});
+			});
+		});
+
+		it('returns status 500', function() {
+			assert.equal(delResponse.statusCode, 500);
+		});
+
+		describe('then GET /topic/:id that the resource was attatched to', function() {
+
+			it('returns the topic including the not deleted resource', function(done) {
+				var g = api.request();
+				g.getTopic(pTopic.returnedTopic.id, function() {
+					assert.ok(_.any(g.returnedTopic.resources, function(r) {
+							return r.id === pResource.returnedResource.id;
+						}));
+					done();		
+				});
+			});
+
+		});
+
+	});
+
+	describe('DELETE /resources/:id with no associatons', function() {
+
+		var p = api.request();
+
+		before(function(done) {
+			p.postResource(done);
+		});
+
+		it('returns status 200', function(done) {
+			api.del('/resources/' + p.returnedResource.id, {}, function(err, res) {
+				assert.equal(res.statusCode, 200);
+				done();
+			});
+		});
+
+		describe('then GET /resources/:id with the deleted resource id', function() {
+
+			it('returns status 404', function(done) {
+				api.get('/resources/' + p.returnedResource.id, function(err, res) {
+					assert.equal(res.statusCode, 404);
+					done();
+				});
+			});
+
+		});
+
+	});
+
 });
