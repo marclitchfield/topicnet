@@ -385,7 +385,7 @@ describe('Resource CRUD', function() {
 
 			it('returns the resource', function(done) {
 				api.get('/resources/' + pResource.returnedResource.id, function(err, res) {
-					resource = JSON.parse(res.body);
+					var resource = JSON.parse(res.body);
 					assert.equal(resource.id, pResource.returnedResource.id);
 					done();
 				});
