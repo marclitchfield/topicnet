@@ -10,7 +10,7 @@ describe('ResourceController', function() {
 	describe('when constructed with resourceId parameter', function() {
 		beforeEach(inject(function($controller) {
 			var params = { resourceId: resource.id };
-			httpBackend.whenGET('/resources/1').respond(resource);
+			httpBackend.expectGET('/resources/1').respond(resource);
 			$controller(ResourceController, { $scope: scope, $routeParams: params });
 			httpBackend.flush();
 		}));

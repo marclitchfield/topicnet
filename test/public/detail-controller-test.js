@@ -10,7 +10,7 @@ describe('AddTopicController', function() {
 	describe('when constructed with topicId parameter', function() {
 		beforeEach(inject(function($controller) {
 			var params = { topicId: topic.id };
-			httpBackend.whenGET('/topics/1').respond(topic);
+			httpBackend.expectGET('/topics/1').respond(topic);
 			$controller(DetailController, { $scope: scope, $routeParams: params });
 			httpBackend.flush();
 		}));
@@ -33,15 +33,14 @@ describe('AddTopicController', function() {
 	describe('when update is called', function() {
 		beforeEach(inject(function($controller) {
 			var params = { topicId: topic.id };
-			httpBackend.whenGET('/topics/1').respond(topic);
-			httpBackend.whenPUT('/topics/1', { name: 'edited' }).respond(200, {});
-			
+			httpBackend.expectGET('/topics/1').respond(topic);
 			$controller(DetailController, { $scope: scope, $routeParams: params });
-			httpBackend.flush(1);
+			httpBackend.flush();
 			
+			httpBackend.expectPUT('/topics/1', { name: 'edited' }).respond(200, {});
 			scope.editedTopicName = 'edited';
 			scope.update();
-			httpBackend.flush(1);
+			httpBackend.flush();
 		}));
 
 		it('sends the edited name to the server', function() {
