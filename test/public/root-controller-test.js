@@ -46,7 +46,7 @@ describe('RootController', function() {
 
 		beforeEach(inject(function($controller) {
 			httpBackend.expectGET('/topics').respond([topic]);
-			httpBackend.expect('DELETE', '/topics/1/root').respond(200, {});
+			httpBackend.expectDELETE('/topics/1/root').respond(200, {});
 			$controller(RootController, {$scope: scope});
 			scope.removeRoot(topic);
 			httpBackend.flush();
