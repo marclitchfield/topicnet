@@ -63,7 +63,8 @@ exports.request = function() {
 			var self = this;
 			self.postedResource = { title: 'resource ' + guid.raw(), 
 				url: 'http://example.com/' + guid.raw(),
-				source: 'example.com'
+				source: 'example.com',
+				verb: 'read'
 			};
 			exports.post('/resources', self.postedResource, 
 				function(err, res) {

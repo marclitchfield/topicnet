@@ -9,7 +9,8 @@ describe('Resource Search', function() {
 
 	before(function(done) {
 		api.post('/resources', { title: 'resource to find! ' + guid.raw(), 
-			url: 'http://example.com/' + guid.raw(), source: 'example.com' }, 
+			url: 'http://example.com/' + guid.raw(), source: 'example.com', 
+			verb: 'read' }, 
 			function(err, res) {
 			resourceToFind = JSON.parse(res.body);
 			done(err);

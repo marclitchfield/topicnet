@@ -17,7 +17,7 @@ describe('Resource CRUD', function() {
 
 	describe('POST to /resources without url', function() {
 		it('returns status 500 and error message', function(done) {
-			api.post('/resources', { title: 'test resource' }, function(err, res) {
+			api.post('/resources', { title: 'test resource ' + guid.raw() }, function(err, res) {
 				assert.equal(res.statusCode, 500);
 				assert.notEqual(-1, res.body.indexOf('url is required'));
 				done();
@@ -27,11 +27,40 @@ describe('Resource CRUD', function() {
 
 	describe('POST to /resources without source', function() {
 		it('returns status 500 and error message', function(done) {
-			api.post('/resources', { title: 'test resource', url: 'http://example.com' }, function(err, res) {
-				assert.equal(res.statusCode, 500);
-				assert.notEqual(-1, res.body.indexOf('source is required'));
-				done();
-			});
+			api.post('/resources', { title: 'test resource ' + guid.raw() , url: 'http://example.com/' + guid.raw() }, 
+				function(err, res) {
+					assert.equal(res.statusCode, 500);
+					assert.notEqual(-1, res.body.indexOf('source is required'));
+					done();
+				}
+			);
+		});
+	});
+
+	describe('POST to /resources without verb', function() {
+		it('returns status 500 and error message', function(done) {
+			api.post('/resources', { title: 'test resource', url: 'http://example/com', source: 'example.com' },
+				function(err, res) {
+					assert.equal(res.statusCode, 500);
+					assert.notEqual(-1, res.body.indexOf('verb is required'));
+					done();
+				}
+			);
+		});		
+	});
+
+	describe('POST to /resources with invalid verb', function() {
+		it('returns status 500 and error message', function(done) {
+			api.post('/resources', { title: 'test resource ' + guid.raw(),
+				url: 'http://example.com/' + guid.raw(), 
+				source: 'example.com',
+				verb: 'invalid' },
+				function(err, res) {
+					assert.equal(res.statusCode, 500);
+					assert.notEqual(-1, res.body.indexOf('invalid verb'));
+					done();
+				}
+			);
 		});
 	});
 
@@ -63,6 +92,10 @@ describe('Resource CRUD', function() {
 			assert.equal(p.returnedResource.source, p.postedResource.source);
 		});
 
+		it('returns the resource with the expected verb', function() {
+			assert.equal(p.returnedResource.verb, p.postedResource.verb);
+		});
+
 	});
 
 	describe('POST to /resources with duplicate title', function() {
@@ -74,7 +107,7 @@ describe('Resource CRUD', function() {
 			p.postResource(function() {
 				api.post('/resources', { title: p.postedResource.title,
 					url: 'http://uniqueurl/' + guid.raw(),
-					source: 'example.com' },
+					source: 'example.com', verb: 'read' },
 					function(err, res) {
 						duplicatePostResults = res;
 						done();
@@ -102,7 +135,7 @@ describe('Resource CRUD', function() {
 			p.postResource(function() {
 				api.post('/resources', { title: 'unique title ' + guid.raw(),
 					url: p.postedResource.url,
-					source: 'example.com' },
+					source: 'example.com', verb: 'read' },
 					function(err, res) {
 						duplicatePostResults = res;
 						done();
@@ -163,6 +196,10 @@ describe('Resource CRUD', function() {
 			assert.equal(g.returnedResource.source, p.postedResource.source);
 		});
 
+		it('returns the resourse with the exepected verb', function() {
+			assert.equal(g.returnedResource.verb, p.postedResource.verb);
+		});
+
 	});
 
 	describe('PUT /resources/:id with valid data', function() {
@@ -170,7 +207,8 @@ describe('Resource CRUD', function() {
 		var p = api.request();
 		var resourceUpdate = { title: 'updated ' + guid.raw(), 
 			url: 'http://updatedexample.com/' + guid.raw(),
-			source: 'updatedexample.com' };
+			source: 'updatedexample.com',
+			verb: 'engage' };
 		var putResponse;
 		var returnedResource;
 
@@ -202,6 +240,10 @@ describe('Resource CRUD', function() {
 			assert.equal(returnedResource.source, resourceUpdate.source);
 		});
 
+		it('returns resource with updated verb', function() {
+			assert.equal(returnedResource.verb, resourceUpdate.verb);
+		});
+
 		describe('then GET /resources/:id', function() {
 
 			var g = api.request();
@@ -220,6 +262,10 @@ describe('Resource CRUD', function() {
 
 			it('returns resource with updated source', function() {
 				assert.equal(g.returnedResource.source, resourceUpdate.source);
+			});
+
+			it('returns resource with updated verb', function() {
+				assert.equal(g.returnedResource.verb, resourceUpdate.verb);
 			});
 
 		});
@@ -275,6 +321,45 @@ describe('Resource CRUD', function() {
 				});
 			});
 		});
+		
+		describe('without verb', function() {
+			it('returns status 500 and error message', function(done) {
+				api.put('/resources/' + p.returnedResource.id, 
+					{ title: 'updated resource ' + guid.raw(), 
+						url: 'http://updatedexample.com/' + guid.raw(),
+						source: 'updatedsource.com' }, 
+					function(err, res) {
+						assert.equal(res.statusCode, 500);
+						assert.notEqual(-1, res.body.indexOf('verb is required'));
+						done();
+					}
+				);
+			});
+		});
+
+	});
+
+	describe('PUT /resources/:id with an invalid verb', function() {
+
+		var p = api.request();
+
+		before(function(done) {
+			p.postResource(done);
+		});
+
+		it('returns status 500 and an appropriate error message', function(done) {
+			api.put('/resources/' + p.returnedResource.id,
+				{ title: p.postedResource.title, 
+					url: p.postedResource.url,
+					source: p.postedResource.source,
+					verb: 'invalid' },
+				function(err, res) {
+					assert.equal(res.statusCode, 500);
+					assert.notEqual(-1, res.body.indexOf('invalid verb'));
+					done();
+				}
+			);
+		});
 
 	});
 
@@ -290,7 +375,7 @@ describe('Resource CRUD', function() {
 					api.put('/resources/' + p2.returnedResource.id,
 						{ title: p1.postedResource.title, 
 							url: 'http://uniqueurl/' + guid.raw(),
-							source: 'example.com' },
+							source: 'example.com', verb: 'read' },
 						function(err, res) {
 							duplicatePutResults = res;
 							done();
@@ -322,7 +407,7 @@ describe('Resource CRUD', function() {
 					api.put('/resources/' + p2.returnedResource.id,
 						{ title: 'unique title ' + guid.raw(), 
 							url: p1.postedResource.url,
-							source: 'example.com' },
+							source: 'example.com', verb: 'read' },
 						function(err, res) {
 							duplicatePutResults = res;
 							done();
