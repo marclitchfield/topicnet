@@ -86,16 +86,11 @@ function SubTopicController($scope, $http) {
 		});
 	};
 
-	$scope.removeLink = function(topic, subTopic) {
-		$.ajax({
-			url: '/topics/' + topic.id + '/sub',
-			type: 'DELETE',
-			data: { toid: subTopic.id}
-		}).success(function() {
+	$scope.removeLink = function(subTopic) {
+    $http.delete('/topics/' + $scope.topic.id + '/sub/' + subTopic.id).success(function() {
 			$scope.topic.sub = $scope.topic.sub.filter(function(t) {
 				return t.id !== subTopic.id;
 			});
-			$scope.$apply();
 		});
 	};
 }
@@ -107,16 +102,11 @@ function NextTopicController($scope, $http) {
 		});
 	};
 
-	$scope.removeLink = function(topic, nextTopic) {
-		$.ajax({
-			url: '/topics/' + topic.id + '/next',
-			type: 'DELETE',
-			data: { toid: nextTopic.id}
-		}).success(function() {
+	$scope.removeLink = function(nextTopic) {
+    $http.delete('/topics/' + $scope.topic.id + '/next/' + nextTopic.id).success(function() {
 			$scope.topic.next = $scope.topic.next.filter(function(t) {
 				return t.id !== nextTopic.id;
 			});
-			$scope.$apply();
 		});
 	};
 }

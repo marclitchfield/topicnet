@@ -31,7 +31,7 @@
 					<ul class="unstyled">
 						<li ng-repeat="subTopic in topic.sub">
 							<a href="#/detail/{{ subTopic.id }}">{{ subTopic.name }}</a>
-							<button class="close" ng-click="removeLink(topic, subTopic)">&times;</button>
+							<button class="close" ng-click="removeLink(subTopic)">&times;</button>
 						</li>
 					</ul>
 					<div ng-include src="'partials/add-topic.html'" />
@@ -41,7 +41,7 @@
 					<ul class="unstyled">
 						<li ng-repeat="nextTopic in topic.next">
 							<a href="#/detail/{{ nextTopic.id }}">{{ nextTopic.name }}</a>
-							<button class="close" ng-click="removeLink(topic, nextTopic)">&times;</button>
+							<button class="close" ng-click="removeLink(nextTopic)">&times;</button>
 						</li>
 					</ul>
 					<div ng-include src="'partials/add-topic.html'" />
