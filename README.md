@@ -53,6 +53,8 @@ relationship CRUD
     
     { resid:X }
 
+- DEL /topics/:id/resources/:resid - unlink a resource from a topic
+
 resource CRUD
 -------------
 - GET  /resources/:id
