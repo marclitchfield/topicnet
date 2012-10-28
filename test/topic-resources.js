@@ -68,10 +68,10 @@ describe('Topic Resources', function() {
 
 	});
 
-	describe('DELETE /topics/:id/resources with invalid id', function() {
+	describe('DELETE /topics/:id/resources/:resid with invalid id', function() {
 
 		it('returns status 404', function(done) {
-			api.del('/topics/-9999999/resources', {}, function(err, res) {
+			api.del('/topics/-9999999/resources/-9999999', function(err, res) {
 				assert.equal(res.statusCode, 404);
 				done();
 			});
@@ -79,7 +79,7 @@ describe('Topic Resources', function() {
 
 	});
 
-	describe('DELETE /topics/:id/resources with invalid resid', function() {
+	describe('DELETE /topics/:id/resources/:resid with invalid resid', function() {
 
 		var p = api.request();
 		
@@ -88,7 +88,7 @@ describe('Topic Resources', function() {
 		});
 
 		it('returns status 404', function(done) {
-			api.del('/topics/' + p.returnedTopic.id + '/resources', { resid: -9999999 }, 
+			api.del('/topics/' + p.returnedTopic.id + '/resources/-9999999', 
 				function(err, res) {
 					assert.equal(res.statusCode, 404);
 					done();
@@ -98,7 +98,7 @@ describe('Topic Resources', function() {
 
 	});
 
-	describe('DELETE /topics/:id/resources with valid data', function() {
+	describe('DELETE /topics/:id/resources/:resid', function() {
 
 		var topicPost = api.request();
 		var resourcePost = api.request();
@@ -117,8 +117,7 @@ describe('Topic Resources', function() {
 		});
 
 		it('returns status 200', function(done) {
-			api.del('/topics/' + topicPost.returnedTopic.id + '/resources',
-				{ resid: resourcePost.returnedResource.id },
+			api.del('/topics/' + topicPost.returnedTopic.id + '/resources/' + resourcePost.returnedResource.id,
 				function(err, res) {
 					assert.equal(res.statusCode, 200);
 					done();

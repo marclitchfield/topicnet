@@ -430,7 +430,7 @@ describe('Resource CRUD', function() {
 	describe('DELETE /resources/:id with invalid id', function() {
 
 		it('returns status 404', function(done) {
-			api.del('/resources/-9999999', {}, function(err, res) {
+			api.del('/resources/-9999999', function(err, res) {
 				assert.equal(res.statusCode, 404);
 				done();	
 			});
@@ -450,7 +450,7 @@ describe('Resource CRUD', function() {
 					api.post('/topics/' + pTopic.returnedTopic.id + '/resources',
 						{ resid: pResource.returnedResource.id },
 						function(err, res) {
-							api.del('/resources/' + pResource.returnedResource.id, {},
+							api.del('/resources/' + pResource.returnedResource.id,
 								function(err, res) {
 									delResponse = res;
 									done();
@@ -503,7 +503,7 @@ describe('Resource CRUD', function() {
 		});
 
 		it('returns status 200', function(done) {
-			api.del('/resources/' + p.returnedResource.id, {}, function(err, res) {
+			api.del('/resources/' + p.returnedResource.id, function(err, res) {
 				assert.equal(res.statusCode, 200);
 				done();
 			});

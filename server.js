@@ -92,8 +92,8 @@ app.post('/topics/:id/resources', function(request, response, next) {
 		errorHandler(response, next));
 });
 
-app.delete('/topics/:id/resources', function(request, response, next) {
-	topicService.unlinkResource(request.params.id, request.body.resid,
+app.delete('/topics/:id/resources/:resid', function(request, response, next) {
+	topicService.unlinkResource(request.params.id, request.params.resid,
 		successHandler(response),
 		errorHandler(response, next));
 });
@@ -110,8 +110,8 @@ app.delete('/topics/:id/root', function(request, response, next) {
 		errorHandler(response, next));
 });
 
-app.delete('/topics/:id/:rel', function(request, response, next) {
-	topicService.deleteRelationship(request.params.id, request.body.toid, request.params.rel,
+app.delete('/topics/:id/:rel/:toid', function(request, response, next) {
+	topicService.deleteRelationship(request.params.id, request.params.toid, request.params.rel,
 		successHandler(response),
 		errorHandler(response, next));
 });

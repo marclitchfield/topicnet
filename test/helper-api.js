@@ -27,11 +27,10 @@ exports.put = function(path, body, callback) {
 	}, callback);
 };
 
-exports.del = function(path, body, callback) {
+exports.del = function(path, callback) {
 	request({
 		uri: 'http://localhost:5000' + path,
 		method: 'DELETE',
-		body: JSON.stringify(body),
 		headers: { 'Content-Type': 'application/json' }
 	}, callback);
 };

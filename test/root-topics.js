@@ -63,7 +63,7 @@ describe('Root Topics', function() {
 		});
 
 		it('returns status 200', function(done) {
-			api.del('/topics/' + rootPost.returnedTopic.id + '/root', {}, 
+			api.del('/topics/' + rootPost.returnedTopic.id + '/root',
 				function(err, results) {
 					assert.equal(results.statusCode, 200);
 					done(err);

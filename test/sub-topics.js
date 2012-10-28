@@ -73,10 +73,10 @@ describe('Sub Topics', function() {
 
 	});
 
-	describe('DELETE /topics/:id/sub with an invalid id', function() {
+	describe('DELETE /topics/:id/sub/:toid with an invalid id', function() {
 
 		it('returns status 404', function(done) {
-			api.del('/topics/-9999999/sub', { toid: 1 }, function(err, res) {
+			api.del('/topics/-9999999/sub/-99999999', function(err, res) {
 				assert.equal(res.statusCode, 404);
 				done();
 			});
@@ -84,7 +84,7 @@ describe('Sub Topics', function() {
 
 	});
 
-	describe('DELETE /topics/:id/sub with an invalid toid', function() {
+	describe('DELETE /topics/:id/sub/:toid with an invalid toid', function() {
 
 		var p = api.request();
 
@@ -93,7 +93,7 @@ describe('Sub Topics', function() {
 		});
 
 		it('returns status 404', function(done) {
-			api.del('/topics/' + p.returnedTopic.id + '/sub', { toid: -9999999 }, function(err, res) {
+			api.del('/topics/' + p.returnedTopic.id + '/sub/-9999999', function(err, res) {
 				assert.equal(res.statusCode, 404);
 				done();
 			});
@@ -101,7 +101,7 @@ describe('Sub Topics', function() {
 
 	});
 
-	describe('DELETE /topics/:id/sub with valid data', function() {
+	describe('DELETE /topics/:id/sub/:toid', function() {
 
 		var postParent = api.request();
 		var postChild = api.request();
@@ -119,7 +119,7 @@ describe('Sub Topics', function() {
 		});
 
 		it('returns status 200', function(done) {
-			api.del('/topics/' + postParent.returnedTopic.id + '/sub', { toid: postChild.returnedTopic.id }, 
+			api.del('/topics/' + postParent.returnedTopic.id + '/sub/' + postChild.returnedTopic.id, 
 				function(err, results) {
 					assert.equal(results.statusCode, 200);
 					done(err);

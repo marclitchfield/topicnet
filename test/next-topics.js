@@ -52,7 +52,7 @@ describe('Next Topics', function() {
 
 	});
 
-	describe('DELETE /topics/:id/next with valid data', function() {
+	describe('DELETE /topics/:id/next/:toid with valid data', function() {
 
 		var postPrev = api.request();
 		var postNext = api.request();
@@ -70,7 +70,7 @@ describe('Next Topics', function() {
 		});
 
 		it('returns status 200', function(done) {
-			api.del('/topics/' + postPrev.returnedTopic.id + '/next', { toid: postNext.returnedTopic.id }, 
+			api.del('/topics/' + postPrev.returnedTopic.id + '/next/' + postNext.returnedTopic.id, 
 				function(err, results) {
 					assert.equal(results.statusCode, 200);
 					done(err);

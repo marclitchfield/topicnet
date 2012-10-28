@@ -153,7 +153,7 @@ describe('Topic CRUD', function() {
 	describe('DELETE /topics/:id with invalid id', function() {
 
 		it('returns status 404', function(done) {
-			api.del('/topics/-9999999', {}, function(err, res) {
+			api.del('/topics/-9999999', function(err, res) {
 				assert.equal(res.statusCode, 404);
 				done(err);
 			});
@@ -173,7 +173,7 @@ describe('Topic CRUD', function() {
 					api.post('/topics/' + pTopic.returnedTopic.id + '/resources/',
 						{ resid: pResource.returnedResource.id },
 						function(err, res) {
-							api.del('/topics/' + pTopic.returnedTopic.id, {},
+							api.del('/topics/' + pTopic.returnedTopic.id,
 								function(err, res) {
 									delResponse = res;
 									done();
@@ -212,7 +212,7 @@ describe('Topic CRUD', function() {
 		});
 
 		it('returns status 200', function(done) {
-			api.del('/topics/' + p.returnedTopic.id, {}, function(err, res) {
+			api.del('/topics/' + p.returnedTopic.id, function(err, res) {
 				assert.equal(res.statusCode, 200);
 				done(err);
 			});

@@ -45,7 +45,7 @@ describe('Topic Relationships', function() {
 		});
 
 		it('returns status 500', function(done) {
-			api.del('/topics/' + post.returnedTopic.id + '/invalidrel', { toid: -9999999 }, function(err, res) {
+			api.del('/topics/' + post.returnedTopic.id + '/invalidrel/-9999999', function(err, res) {
 				assert.equal(res.statusCode, 500);
 				done();
 			});
