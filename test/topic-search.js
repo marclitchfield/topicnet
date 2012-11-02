@@ -66,7 +66,11 @@ describe('Topic Search', function() {
 	});
 
   describe('GET /topics?q with query that will return over 10 results', function() {
-    
+   
+    var searchString = 'similar';
+    var first5Results;
+    var last5Results;
+
     before(function(done) {
       var count = 0;
       for(var i = 0; i < 11; i++) {
@@ -80,15 +84,52 @@ describe('Topic Search', function() {
     });
 
     it('returns 10 matching results', function(done) {
-      var searchString = 'similar';
       api.get('/topics?q=' + searchString, function(err, res) {
         var searchResults = JSON.parse(res.body);
         assert.equal(searchResults.length, 10);
         assert.ok(_.all(searchResults, function(t) {
           return t.name.indexOf(searchString) !== -1;
         }));
+        first5Results = searchResults.slice(0,5);
+        last5Results = searchResults.slice(5,10);
         done();
       });
+    });
+
+    describe('then GET /topics?q with the same query but p=1 and pp=5', function() {
+
+      it('returns the first 5 matching results from the previous set', function(done) {
+        api.get('/topics?q=' + searchString + '&p=1&pp=5', function(err, res) {
+          var searchResults = JSON.parse(res.body);
+          assert.equal(searchResults.length, 5);
+          // for each search result make sure it is one of the first 5
+          _.each(searchResults, function(t) {
+            assert.ok(_.any(first5Results, function(r) {
+              return t.id === r.id;
+            }));
+          });
+          done();
+        });
+      });
+
+    });
+
+    describe('then GET /topics?q with same the query but p=2 and pp=5', function() {
+
+      it('returns the last 5 matching results from the previous set', function(done) {
+        api.get('/topics?q=' + searchString + '&p=2&pp=5', function(err, res) {
+          var searchResults = JSON.parse(res.body);
+          assert.equal(searchResults.length, 5);
+          // for each search result make sure it is one of the last 5
+          _.each(searchResults, function(t) {
+            assert.ok(_.any(last5Results, function(r) {
+              return t.id === r.id;
+            }));
+          });
+          done();
+        });
+      });
+
     });
 
   });

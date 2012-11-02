@@ -46,7 +46,7 @@ function errorHandler(response, next) {
 
 app.get('/topics', function(request, response, next) {
     if (request.query.q) {
-        topicService.search(request.query.q,
+        topicService.search(request.query,
             successHandler(response),
             errorHandler(response, next));
     } else {
