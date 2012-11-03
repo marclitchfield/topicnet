@@ -73,13 +73,13 @@ describe('Topic Search', function() {
 
 		before(function(done) {
 			var count = 0;
+			function postCallback() {
+				count++;
+				if(count === 11)
+					done();
+			}
 			for(var i = 0; i < 11; i++) {
-				api.post('/topics', { name: 'similar topic ' + guid.raw() }, function() {
-					count++;
-					if(count === 11) {
-						done();
-					}
-				});
+				api.post('/topics', { name: 'similar topic ' + guid.raw() }, postCallback);
 			}
 		});
 
@@ -102,12 +102,9 @@ describe('Topic Search', function() {
 				api.get('/topics?q=' + searchString + '&p=1&pp=5', function(err, res) {
 					var searchResults = JSON.parse(res.body);
 					assert.equal(searchResults.length, 5);
-					// for each search result make sure it is one of the first 5
-					_.each(searchResults, function(t) {
-						assert.ok(_.any(first5Results, function(r) {
-							return t.id === r.id;
-						}));
-					});
+					for(var i = 0; i < 5; i++) {
+						assert.equal(first5Results[i].id, searchResults[i].id);
+					}
 					done();
 				});
 			});
@@ -120,12 +117,9 @@ describe('Topic Search', function() {
 				api.get('/topics?q=' + searchString + '&p=2&pp=5', function(err, res) {
 					var searchResults = JSON.parse(res.body);
 					assert.equal(searchResults.length, 5);
-					// for each search result make sure it is one of the last 5
-					_.each(searchResults, function(t) {
-						assert.ok(_.any(last5Results, function(r) {
-							return t.id === r.id;
-						}));
-					});
+					for(var i = 0; i < 5; i++) {
+						assert.equal(last5Results[i].id, searchResults[i].id);
+					}
 					done();
 				});
 			});
