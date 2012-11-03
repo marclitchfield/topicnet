@@ -71,9 +71,9 @@ describe('Root Topics', function() {
 			);
 		});
 
-		describe('then GET /topics/:id/root', function() {
+		describe('then GET /topics', function() {
 
-			it('does not include the topic in the root relationships', function(done) {
+			it('does not include the topic in the root topics', function(done) {
 				api.get('/topics', function(err, results) {
 					var rootTopics = JSON.parse(results.body);
 					assert.ok(!_.any(rootTopics, function(t) {
