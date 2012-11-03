@@ -3,7 +3,7 @@
 	"src_files": [
 		"public/js/vendor/angular.js",
 		"public/js/vendor/angular-mocks.js",
-		"public/js/controllers.js",
-		"test/public/*.js"
+		"public/js/controllers/*.js",
+		"test/public/**/*.js"
 	]
 }

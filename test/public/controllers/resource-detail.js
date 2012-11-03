@@ -1,4 +1,4 @@
-describe('ResourceController', function() {
+describe('ResourceDetailController', function() {
 	var scope, httpBackend;
 	var resource = { id: 1, title: 'title', url: 'url', source: 'source' };
 
@@ -11,7 +11,7 @@ describe('ResourceController', function() {
 		beforeEach(inject(function($controller) {
 			var params = { resourceId: resource.id };
 			httpBackend.expectGET('/resources/1').respond(resource);
-			$controller(ResourceController, { $scope: scope, $routeParams: params });
+			$controller(ResourceDetailController, { $scope: scope, $routeParams: params });
 			httpBackend.flush();
 		}));
 

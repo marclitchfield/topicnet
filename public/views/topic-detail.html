@@ -1,4 +1,4 @@
-<div ng-controller="DetailController">
+<div ng-controller="TopicDetailController">
 	<div class="row">
 		<div class="span6">
 			<h3 ng-hide="editingTitle" ng-dblclick="editingTitle=true">{{ topic.name }}</h3>
@@ -51,27 +51,6 @@
 	</div>
 
 	<div id="resourceForm" class="modal fade add-resource-modal" modal-autofocus>
-		<form name="resourceForm" novalidate ng-controller="AddResourceController">
-			<div class="modal-header">
-				<h4>Add a resource</h4>
-			</div>
-			<div class="modal-body">
-				<div class="input-append">
-					<input type="text" class="input-xxlarge" ng-model="url" placeholder="URL" autofocus required></input>
-					<button class="btn" ng-click="submitUrl()">Submit</span>
-				</div>
-
-				<div ng-show="statusMessage" class="alert">{{ statusMessage }}</div>
-
-				<p>
-					<input type="text" class="input-xlarge" ng-disabled="!urlSubmitted" ng-model="title" placeholder="Title" required></input>
-					<input type="text" class="input-xlarge" ng-disabled="!urlSubmitted" ng-model="source" placeholder="Source" required></input>
-				</p>
-			</div>
-			<div class="modal-footer">
-				<button class="btn btn-primary" data-dismiss="modal" ng-hide="resourceForm.$invalid" ng-click="add()">Save</button>
-				<button class="btn" data-dismiss="modal" ng-click="clear()">Cancel</button>
-			</div>
-		</form>
+		<div ng-include="'/partials/add-resource.html'" />
 	</div>
 </div>

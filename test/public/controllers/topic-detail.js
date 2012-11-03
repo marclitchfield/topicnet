@@ -11,7 +11,7 @@ describe('AddTopicController', function() {
 		beforeEach(inject(function($controller) {
 			var params = { topicId: topic.id };
 			httpBackend.expectGET('/topics/1').respond(topic);
-			$controller(DetailController, { $scope: scope, $routeParams: params });
+			$controller(TopicDetailController, { $scope: scope, $routeParams: params });
 			httpBackend.flush();
 		}));
 
@@ -34,7 +34,7 @@ describe('AddTopicController', function() {
 		beforeEach(inject(function($controller) {
 			var params = { topicId: topic.id };
 			httpBackend.expectGET('/topics/1').respond(topic);
-			$controller(DetailController, { $scope: scope, $routeParams: params });
+			$controller(TopicDetailController, { $scope: scope, $routeParams: params });
 			httpBackend.flush();
 			
 			httpBackend.expectPUT('/topics/1', { name: 'edited' }).respond(200, {});
