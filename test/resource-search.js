@@ -62,4 +62,83 @@ describe('Resource Search', function() {
 
 	});
 
+	describe('GET /resources?q with partial title', function() {
+
+		var searchString = 'o find!';
+
+		it('returns a resource with the search string in the title', function(done) {
+			api.get('/resources?q=' + searchString, function(err, res) {
+				var searchResults = JSON.parse(res.body);
+				assert.ok(_.all(searchResults, function(r) {
+					return r.title.indexOf(searchString) !== -1;	
+				}));
+				done();
+			});
+		});
+
+	});
+
+	describe('GET /resources?q with query that will return over 10 results', function() {
+	 
+		var searchString = 'similar';
+		var first5Results;
+		var last5Results;
+
+		before(function(done) {
+			var count = 0;
+			function postCallback() {
+				count++;
+				if(count === 11)
+					done();
+			}
+			for(var i = 0; i < 11; i++) {
+				api.post('/resources', { name: 'similar resource ' + guid.raw() }, postCallback);
+			}
+		});
+
+		it('returns 10 matching results', function(done) {
+			api.get('/resources?q=' + searchString, function(err, res) {
+				var searchResults = JSON.parse(res.body);
+				assert.equal(searchResults.length, 10);
+				assert.ok(_.all(searchResults, function(t) {
+					return t.title.indexOf(searchString) !== -1;
+				}));
+				first5Results = searchResults.slice(0,5);
+				last5Results = searchResults.slice(5,10);
+				done();
+			});
+		});
+
+		describe('then GET /resources?q with the same query but p=1 and pp=5', function() {
+
+			it('returns the first 5 matching results from the previous set', function(done) {
+				api.get('/resources?q=' + searchString + '&p=1&pp=5', function(err, res) {
+					var searchResults = JSON.parse(res.body);
+					assert.equal(searchResults.length, 5);
+					for(var i = 0; i < 5; i++) {
+						assert.equal(first5Results[i].id, searchResults[i].id);
+					}
+					done();
+				});
+			});
+
+		});
+
+		describe('then GET /resources?q with same the query but p=2 and pp=5', function() {
+
+			it('returns the last 5 matching results from the previous set', function(done) {
+				api.get('/resources?q=' + searchString + '&p=2&pp=5', function(err, res) {
+					var searchResults = JSON.parse(res.body);
+					assert.equal(searchResults.length, 5);
+					for(var i = 0; i < 5; i++) {
+						assert.equal(last5Results[i].id, searchResults[i].id);
+					}
+					done();
+				});
+			});
+
+		});
+
+	});
+
 });

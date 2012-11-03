@@ -28,7 +28,7 @@ function errorHandler(response, next) {
 		if (typeof err === 'object' && err.hasOwnProperty('name')) {
 			var statusCodes = {
 				'notfound': 404,
-				'duplicate': 400,
+				'duplicate': 400
 			};
 
 			if (!(err.name in statusCodes)) {
@@ -143,9 +143,13 @@ app.get('/resources', function(request, response, next) {
 		resourceService.searchByUrl(request.query.url,
 			successHandler(response),
 			errorHandler(response, next));
+	} else if(request.query.q) {
+		resourceService.search(request.query,
+			successHandler(response),
+			errorHandler(response, next));
 	} else {
-			response.send(404);
-		}
+		response.send(404);
+	}
 });
 
 app.put('/resources/:id', function(request, response, next) {
