@@ -18,6 +18,24 @@ li:hover .close {
 	margin-top: 32px;
 }
 
-.add-resource-modal {
-	width: 580px;
+.modal .input-append {
+	width: auto; 
+	box-sizing: border-box;
+	padding: 0 84px 12px 0;
+}
+
+.modal p {
+	margin: 6px 12px 0 0;
+}
+
+.modal .input-append .btn {
+	position:fixed; 
+}
+
+.modal input[type=text] {
+	width: 100%;
+}
+
+.ng-invalid {
+	border: 0px solid;
 }
