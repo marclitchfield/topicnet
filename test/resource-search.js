@@ -84,6 +84,15 @@ describe('Resource Search', function() {
 		var first5Results;
 		var last5Results;
 
+		function getResource() {
+			return {
+				title: 'similar resource ' + guid.raw(),
+				url: 'http://example.com/' + guid.raw(),
+				source: 'example.com', 
+				verb: 'read'
+			};
+		}
+
 		before(function(done) {
 			var count = 0;
 			function postCallback() {
@@ -92,7 +101,7 @@ describe('Resource Search', function() {
 					done();
 			}
 			for(var i = 0; i < 11; i++) {
-				api.post('/resources', { name: 'similar resource ' + guid.raw() }, postCallback);
+				api.post('/resources', getResource(), postCallback);
 			}
 		});
 
