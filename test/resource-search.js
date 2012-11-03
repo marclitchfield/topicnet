@@ -28,15 +28,16 @@ describe('Resource Search', function() {
 
 	});
 
-	describe('GET /resources?title with substring', function() {
-
-		var searchString = 'ource t';
+	describe('GET /resources?title with exact matching title', function() {
 
 		it('returns existing resource', function(done) {
-			api.get('/resources?title=' + searchString, function(err, res) {
+			api.get('/resources?title=' + resourceToFind.title, function(err, res) {
 				var searchResults = JSON.parse(res.body);
+				assert.ok(_.all(searchResults, function(r) {
+					return r.title === resourceToFind.title;
+				}));
 				assert.ok(_.any(searchResults, function(r) {
-					return r.title.indexOf(searchString) !== -1;
+					return r.id === resourceToFind.id;
 				}));
 				done();
 			});
@@ -44,31 +45,16 @@ describe('Resource Search', function() {
 
 	});
 
-	describe('GET /resources?title with ! in query', function() {
-
-		var searchString = 'nd!';
-
-		it('returns existing resource', function(done) {
-			api.get('/resources?title=' + searchString, function(err, res) {
-				var searchResults = JSON.parse(res.body);
-				assert.ok(_.any(searchResults, function(r) {
-					return r.title.indexOf(searchString) !== -1;
-				}));
-				done();
-			});
-		});
-
-	});
-
-	describe('GET /resources?url with substring including : character', function() {
-
-		var searchString = '://examp';
+	describe('GET /resources?url with exact matching url', function() {
 
 		it('returns resource ', function(done) {
-			api.get('/resources?url=' + encodeURIComponent(searchString), function(err, res) {
+			api.get('/resources?url=' + encodeURIComponent(resourceToFind.url), function(err, res) {
 				var searchResults = JSON.parse(res.body);
+				assert.ok(_.all(searchResults, function(r) {
+					return r.url === resourceToFind.url;
+				}));
 				assert.ok(_.any(searchResults, function(r) {
-					return r.url.indexOf(searchString) !== -1;
+					return r.id === resourceToFind.id;
 				}));	
 				done();
 			});
