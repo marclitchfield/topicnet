@@ -1,4 +1,4 @@
-describe('ResourceController', function() {
+nterestedhdescribe('ResourceController', function() {
 	var scope, httpBackend;
 	var resource = { id: 1, title: 'title', url: 'url', source: 'source' };
 

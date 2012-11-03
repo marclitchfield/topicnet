@@ -1,15 +1,15 @@
 <form class="form-inline" ng-controller="AddTopicController">
 	<div ng-hide="formVisible">
-        <button class="btn" ng-click="show()">
+		<button class="btn" ng-click="show()">
 			<i class="icon-plus"></i> Add Topic
 		</button>
 	</div>
 	<div ng-show="formVisible">
 		<div>
-	    	<div class="input-append">
-	        	<input type="text" class="input-medium" placeholder="search for topic" ng-model="searchQuery" typeahead-topic-search focus-on="formVisible" />
-	            <span class="add-on"><i class="icon-search"></i></span>
-	    	</div>
+			<div class="input-append">
+				<input type="text" class="input-medium" placeholder="search for topic" ng-model="searchQuery" typeahead-topic-search focus-on="formVisible" />
+				<span class="add-on"><i class="icon-search"></i></span>
+			</div>
 			<button class="btn btn-primary" ng-click="add()">Save</button>
 			<button class="close" ng-click="clear()">&times;</button>
 		</div>

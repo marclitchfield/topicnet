@@ -1,7 +1,7 @@
 angular.module('artoplasm.directives', []).
 
 	directive('typeaheadTopicSearch',function() {
-        return function(scope, el, attrs) {
+		return function(scope, el, attrs) {
 			el.typeahead({
 				source: function(typeahead, query) {
 					return $.get('/topics', {q: query.toLowerCase()}).success(function(topics) {
@@ -24,8 +24,8 @@ angular.module('artoplasm.directives', []).
 					scope.$broadcast('topicSelected', item);
 				}
 			});
-        };
-    }).
+		};
+	}).
 
 	directive('focusOn', function() {
 		return function (scope, element, attrs) {

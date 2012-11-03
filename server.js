@@ -45,15 +45,15 @@ function errorHandler(response, next) {
 }
 
 app.get('/topics', function(request, response, next) {
-    if (request.query.q) {
-        topicService.search(request.query,
-            successHandler(response),
-            errorHandler(response, next));
-    } else {
-        topicService.getRelated(0, 'root',
-            successHandler(response),
-            errorHandler(response, next));
-    }
+	if (request.query.q) {
+		topicService.search(request.query,
+			successHandler(response),
+			errorHandler(response, next));
+	} else {
+		topicService.getRelated(0, 'root',
+			successHandler(response),
+			errorHandler(response, next));
+	}
 });
 
 app.post('/topics', function(request, response, next) {
@@ -135,15 +135,15 @@ app.get('/resources/:id', function(request, response, next) {
 });
 
 app.get('/resources', function(request, response, next) {
-    if (request.query.title) {
-        resourceService.searchByTitle(request.query.title,
-            successHandler(response),
-            errorHandler(response, next));
-    } else if(request.query.url) {
-        resourceService.searchByUrl(request.query.url,
-            successHandler(response),
-            errorHandler(response, next));
-    } else {
+	if (request.query.title) {
+		resourceService.searchByTitle(request.query.title,
+			successHandler(response),
+			errorHandler(response, next));
+	} else if(request.query.url) {
+		resourceService.searchByUrl(request.query.url,
+			successHandler(response),
+			errorHandler(response, next));
+	} else {
 			response.send(404);
 		}
 });
