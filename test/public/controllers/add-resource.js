@@ -20,7 +20,7 @@ describe('AddResourceController', function() {
 				httpBackend.flush();
 			}));
 
-			it('checks if the url is already in the system', function() {
+			it('should check if the url is already in the system', function() {
 				httpBackend.verifyNoOutstandingExpectation();
 			});
 
@@ -52,19 +52,18 @@ describe('AddResourceController', function() {
 				httpBackend.flush();
 			}));
 
-			it('checks if the url is already in the system', function() {
+			it('should check if the url is already in the system', function() {
 				httpBackend.verifyNoOutstandingExpectation();
 			});
 
-			it('detail fields are undefined if not found', function() {
+			it('should not set detail fields', function() {
 				expect(scope.title).toBe(null);
 				expect(scope.source).toBe(null);
 			});
 
-			it('does not set the resourceId', function() {
+			it('should not set the resourceId', function() {
 				expect(scope.resourceId).toEqual(null);
 			});
-
 
 			it('should set the isNewResource variable', function() {
 				expect(scope.isNewResource).toEqual(true);
@@ -97,11 +96,11 @@ describe('AddResourceController', function() {
 				httpBackend.flush();
 			}));
 
-			it('creates a new resource and links it with the topic', function() {
+			it('should create a new resource and links it with the topic', function() {
 				httpBackend.verifyNoOutstandingExpectation();
 			});
 
-			it('adds the resource to the topic\'s resource list in the scope', function() {
+			it('should add the resource to the topic\'s resource list in the scope', function() {
 				expect(scope.topic.resources).toEqual([createdResource]);
 			});
 		});
@@ -125,11 +124,11 @@ describe('AddResourceController', function() {
 				httpBackend.flush();
 			}));
 
-			it('links existing resource with the topic', function() {
+			it('should link existing resource with the topic', function() {
 				httpBackend.verifyNoOutstandingExpectation();
 			});
 
-			it('adds the resource to the topic\'s resource list in the scope', function() {
+			it('should add the resource to the topic\'s resource list in the scope', function() {
 				expect(scope.topic.resources).toEqual([existingResource]);
 			});
 		});
@@ -146,17 +145,17 @@ describe('AddResourceController', function() {
 			scope.clear();
 		}));
 
-		it('clears the value of the input fields', function() {
+		it('should clear the value of the input fields', function() {
 			expect(scope.url).toEqual('');
 			expect(scope.title).toEqual('');
 			expect(scope.source).toEqual('');
 		});
 
-		it('resets the statusMessage', function() {
+		it('should reset the statusMessage', function() {
 			expect(scope.statusMessage).toEqual('');
 		});
 
-		it('resets isNewResource', function() {
+		it('should reset isNewResource', function() {
 			expect(scope.isNewResource).toEqual(false);
 		});
 	});

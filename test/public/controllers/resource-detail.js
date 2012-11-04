@@ -15,11 +15,11 @@ describe('ResourceDetailController', function() {
 			httpBackend.flush();
 		}));
 
-		it('requests the resource from the server',  function() {
+		it('should request the resource from the server',  function() {
 			httpBackend.verifyNoOutstandingExpectation();
 		});
 
-		it('stores the resources in scope', function() {
+		it('should store the resources in scope', function() {
 			expect(scope.resource).toEqual(resource);
 		});
 	});
