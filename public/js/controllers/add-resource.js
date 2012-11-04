@@ -5,26 +5,40 @@ function AddResourceController($scope, $http) {
 				if (resources.length > 0) {
 					$scope.title = resources[0].title;
 					$scope.source = resources[0].source;
+					$scope.resourceId = resources[0].id;
+					$scope.isNewResource = false;
 					$scope.statusMessage = 'Resource was found in the system';
 				} else {
 					$scope.title = null;
 					$scope.source = null;
+					$scope.resourceId = null;
+					$scope.isNewResource = true;
 					$scope.statusMessage = 'Resource was not in the system. Please enter details';
 				}
-
-				$scope.urlSubmitted = true;
 			});
 		}
 	};
 
 	$scope.add = function() {
-		var data = { title: $scope.title, url: $scope.url, source: $scope.source, verb: 'read' };
-		$http.post('/resources', data).success(function(resource) {
-			$http.post('/topics/' + $scope.topic.id + '/resources', { resid: resource.id }).success(function() {
-				$scope.topic.resources.push(resource);
-				$scope.clear();
+		var resourceData = { title: $scope.title, url: $scope.url, source: $scope.source, verb: 'read' };
+
+		function onResourceLinked(resource) {
+			$scope.topic.resources.push(resource);
+			$scope.clear();
+		}
+
+		if ($scope.isNewResource) {
+			$http.post('/resources', resourceData).success(function(resource) {
+				$http.post('/topics/' + $scope.topic.id + '/resources', { resid: resource.id }).success(function() {
+					onResourceLinked(resource);
+				});
 			});
-		});
+		} else {
+			$http.post('/topics/' + $scope.topic.id + '/resources', { resid: $scope.resourceId }).success(function() {
+				resourceData.id = $scope.resourceId;
+				onResourceLinked(resourceData);
+			});
+		}
 	};
 
 	$scope.clear = function() {
@@ -32,6 +46,6 @@ function AddResourceController($scope, $http) {
 		$scope.url = '';
 		$scope.source = '';
 		$scope.statusMessage = '';
-		$scope.urlSubmitted = false;
+		$scope.isNewResource = false;
 	};
 }
