@@ -15,17 +15,17 @@ describe('AddTopicController', function() {
 			httpBackend.flush();
 		}));
 
-		it('requests the topic from the server',  function() {
+		it('should request the topic from the server',  function() {
 			httpBackend.verifyNoOutstandingExpectation();
 		});
 
-		it('stores the topic in scope', function() {
+		it('should store the topic in scope', function() {
 			expect(scope.topic.resources).toEqual(topic.resources);
 			expect(scope.topic.sub).toEqual([]);
 			expect(scope.topic.next).toEqual([]);
 		});
 
-		it('sets the editedTopicName to the topic name', function() {
+		it('should set the editedTopicName to the topic name', function() {
 			expect(scope.editedTopicName).toEqual(topic.name);
 		});
 	});
@@ -43,11 +43,11 @@ describe('AddTopicController', function() {
 			httpBackend.flush();
 		}));
 
-		it('sends the edited name to the server', function() {
+		it('should send the edited name to the server', function() {
 			httpBackend.verifyNoOutstandingExpectation();
 		});
 
-		it('updates the topic name in scope', function() {
+		it('should update the topic name in scope', function() {
 			expect(scope.topic.name).toEqual(scope.editedTopicName);
 		});
 	});

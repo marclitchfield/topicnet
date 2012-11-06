@@ -10,7 +10,7 @@ describe('AddTopicController', function() {
 
 	describe('when topicSelected event is raised', function() {
 		
-		it('stores the selectedTopic in scope', inject(function($controller) {
+		it('should store the selectedTopic in scope', inject(function($controller) {
 			$controller(AddTopicController, {$scope: scope});
 			var topic = { name: 'topic' };
 			scope.$broadcast('topicSelected', topic);
@@ -34,15 +34,15 @@ describe('AddTopicController', function() {
 				httpBackend.flush();
 			}));
 
-			it('creates a new topic', function() {
+			it('should create a new topic', function() {
 				httpBackend.verifyNoOutstandingExpectation();
 			});
 
-			it('calls the link function', function() {
+			it('should call the link function', function() {
 				expect(scope.linkfn).toHaveBeenCalledWith(createdTopic);
 			});
 
-			it('clears the search query', function() {
+			it('should clear the search query', function() {
 				expect(scope.searchQuery).toEqual('');
 			});
 		});
@@ -55,11 +55,11 @@ describe('AddTopicController', function() {
 				scope.add();
 			}));
 
-			it('just calls the link function', function() {
+			it('should just call the link function', function() {
 				expect(scope.linkfn).toHaveBeenCalledWith(scope.selectedTopic);
 			});
 
-			it('clears the search query', function() {
+			it('should clear the search query', function() {
 				expect(scope.searchQuery).toEqual('');
 			});
 		});

@@ -11,8 +11,8 @@
 		<div ng-show="statusMessage" class="alert">{{ statusMessage }}</div>
 
 		<p>
-			<input type="text" class="input-xlarge" ng-disabled="!urlSubmitted" ng-model="title" placeholder="Title" required></input>
-			<input type="text" class="input-xlarge" ng-disabled="!urlSubmitted" ng-model="source" placeholder="Source" required></input>
+			<input type="text" class="input-xlarge" ng-disabled="!isNewResource" ng-model="title" placeholder="Title" required></input>
+			<input type="text" class="input-xlarge" ng-disabled="!isNewResource" ng-model="source" placeholder="Source" required></input>
 		</p>
 	</div>
 	<div class="modal-footer">

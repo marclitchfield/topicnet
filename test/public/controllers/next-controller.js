@@ -1,7 +1,7 @@
 describe('NextTopicController', function() {
 
 	var scope, httpBackend;
-	var toTopic = { id: 2 }
+	var toTopic = { id: 2 };
 
 	beforeEach(inject(function($rootScope, $httpBackend) {
 		httpBackend = $httpBackend;
@@ -11,20 +11,20 @@ describe('NextTopicController', function() {
 	describe('calling linkfn(toTopic)', function() {
 
 		beforeEach(inject(function($controller) {
-			scope.topic = { id: 1, next: [] }
+			scope.topic = { id: 1, next: [] };
 			httpBackend.expectPOST(
 				'/topics/' + scope.topic.id + '/next',
 				{ toid: toTopic.id }).respond(200,{});
 			$controller(NextTopicController, {$scope: scope});
-			scope.linkfn(toTopic); 
+			scope.linkfn(toTopic);
 			httpBackend.flush();
 		}));
 
-		it('creates next relationship between scope.topic and toTopic', function() {
-			httpBackend.verifyNoOutstandingExpectation();  
+		it('should create next relationship between scope.topic and toTopic', function() {
+			httpBackend.verifyNoOutstandingExpectation();
 		});
 
-		it("adds toTopic to scope.topic.next", function() {
+		it("should add toTopic to scope.topic.next", function() {
 			expect(scope.topic.next).toEqual([toTopic]);
 		});
 
@@ -41,11 +41,11 @@ describe('NextTopicController', function() {
 			httpBackend.flush();
 		}));
 
-		it('deletes the next relationship between scope.topic and toTopic', function() {
+		it('should delete the next relationship between scope.topic and toTopic', function() {
 			httpBackend.verifyNoOutstandingExpectation();
 		});
 
-		it('removes toTopic from scope.topic.next', function() {
+		it('should remove toTopic from scope.topic.next', function() {
 			expect(scope.topic.next).toEqual([]);
 		});
 

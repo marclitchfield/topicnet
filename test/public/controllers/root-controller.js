@@ -16,7 +16,7 @@ describe('RootController', function() {
 			httpBackend.flush();
 		}));
 
-		it('gets the root topics and stores them in scope', function() {
+		it('should get the root topics and store them in scope', function() {
 			expect(scope.rootTopics).toEqual(rootTopics);
 		});
 	});
@@ -32,11 +32,11 @@ describe('RootController', function() {
 			httpBackend.flush();
 		}));
 
-		it('makes the topic a root topic', function() {
+		it('should make the topic a root topic', function() {
 			httpBackend.verifyNoOutstandingExpectation();
 		});
 
-		it('adds the topic to the rootTopics list', function() {
+		it('should add the topic to the rootTopics list', function() {
 			expect(scope.rootTopics).toEqual([topic]);
 		});
 	});
@@ -52,11 +52,11 @@ describe('RootController', function() {
 			httpBackend.flush();
 		}));
 
-		it('deletes the root-topic relationship', function() {
+		it('should delete the root-topic relationship', function() {
 			httpBackend.verifyNoOutstandingExpectation();
 		});
 
-		it('removes the topic from the rootTopics list', function() {
+		it('should remove the topic from the rootTopics list', function() {
 			expect(scope.rootTopics).toEqual([]);
 		});
 	});
