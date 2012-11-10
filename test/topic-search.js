@@ -2,20 +2,21 @@ var assert = require('assert');
 var _ = require('underscore');
 var api = require('./helper-api.js');
 var guid = require('guid');
+require('./test-utils');
 
 describe('Topic Search', function() {
 
 	var topicToFind;
 
 	before(function(done) {
-		api.post('/topics', { name: 'testnode to find! ' + guid.raw() }, function(err, res) {
+		api.post('/topics', { name: 'testNode to find! ' + guid.raw() }, function(err, res) {
 			topicToFind = JSON.parse(res.body);
 			done();
 		});
 	});
 
 	describe('GET /topics?q with substring', function() {
-		var searchString = 'estnod';
+		var searchString = 'Estnod';
 		var searchResults;
 
 		before(function(done) {
@@ -27,7 +28,7 @@ describe('Topic Search', function() {
 
 		it('returns a topic containing the search string', function() {
 			assert.ok(_.any(searchResults, function(t) {
-				return t.name.indexOf(searchString) !== -1;
+				return t.name.contains(searchString);
 			}));
 		});
 	});
@@ -45,7 +46,7 @@ describe('Topic Search', function() {
 
 		it('returns a topic containing the search string', function() {
 			assert.ok(_.any(searchResults, function(t) {
-				return t.name.indexOf(searchString) !== -1;
+				return t.name.contains(searchString);
 			}));
 		});
 	});
@@ -57,7 +58,7 @@ describe('Topic Search', function() {
 			api.get('/topics?q=' + searchString, function(err, res) {
 				var searchResults = JSON.parse(res.body);
 				assert.ok(_.any(searchResults, function(t) {
-					return t.name.indexOf(searchString) !== -1;
+					return t.name.contains(searchString);
 				}));
 				done();
 			});
@@ -88,7 +89,7 @@ describe('Topic Search', function() {
 				var searchResults = JSON.parse(res.body);
 				assert.equal(searchResults.length, 10);
 				assert.ok(_.all(searchResults, function(t) {
-					return t.name.indexOf(searchString) !== -1;
+					return t.name.contains(searchString);
 				}));
 				first5Results = searchResults.slice(0,5);
 				last5Results = searchResults.slice(5,10);

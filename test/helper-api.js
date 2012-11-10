@@ -1,5 +1,7 @@
 var request = require('request');
 var guid = require('guid');
+var assert = require('assert');
+var _ = require('underscore');
 
 exports.get = function(path, callback) {
 	request({
@@ -41,7 +43,7 @@ exports.request = function() {
 
 		postTopic: function(callback) {
 			var self = this;
-			self.postedTopic = { name: 'topic ' + guid.raw() };
+			self.postedTopic = { name: 'Topic ' + guid.raw() };
 			exports.post('/topics', self.postedTopic, function(err, res) {
 				self.response = res;
 				self.returnedTopic = JSON.parse(res.body);
@@ -60,12 +62,12 @@ exports.request = function() {
 
 		postResource: function(callback) {
 			var self = this;
-			self.postedResource = { title: 'resource ' + guid.raw(), 
-				url: 'http://example.com/' + guid.raw(),
+			self.postedResource = { title: 'Resource ' + guid.raw(),
+				url: 'http://example.com/UpperCase/' + guid.raw(),
 				source: 'example.com',
 				verb: 'read'
 			};
-			exports.post('/resources', self.postedResource, 
+			exports.post('/resources', self.postedResource,
 				function(err, res) {
 				self.response = res;
 				self.returnedResource = JSON.parse(res.body);
