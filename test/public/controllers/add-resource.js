@@ -1,10 +1,28 @@
 describe('AddResourceController', function() {
 	var scope, httpBackend;
+	var topic = { id: 2, name: 'topic' };
 
 	beforeEach(inject(function($rootScope, $httpBackend) {
 		scope = $rootScope.$new();
 		httpBackend = $httpBackend;
 	}));
+
+	describe('when constructed with topicId parameter', function() {
+		beforeEach(inject(function($controller) {
+			httpBackend.expectGET('/topics/2').respond(topic);
+			var params = { topicId: topic.id };
+			$controller(AddResourceController, {$scope: scope, $routeParams: params});
+			httpBackend.flush();
+		}));
+
+		it('should request the topic from the server',  function() {
+			httpBackend.verifyNoOutstandingExpectation();
+		});
+
+		it('should store the topic in scope', function() {
+			expect(scope.topic).toEqual(topic);
+		});
+	});
 
 	describe('when url is submitted', function() {
 		var url = 'http://url.to/check';
@@ -13,8 +31,10 @@ describe('AddResourceController', function() {
 			var existingResource = { id: 1, title: 'title', url: url, source: 'source', verb: 'read' };
 
 			beforeEach(inject(function($controller) {
+				httpBackend.expectGET('/topics/2').respond(topic);
 				httpBackend.expectGET('/resources?url=http%3A%2F%2Furl.to%2Fcheck').respond([existingResource]);
-				$controller(AddResourceController, {$scope: scope});
+				var params = { topicId: topic.id };
+				$controller(AddResourceController, {$scope: scope, $routeParams: params});
 				scope.url = url;
 				scope.submitUrl();
 				httpBackend.flush();
@@ -40,13 +60,19 @@ describe('AddResourceController', function() {
 			it('should set a status message', function() {
 				expect(scope.statusMessage).toNotBe(undefined);
 			});
+
+			it('should set a urlsubmitted flag', function() {
+				expect(scope.urlSubmitted).toEqual(true);
+			});
 		});
 
 		describe('but no match is found in the system', function() {
 
 			beforeEach(inject(function($controller) {
+				httpBackend.expectGET('/topics/2').respond(topic);
 				httpBackend.expectGET('/resources?url=http%3A%2F%2Furl.to%2Fcheck').respond([]);
-				$controller(AddResourceController, {$scope: scope});
+				var params = { topicId: topic.id };
+				$controller(AddResourceController, {$scope: scope, $routeParams: params});
 				scope.url = url;
 				scope.submitUrl();
 				httpBackend.flush();
@@ -72,6 +98,10 @@ describe('AddResourceController', function() {
 			it('should set a status message', function() {
 				expect(scope.statusMessage).toNotBe(undefined);
 			});
+
+			it('should set a urlsubmitted flag', function() {
+				expect(scope.urlSubmitted).toEqual(true);
+			});
 		});
 	});
 
@@ -79,47 +109,61 @@ describe('AddResourceController', function() {
 
 		describe('and isNewResource is true', function() {
 			var createdResource = { id: 1, title: 'title', url: 'url', source: 'source', verb: 'read' };
+			var location;
 
-			beforeEach(inject(function($controller) {
+			beforeEach(inject(function($controller, $location) {
 				var requestedResource = { title: 'title', url: 'url', source: 'source', verb: 'read' };
-				httpBackend.expectPOST('/resources', requestedResource).respond(createdResource);
-				httpBackend.expectPOST('/topics/100/resources', { resid: createdResource.id }).respond(200, {});
-				$controller(AddResourceController, {$scope: scope});
+				httpBackend.expectGET('/topics/2').respond(topic);
+				var params = { topicId: topic.id };
+				$controller(AddResourceController, {$scope: scope, $routeParams: params});
+				httpBackend.flush();
 
-				scope.topic = { id: 100, resources: [] };
 				scope.isNewResource = true;
-
 				scope.title = requestedResource.title;
 				scope.url = requestedResource.url;
 				scope.source = requestedResource.source;
+
+				httpBackend.expectPOST('/resources', requestedResource).respond(createdResource);
+				httpBackend.expectPOST('/topics/2/resources', { resid: createdResource.id }).respond(200, {});
+
+				location = $location;
+				spyOn(location, 'path');
+
 				scope.add();
+
 				httpBackend.flush();
 			}));
 
-			it('should create a new resource and links it with the topic', function() {
+			it('should create a new resource and link it with the topic', function() {
 				httpBackend.verifyNoOutstandingExpectation();
 			});
 
-			it('should add the resource to the topic\'s resource list in the scope', function() {
-				expect(scope.topic.resources).toEqual([createdResource]);
+			it('should redirect to topic details view', function() {
+				expect(location.path).toHaveBeenCalledWith('topics/2');
 			});
 		});
 
 		describe('and isNewResource is false', function() {
 			var existingResource = { id: 1, title: 'title', url: 'url', source: 'source', verb: 'read' };
+			var location;
 
-			beforeEach(inject(function($controller) {
-				httpBackend.expectPOST('/topics/100/resources', { resid: existingResource.id }).respond(200, {});
-				$controller(AddResourceController, {$scope: scope});
+			beforeEach(inject(function($controller, $location) {
+				httpBackend.expectGET('/topics/2').respond(topic);
+				var params = { topicId: topic.id };
+				$controller(AddResourceController, {$scope: scope, $routeParams: params});
+				httpBackend.flush();
 
-				scope.topic = { id: 100, resources: [] };
 				scope.isNewResource = false;
 				scope.resourceId = existingResource.id;
-
-				scope.topic = { id: 100, resources: [] };
 				scope.title = existingResource.title;
 				scope.url = existingResource.url;
 				scope.source = existingResource.source;
+
+				httpBackend.expectPOST('/topics/2/resources', { resid: existingResource.id }).respond(200, {});
+
+				location = $location;
+				spyOn(location, 'path');
+
 				scope.add();
 				httpBackend.flush();
 			}));
@@ -128,37 +172,32 @@ describe('AddResourceController', function() {
 				httpBackend.verifyNoOutstandingExpectation();
 			});
 
-			it('should add the resource to the topic\'s resource list in the scope', function() {
-				expect(scope.topic.resources).toEqual([existingResource]);
+			it('should redirect to topic details view', function() {
+				expect(location.path).toHaveBeenCalledWith('topics/2');
 			});
 		});
+
 	});
 
+	describe('when cancel is called', function() {
+		var location;
 
-	describe('when clear is called', function() {
+		beforeEach(inject(function($controller, $location) {
+			var requestedResource = { title: 'title', url: 'url', source: 'source', verb: 'read' };
+			httpBackend.expectGET('/topics/2').respond(topic);
+			var params = { topicId: topic.id };
+			$controller(AddResourceController, {$scope: scope, $routeParams: params});
+			httpBackend.flush();
 
-		beforeEach(inject(function($controller) {
-			$controller(AddResourceController, {$scope: scope});
-			scope.title = 'title';
-			scope.url = 'url';
-			scope.source = 'source';
-			scope.clear();
+			location = $location;
+			spyOn(location, 'path');
+
+			scope.cancel();
 		}));
 
-		it('should clear the value of the input fields', function() {
-			expect(scope.url).toEqual('');
-			expect(scope.title).toEqual('');
-			expect(scope.source).toEqual('');
+		it('should redirect back to the topic page', function() {
+			expect(location.path).toHaveBeenCalledWith('topics/2');
 		});
 
-		it('should reset the statusMessage', function() {
-			expect(scope.statusMessage).toEqual('');
-		});
-
-		it('should reset isNewResource', function() {
-			expect(scope.isNewResource).toEqual(false);
-		});
 	});
-
-
 });

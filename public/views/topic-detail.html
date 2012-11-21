@@ -15,7 +15,7 @@
 					<small>{{ resource.source }}</small>
 				</li>
 			</ul>
-	        <button class="btn" data-toggle="modal" href="#resourceForm"><i class="icon-plus"></i> Resource</button>
+	        <a class="btn" href="#/topics/{{ topic.id }}/resources/add"><i class="icon-plus"></i> Resource</a>
 		</div>
 
 		<div class="span5 nav-area tabbable">
@@ -28,7 +28,7 @@
 				<div class="tab-pane active" id="sub-topic-pane" ng-controller="SubTopicController">
 					<ul class="unstyled">
 						<li ng-repeat="subTopic in topic.sub">
-							<a href="#/detail/{{ subTopic.id }}">{{ subTopic.name }}</a>
+							<a href="#/topics/{{ subTopic.id }}">{{ subTopic.name }}</a>
 							<button class="close" ng-click="removeLink(subTopic)">&times;</button>
 						</li>
 					</ul>
@@ -38,7 +38,7 @@
 				<div class="tab-pane" id="next-topic-pane" ng-controller="NextTopicController">
 					<ul class="unstyled">
 						<li ng-repeat="nextTopic in topic.next">
-							<a href="#/detail/{{ nextTopic.id }}">{{ nextTopic.name }}</a>
+							<a href="#/topics/{{ nextTopic.id }}">{{ nextTopic.name }}</a>
 							<button class="close" ng-click="removeLink(nextTopic)">&times;</button>
 						</li>
 					</ul>
@@ -46,9 +46,5 @@
 				</div>
 			</div>
 		</div>
-	</div>
-
-	<div id="resourceForm" class="modal hide add-resource-modal" modal-autofocus>
-		<div ng-include="'/partials/add-resource.html'" />
 	</div>
 </div>

@@ -1,7 +1,16 @@
-function AddResourceController($scope, $http) {
+function AddResourceController($scope, $http, $routeParams, $location) {
+	$http.get('/topics/' + $routeParams.topicId).success(function(topic) {
+		$scope.topic = topic;
+	});
+
+	function redirectToTopic() {
+		$location.path('topics/' + $scope.topic.id);
+	}
+
 	$scope.submitUrl = function() {
 		if ($scope.url) {
 			$http.get('/resources?url=' + encodeURIComponent($scope.url)).success(function(resources) {
+				$scope.urlSubmitted = true;
 				if (resources.length > 0) {
 					$scope.title = resources[0].title;
 					$scope.source = resources[0].source;
@@ -22,30 +31,20 @@ function AddResourceController($scope, $http) {
 	$scope.add = function() {
 		var resourceData = { title: $scope.title, url: $scope.url, source: $scope.source, verb: 'read' };
 
-		function onResourceLinked(resource) {
-			$scope.topic.resources.push(resource);
-			$scope.clear();
-		}
-
 		if ($scope.isNewResource) {
 			$http.post('/resources', resourceData).success(function(resource) {
 				$http.post('/topics/' + $scope.topic.id + '/resources', { resid: resource.id }).success(function() {
-					onResourceLinked(resource);
+					redirectToTopic();
 				});
 			});
 		} else {
 			$http.post('/topics/' + $scope.topic.id + '/resources', { resid: $scope.resourceId }).success(function() {
-				resourceData.id = $scope.resourceId;
-				onResourceLinked(resourceData);
+				redirectToTopic();
 			});
 		}
 	};
 
-	$scope.clear = function() {
-		$scope.title = '';
-		$scope.url = '';
-		$scope.source = '';
-		$scope.statusMessage = '';
-		$scope.isNewResource = false;
+	$scope.cancel = function() {
+		redirectToTopic();
 	};
 }

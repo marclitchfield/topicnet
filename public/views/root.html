@@ -1,13 +1,13 @@
-<div ng-controller="RootController">
-	<h2>root topics</h2>
+<div ng-controller="RootController" class="row">
+	<div class="offset1">
+		<ul class="unstyled">
+			<li ng-repeat="topic in rootTopics" gesture-swipe="showDelete=true">
+				<a href="#/topics/{{ topic.id }}">{{ topic.name }}</a>
+				<button class="close" ng-click="removeRoot(topic)">&times;</button>
+				<button ng-show="showDelete" ng-click="removeRoot(topic)">Remove</button>
+			</li>
+		</ul>
 
-	<ul class="unstyled">
-		<li ng-repeat="topic in rootTopics" gesture-swipe="showDelete=true">
-			<a href="#/detail/{{ topic.id }}">{{ topic.name }}</a>
-			<button class="close" ng-click="removeRoot(topic)">&times;</button>
-			<button ng-show="showDelete" ng-click="removeRoot(topic)">Remove</button>
-		</li>
-	</ul>
-
-	<div ng-include="'/partials/add-topic.html'" />
+		<div ng-include="'/partials/add-topic.html'" />
+	</div>
 </div>

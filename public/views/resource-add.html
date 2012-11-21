@@ -1,0 +1,35 @@
+<form class="add-resource-form form-horizontal" name="resourceForm" novalidate ng-controller="AddResourceController">
+	<div class="row">
+		<h4 class="offset1">Add a resource to {{ topic.name }}</h4>
+	</div>
+	<div class="row">
+		<div class="offset1">
+			<div class="input-append">
+				<input type="text" class="input-xxlarge" ng-model="url" placeholder="URL" autofocus required></input>
+				<button class="btn" ng-click="submitUrl()">Submit</span>
+			</div>
+
+			<div ng-show="statusMessage" class="alert">{{ statusMessage }}</div>
+
+			<div ng-show="urlSubmitted">
+				<div class="control-group">
+					<label class="control-label" for="newResourceTitle">Title</label>
+					<div class="controls">
+						<input id="newResourceTitle" type="text" class="input-xlarge" ng-disabled="!isNewResource" ng-model="title" required></input>
+					</div>
+				</div>
+
+				<div class="control-group">
+					<label class="control-label" for="newResourceSource">Source</label>
+					<div class="controls">
+						<input id="newResourceSource" type="text" class="input-xlarge" ng-disabled="!isNewResource" ng-model="source" required></input>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+	<div class="modal-footer">
+		<button class="btn btn-primary" ng-hide="resourceForm.$invalid" ng-click="add()">Save</button>
+		<button class="btn" ng-click="cancel()">Cancel</button>
+	</div>
+</form>
