@@ -1,11 +1,11 @@
 <form class="add-resource-form form-horizontal" name="resourceForm" novalidate ng-controller="AddResourceController">
 	<div class="row">
-		<h4 class="offset1">Add a resource to {{ topic.name }}</h4>
+		<h4 class="offset1 span12">Add a resource to {{ topic.name }}</h4>
 	</div>
 	<div class="row">
-		<div class="offset1">
+		<div class="offset1 span12">
 			<div class="input-append">
-				<input type="text" class="input-xxlarge" ng-model="url" placeholder="URL" autofocus required></input>
+				<input type="text" class="url-submit-text input-xxlarge" ng-model="url" placeholder="URL" autofocus required></input>
 				<button class="btn" ng-click="submitUrl()">Submit</span>
 			</div>
 

@@ -45,8 +45,22 @@ li:hover .close {
 	margin-left: 90px;
 }
 
+@media (max-width: 480px) {
+	.add-resource-form .controls {
+		margin-left: 0;
+	}
+}
+
 @media (max-width: 767px) {
 	.page-header {
 		text-align: center;
+	}
+
+	.add-resource-form .input-append {
+		width: 100%;
+	}
+
+	.add-resource-form .url-submit-text {
+		width: 70%;
 	}
 }
