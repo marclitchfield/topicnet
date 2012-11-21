@@ -1,6 +1,6 @@
 <div ng-controller="TopicDetailController">
 	<div class="row">
-		<div class="span6">
+		<div class="span5 offset1">
 			<h3 ng-hide="editingTitle" ng-dblclick="editingTitle=true">{{ topic.name }}</h3>
 			<h3 ng-show="editingTitle">
 				<form class="form-inline">
@@ -17,10 +17,8 @@
 			</ul>
 	        <button class="btn" data-toggle="modal" href="#resourceForm"><i class="icon-plus"></i> Resource</button>
 		</div>
-	</div>
 
-	<div class="row nav-area tabbable">
-		<div class="span6">
+		<div class="span5 nav-area tabbable">
 			<ul class="nav nav-tabs">
 				<li class="active"><a href="#sub-topic-pane" data-toggle="tab">sub topics</a></li>
 				<li><a href="#next-topic-pane" data-toggle="tab">next</a></li>
@@ -50,7 +48,7 @@
 		</div>
 	</div>
 
-	<div id="resourceForm" class="modal fade add-resource-modal" modal-autofocus>
+	<div id="resourceForm" class="modal hide add-resource-modal" modal-autofocus>
 		<div ng-include="'/partials/add-resource.html'" />
 	</div>
 </div>

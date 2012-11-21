@@ -18,6 +18,11 @@ li:hover .close {
 	margin-top: 32px;
 }
 
+.add-resource-modal {
+	margin-top: 0;
+	top: 10px;
+}
+
 .modal .input-append {
 	width: auto; 
 	box-sizing: border-box;
@@ -37,5 +42,18 @@ li:hover .close {
 }
 
 .ng-invalid {
-	border: 0px solid;
+	border: 0 solid;
+}
+
+.page-header {
+	padding: 10px 0;
+	margin-bottom: 10px;
+	background-color: #D9E1EB;
+	border-radius: 4px;
+}
+
+@media (max-width: 767px) {
+	.page-header {
+		text-align: center;
+	}
 }
