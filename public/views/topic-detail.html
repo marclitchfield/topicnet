@@ -1,49 +1,47 @@
-<div ng-controller="TopicDetailController">
-	<div class="row">
-		<div class="span5 offset1">
-			<h3 ng-hide="editingTitle" ng-dblclick="editingTitle=true">{{ topic.name }}</h3>
-			<h3 ng-show="editingTitle">
-				<form class="form-inline">
-					<input type="text" class="input-large" ng-model="editedTopicName"></input>
-					<button class="btn btn-primary" ng-click="update(); editingTitle=false">Save</button>
-					<button class="close" ng-click="editingTitle=false">&times;</button>
-				</form>
-			</h3>
-			<ul class="unstyled">
-				<li ng-repeat="resource in topic.resources">
-					<a href="#/resources/{{ resource.id }}">{{ resource.title }}</a>
-					<small>{{ resource.source }}</small>
-				</li>
-			</ul>
-	        <a class="btn" href="#/topics/{{ topic.id }}/resources/add"><i class="icon-plus"></i> Resource</a>
-		</div>
+<div class="row">
+	<div class="span5 offset1">
+		<h3 ng-hide="editingTitle" ng-dblclick="editingTitle=true">{{ topic.name }}</h3>
+		<h3 ng-show="editingTitle">
+			<form class="form-inline">
+				<input type="text" class="input-large" ng-model="editedTopicName"></input>
+				<button class="btn btn-primary" ng-click="update(); editingTitle=false">Save</button>
+				<button class="close" ng-click="editingTitle=false">&times;</button>
+			</form>
+		</h3>
+		<ul class="unstyled">
+			<li ng-repeat="resource in topic.resources">
+				<a href="#/resources/{{ resource.id }}">{{ resource.title }}</a>
+				<small>{{ resource.source }}</small>
+			</li>
+		</ul>
+        <a class="btn" href="#/topics/{{ topic.id }}/resources/add"><i class="icon-plus"></i> Resource</a>
+	</div>
 
-		<div class="span5 nav-area tabbable">
-			<ul class="nav nav-tabs">
-				<li class="active"><a href="#sub-topic-pane" data-toggle="tab">sub topics</a></li>
-				<li><a href="#next-topic-pane" data-toggle="tab">next</a></li>
-			</ul>
+	<div class="span5 nav-area tabbable">
+		<ul class="nav nav-tabs">
+			<li class="active"><a href="#sub-topic-pane" data-toggle="tab">sub topics</a></li>
+			<li><a href="#next-topic-pane" data-toggle="tab">next</a></li>
+		</ul>
 
-			<div class="tab-content">
-				<div class="tab-pane active" id="sub-topic-pane" ng-controller="SubTopicController">
-					<ul class="unstyled">
-						<li ng-repeat="subTopic in topic.sub">
-							<a href="#/topics/{{ subTopic.id }}">{{ subTopic.name }}</a>
-							<button class="close" ng-click="removeLink(subTopic)">&times;</button>
-						</li>
-					</ul>
-					<div ng-include src="'partials/add-topic.html'" />
-				</div>
+		<div class="tab-content">
+			<div class="tab-pane active" id="sub-topic-pane" ng-controller="SubTopicController">
+				<ul class="unstyled">
+					<li ng-repeat="subTopic in topic.sub">
+						<a href="#/topics/{{ subTopic.id }}">{{ subTopic.name }}</a>
+						<button class="close" ng-click="removeLink(subTopic)">&times;</button>
+					</li>
+				</ul>
+				<div ng-include src="'partials/add-topic.html'" />
+			</div>
 
-				<div class="tab-pane" id="next-topic-pane" ng-controller="NextTopicController">
-					<ul class="unstyled">
-						<li ng-repeat="nextTopic in topic.next">
-							<a href="#/topics/{{ nextTopic.id }}">{{ nextTopic.name }}</a>
-							<button class="close" ng-click="removeLink(nextTopic)">&times;</button>
-						</li>
-					</ul>
-					<div ng-include src="'partials/add-topic.html'" />
-				</div>
+			<div class="tab-pane" id="next-topic-pane" ng-controller="NextTopicController">
+				<ul class="unstyled">
+					<li ng-repeat="nextTopic in topic.next">
+						<a href="#/topics/{{ nextTopic.id }}">{{ nextTopic.name }}</a>
+						<button class="close" ng-click="removeLink(nextTopic)">&times;</button>
+					</li>
+				</ul>
+				<div ng-include src="'partials/add-topic.html'" />
 			</div>
 		</div>
 	</div>
