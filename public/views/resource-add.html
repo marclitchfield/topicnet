@@ -1,6 +1,9 @@
 <form class="add-resource-form form-horizontal" name="resourceForm" novalidate ng-controller="AddResourceController">
 	<div class="row">
-		<h4 class="offset1 span12">Add a resource to {{ topic.name }}</h4>
+		<header class="offset1 span12">
+			<h3>Add a resource</h3>
+			<h4>{{ topic.name }}</h4>
+		</header>
 	</div>
 	<div class="row">
 		<div class="offset1 span12">
@@ -11,7 +14,7 @@
 
 			<div ng-show="statusMessage" class="alert">{{ statusMessage }}</div>
 
-			<div ng-show="urlSubmitted">
+			<div ng-show="urlSubmitted" class="add-resource-details-section">
 				<div class="control-group">
 					<label class="control-label" for="newResourceTitle">Title</label>
 					<div class="controls">
@@ -28,8 +31,10 @@
 			</div>
 		</div>
 	</div>
-	<div class="modal-footer">
-		<button class="btn btn-primary" ng-hide="resourceForm.$invalid" ng-click="add()">Save</button>
-		<button class="btn" ng-click="cancel()">Cancel</button>
+	<div class="row">
+		<div class="offset1">
+			<button class="btn" ng-click="cancel()">Cancel</button>
+			<button class="btn btn-primary" ng-hide="resourceForm.$invalid" ng-click="add()">Save</button>
+		</div>
 	</div>
 </form>

@@ -1,3 +1,8 @@
+html {
+	overflow-y: -moz-scrollbars-vertical;
+	overflow-y: scroll;
+}
+
 h1 a { color: black; }
 h1 a, h1 a:hover { text-decoration: none; }
 
@@ -43,6 +48,14 @@ li:hover .close {
 
 .add-resource-form .controls {
 	margin-left: 90px;
+}
+
+.add-resource-form header {
+	margin-bottom: 15px;
+}
+
+.add-resource-details-section {
+	margin-bottom: 20px;
 }
 
 @media (max-width: 480px) {
