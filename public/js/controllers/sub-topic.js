@@ -6,7 +6,7 @@ function SubTopicController($scope, $http) {
 	};
 
 	$scope.removeLink = function(subTopic) {
-    $http.delete('/topics/' + $scope.topic.id + '/sub/' + subTopic.id).success(function() {
+    $http['delete']('/topics/' + $scope.topic.id + '/sub/' + subTopic.id).success(function() {
 			$scope.topic.sub = $scope.topic.sub.filter(function(t) {
 				return t.id !== subTopic.id;
 			});
