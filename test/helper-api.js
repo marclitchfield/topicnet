@@ -39,6 +39,14 @@ exports.del = function(path, callback) {
 
 exports.request = function() {
 
+	function parseBody(body) {
+		try {
+			return JSON.parse(body);
+		} catch(e) {
+			throw new Error(body);
+		}
+	}
+
 	return {
 
 		postTopic: function(callback) {
@@ -46,7 +54,7 @@ exports.request = function() {
 			self.postedTopic = { name: 'Topic ' + guid.raw() };
 			exports.post('/topics', self.postedTopic, function(err, res) {
 				self.response = res;
-				self.returnedTopic = JSON.parse(res.body);
+				self.returnedTopic = parseBody(res.body);
 				callback();
 			});
 		},
@@ -55,7 +63,7 @@ exports.request = function() {
 			var self = this;
 			exports.get('/topics/' + id, function(err, res) {
 				self.response = res;
-				self.returnedTopic = JSON.parse(res.body);
+				self.returnedTopic = parseBody(res.body);
 				callback();
 			});
 		},
@@ -70,7 +78,7 @@ exports.request = function() {
 			exports.post('/resources', self.postedResource,
 				function(err, res) {
 				self.response = res;
-				self.returnedResource = JSON.parse(res.body);
+				self.returnedResource = parseBody(res.body);
 				callback();
 			});
 		},
@@ -79,7 +87,7 @@ exports.request = function() {
 			var self = this;
 			exports.get('/resources/' + id, function(err, res) {
 				self.response = res;
-				self.returnedResource = JSON.parse(res.body);
+				self.returnedResource = parseBody(res.body);
 				callback();
 			});
 		}
