@@ -15,7 +15,7 @@ function AddTopicController($scope, $http) {
 				$scope.linkfn(topic);
 			});
 		}
-		
+		 
 		$scope.clear();
 	};
 
