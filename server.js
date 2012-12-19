@@ -71,9 +71,7 @@ app.get('/topics', function(request, response, next) {
 	if (request.query.q) {
 		complete(response, topicService.search(request.query));
 	} else {
-		topicService.getRelated(0, 'root',
-			successHandler(response),
-			errorHandler(response, next));
+		complete(response, topicService.getRelated(0, 'root'));
 	}
 });
 
@@ -96,9 +94,8 @@ app.get('/topics/:id', function(request, response, next) {
 });
 
 app.get('/topics/:id/:rel', function(request, response, next) {
-	topicService.getRelated(request.params.id, request.params.rel,
-		successHandler(response),
-		errorHandler(response, next));
+	complete(response, 
+		topicService.getRelated(request.params.id, request.params.rel));
 });
 
 app.post('/topics/:id/root', function(request, response, next) {
