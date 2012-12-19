@@ -61,6 +61,12 @@ function promiseErrorHandler(response, error) {
 	response.send(error.message || error, statusCodes[error.name] || 500);
 }
 
+function complete(response, promise) {		
+	promise.then(function(result) { promiseSuccessHandler(response, result); })
+		.fail(function(error) { promiseErrorHandler(response, error); })
+		.done();
+}
+
 app.get('/topics', function(request, response, next) {
 	if (request.query.q) {
 		topicService.search(request.query,
@@ -145,11 +151,8 @@ app.post('/resources', function(request, response, next) {
 		errorHandler(response, next));
 });
 
-app.get('/resources/:id', function(request, response, next) {
-	resourceService.get(request.params.id)
-		.then(function(result) { promiseSuccessHandler(response, result); },
-			  function(error) { promiseErrorHandler(response, error); })
-		.done();
+app.get('/resources/:id', function(request, response) {
+	complete(response, resourceService.get(request.params.id));
 });
 
 app.get('/resources', function(request, response, next) {
