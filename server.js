@@ -44,6 +44,23 @@ function errorHandler(response, next) {
 	};
 }
 
+function promiseSuccessHandler(response, result) {
+	if (result === undefined) {
+		response.send(200);
+	} else {
+		response.json(result);
+	}
+}
+
+function promiseErrorHandler(response, error) {
+	var statusCodes = {
+		'notfound': 404,
+		'duplicate': 400
+	};
+
+	response.send(error.message || error, statusCodes[error.name] || 500);
+}
+
 app.get('/topics', function(request, response, next) {
 	if (request.query.q) {
 		topicService.search(request.query,
@@ -129,9 +146,10 @@ app.post('/resources', function(request, response, next) {
 });
 
 app.get('/resources/:id', function(request, response, next) {
-	resourceService.get(request.params.id,
-		successHandler(response),
-		errorHandler(response, next));
+	resourceService.get(request.params.id)
+		.then(function(result) { promiseSuccessHandler(response, result); },
+			  function(error) { promiseErrorHandler(response, error); })
+		.done();
 });
 
 app.get('/resources', function(request, response, next) {
