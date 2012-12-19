@@ -42,7 +42,7 @@ describe('Next Topics', function() {
 			});
 
 			it('returns the next topic', function() {
-				var returnedTopics = JSON.parse(getNextResponse.body);
+				var returnedTopics = api.parseBody(getNextResponse.body);
 				assert.ok(_.any(returnedTopics, function(t) {
 					return t.id === postNext.returnedTopic.id;
 				}));
@@ -82,7 +82,7 @@ describe('Next Topics', function() {
 
 			it('does not include the topic whose next relationship was deleted', function(done) {
 				api.get('/topics/' + postPrev.returnedTopic.id + '/next', function(err, results) {
-					var nextTopics = JSON.parse(results.body);
+					var nextTopics = api.parseBody(results.body);
 					assert.ok(!_.any(nextTopics, function(t) {
 						return t.id === postNext.returnedTopic.id;
 					}));

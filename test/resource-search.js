@@ -13,7 +13,7 @@ describe('Resource Search', function() {
 			url: 'http://example.com/Upper/' + guid.raw(), source: 'example.com',
 			verb: 'read' },
 			function(err, res) {
-			resourceToFind = JSON.parse(res.body);
+			resourceToFind = api.parseBody(res.body);
 			done(err);
 		});
 	});
@@ -33,7 +33,7 @@ describe('Resource Search', function() {
 
 		it('returns existing resource', function(done) {
 			api.get('/resources?title=' + resourceToFind.title, function(err, res) {
-				var searchResults = JSON.parse(res.body);
+				var searchResults = api.parseBody(res.body);
 				assert.ok(_.all(searchResults, function(r) {
 					return r.title === resourceToFind.title;
 				}));
@@ -50,7 +50,7 @@ describe('Resource Search', function() {
 
 		it('returns existing resource', function(done) {
 			api.get('/resources?title=' + resourceToFind.title.toUpperCase(), function(err, res) {
-				var searchResults = JSON.parse(res.body);
+				var searchResults = api.parseBody(res.body);
 				assert.ok(_.all(searchResults, function(r) {
 					return r.title === resourceToFind.title;
 				}));
@@ -67,7 +67,7 @@ describe('Resource Search', function() {
 
 		it('returns resource ', function(done) {
 			api.get('/resources?url=' + encodeURIComponent(resourceToFind.url), function(err, res) {
-				var searchResults = JSON.parse(res.body);
+				var searchResults = api.parseBody(res.body);
 				assert.ok(_.all(searchResults, function(r) {
 					return r.url === resourceToFind.url;
 				}));
@@ -86,7 +86,7 @@ describe('Resource Search', function() {
 
 		it('returns a resource with the search string in the title', function(done) {
 			api.get('/resources?q=' + searchString, function(err, res) {
-				var searchResults = JSON.parse(res.body);
+				var searchResults = api.parseBody(res.body);
 				assert.ok(_.all(searchResults, function(r) {
 					return r.title.contains(searchString);
 				}));
@@ -125,7 +125,7 @@ describe('Resource Search', function() {
 
 		it('returns 10 matching results', function(done) {
 			api.get('/resources?q=' + searchString, function(err, res) {
-				var searchResults = JSON.parse(res.body);
+				var searchResults = api.parseBody(res.body);
 				assert.equal(searchResults.length, 10);
 				assert.ok(_.all(searchResults, function(t) {
 					return t.title.contains(searchString);
@@ -140,7 +140,7 @@ describe('Resource Search', function() {
 
 			it('returns the first 5 matching results from the previous set', function(done) {
 				api.get('/resources?q=' + searchString + '&p=1&pp=5', function(err, res) {
-					var searchResults = JSON.parse(res.body);
+					var searchResults = api.parseBody(res.body);
 					assert.equal(searchResults.length, 5);
 					for(var i = 0; i < 5; i++) {
 						assert.equal(first5Results[i].id, searchResults[i].id);
@@ -155,7 +155,7 @@ describe('Resource Search', function() {
 
 			it('returns the last 5 matching results from the previous set', function(done) {
 				api.get('/resources?q=' + searchString + '&p=2&pp=5', function(err, res) {
-					var searchResults = JSON.parse(res.body);
+					var searchResults = api.parseBody(res.body);
 					assert.equal(searchResults.length, 5);
 					for(var i = 0; i < 5; i++) {
 						assert.equal(last5Results[i].id, searchResults[i].id);

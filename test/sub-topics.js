@@ -42,7 +42,7 @@ describe('Sub Topics', function() {
 			});
 
 			it('returns the subtopic', function() {
-				var returnedTopics = JSON.parse(getSubResponse.body);
+				var returnedTopics = api.parseBody(getSubResponse.body);
 				assert.ok(_.any(returnedTopics, function(t) {
 					return t.id === postChild.returnedTopic.id;
 				}));
@@ -131,7 +131,7 @@ describe('Sub Topics', function() {
 
 			it('does not include the topic whose sub relationship was deleted', function(done) {
 				api.get('/topics/' + postParent.returnedTopic.id + '/sub', function(err, results) {
-					var subTopics = JSON.parse(results.body);
+					var subTopics = api.parseBody(results.body);
 					assert.ok(!_.any(subTopics, function(t) {
 						return t.id === postChild.returnedTopic.id;
 					}));

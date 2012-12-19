@@ -56,7 +56,7 @@ describe('Topic Resources', function() {
 			it('returns the topic with the newly associated resource', function(done) {
 				api.get('/topics/' + topicPost.returnedTopic.id, function(err, res) {
 					assert.equal(res.statusCode, 200);
-					var topic = JSON.parse(res.body);
+					var topic = api.parseBody(res.body);
 					assert.ok(_.any(topic.resources, function(r) {
 						return r.id === resPost.returnedResource.id;
 					}));

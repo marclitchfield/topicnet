@@ -69,9 +69,7 @@ function complete(response, promise) {
 
 app.get('/topics', function(request, response, next) {
 	if (request.query.q) {
-		topicService.search(request.query,
-			successHandler(response),
-			errorHandler(response, next));
+		complete(response, topicService.search(request.query));
 	} else {
 		topicService.getRelated(0, 'root',
 			successHandler(response),

@@ -193,7 +193,7 @@ describe('Topic CRUD', function() {
 
 			it('returns the topic', function(done) {
 				api.get('/topics/' + pTopic.returnedTopic.id, function(err, res) {
-					var topic = JSON.parse(res.body);
+					var topic = api.parseBody(res.body);
 					assert.equal(topic.id, pTopic.returnedTopic.id);
 					done();
 				});

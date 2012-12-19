@@ -10,7 +10,7 @@ describe('Topic Search', function() {
 
 	before(function(done) {
 		api.post('/topics', { name: 'testNode to find! ' + guid.raw() }, function(err, res) {
-			topicToFind = JSON.parse(res.body);
+			topicToFind = api.parseBody(res.body);
 			done();
 		});
 	});
@@ -21,7 +21,7 @@ describe('Topic Search', function() {
 
 		before(function(done) {
 			api.get('/topics?q=' + searchString, function(err, res) {
-				searchResults = JSON.parse(res.body);
+				searchResults = api.parseBody(res.body);
 				done();
 			});
 		});
@@ -39,7 +39,7 @@ describe('Topic Search', function() {
 
 		before(function(done) {
 			api.get('/topics?q=' + searchString, function(err, res) {
-				searchResults = JSON.parse(res.body);
+				searchResults = api.parseBody(res.body);
 				done();
 			});
 		});
@@ -56,7 +56,7 @@ describe('Topic Search', function() {
 		it('returns existing topic', function(done) {
 			var searchString = 'ind!';
 			api.get('/topics?q=' + searchString, function(err, res) {
-				var searchResults = JSON.parse(res.body);
+				var searchResults = api.parseBody(res.body);
 				assert.ok(_.any(searchResults, function(t) {
 					return t.name.contains(searchString);
 				}));
@@ -86,7 +86,7 @@ describe('Topic Search', function() {
 
 		it('returns 10 matching results', function(done) {
 			api.get('/topics?q=' + searchString, function(err, res) {
-				var searchResults = JSON.parse(res.body);
+				var searchResults = api.parseBody(res.body);
 				assert.equal(searchResults.length, 10);
 				assert.ok(_.all(searchResults, function(t) {
 					return t.name.contains(searchString);
@@ -101,7 +101,7 @@ describe('Topic Search', function() {
 
 			it('returns the first 5 matching results from the previous set', function(done) {
 				api.get('/topics?q=' + searchString + '&p=1&pp=5', function(err, res) {
-					var searchResults = JSON.parse(res.body);
+					var searchResults = api.parseBody(res.body);
 					assert.equal(searchResults.length, 5);
 					for(var i = 0; i < 5; i++) {
 						assert.equal(first5Results[i].id, searchResults[i].id);
@@ -116,7 +116,7 @@ describe('Topic Search', function() {
 
 			it('returns the last 5 matching results from the previous set', function(done) {
 				api.get('/topics?q=' + searchString + '&p=2&pp=5', function(err, res) {
-					var searchResults = JSON.parse(res.body);
+					var searchResults = api.parseBody(res.body);
 					assert.equal(searchResults.length, 5);
 					for(var i = 0; i < 5; i++) {
 						assert.equal(last5Results[i].id, searchResults[i].id);

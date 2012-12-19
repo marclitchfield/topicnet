@@ -38,7 +38,7 @@ describe('Root Topics', function() {
 			});
 
 			it('returns all root topics including our topic', function() {
-				var rootTopics = JSON.parse(rootTopicsResponse.body);
+				var rootTopics = api.parseBody(rootTopicsResponse.body);
 				assert.ok(_.any(rootTopics, function(t) {
 					return t.id === p.returnedTopic.id;
 				}));
@@ -75,7 +75,7 @@ describe('Root Topics', function() {
 
 			it('does not include the topic in the root topics', function(done) {
 				api.get('/topics', function(err, results) {
-					var rootTopics = JSON.parse(results.body);
+					var rootTopics = api.parseBody(results.body);
 					assert.ok(!_.any(rootTopics, function(t) {
 						return t.id === rootPost.returnedTopic.id;
 					}));

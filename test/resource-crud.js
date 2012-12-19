@@ -218,7 +218,7 @@ describe('Resource CRUD', function() {
 					resourceUpdate,
 					function(err, res) {
 						putResponse = res;
-						returnedResource = JSON.parse(res.body);
+						returnedResource = api.parseBody(res.body);
 						done();
 				});
 			});
@@ -470,7 +470,7 @@ describe('Resource CRUD', function() {
 
 			it('returns the resource', function(done) {
 				api.get('/resources/' + pResource.returnedResource.id, function(err, res) {
-					var resource = JSON.parse(res.body);
+					var resource = api.parseBody(res.body);
 					assert.equal(resource.id, pResource.returnedResource.id);
 					done();
 				});

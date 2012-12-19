@@ -37,15 +37,15 @@ exports.del = function(path, callback) {
 	}, callback);
 };
 
-exports.request = function() {
-
-	function parseBody(body) {
-		try {
-			return JSON.parse(body);
-		} catch(e) {
-			throw new Error(body);
-		}
+exports.parseBody = function(body) {
+	try {
+		return JSON.parse(body);
+	} catch(e) {
+		throw new Error(body);
 	}
+}
+
+exports.request = function() {
 
 	return {
 
@@ -54,7 +54,7 @@ exports.request = function() {
 			self.postedTopic = { name: 'Topic ' + guid.raw() };
 			exports.post('/topics', self.postedTopic, function(err, res) {
 				self.response = res;
-				self.returnedTopic = parseBody(res.body);
+				self.returnedTopic = exports.parseBody(res.body);
 				callback();
 			});
 		},
@@ -63,7 +63,7 @@ exports.request = function() {
 			var self = this;
 			exports.get('/topics/' + id, function(err, res) {
 				self.response = res;
-				self.returnedTopic = parseBody(res.body);
+				self.returnedTopic = exports.parseBody(res.body);
 				callback();
 			});
 		},
@@ -78,7 +78,7 @@ exports.request = function() {
 			exports.post('/resources', self.postedResource,
 				function(err, res) {
 				self.response = res;
-				self.returnedResource = parseBody(res.body);
+				self.returnedResource = exports.parseBody(res.body);
 				callback();
 			});
 		},
@@ -87,7 +87,7 @@ exports.request = function() {
 			var self = this;
 			exports.get('/resources/' + id, function(err, res) {
 				self.response = res;
-				self.returnedResource = parseBody(res.body);
+				self.returnedResource = exports.parseBody(res.body);
 				callback();
 			});
 		}
