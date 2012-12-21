@@ -67,7 +67,7 @@ function complete(response, promise) {
 		.done();
 }
 
-app.get('/topics', function(request, response, next) {
+app.get('/topics', function(request, response) {
 	if (request.query.q) {
 		complete(response, topicService.search(request.query));
 	} else {
@@ -75,23 +75,20 @@ app.get('/topics', function(request, response, next) {
 	}
 });
 
-app.post('/topics', function(request, response, next) {
+app.post('/topics', function(request, response) {
 	complete(response, topicService.create(request.body));
 });
 
-app.put('/topics/:id', function(request, response, next) {
+app.put('/topics/:id', function(request, response) {
 	complete(response, topicService.update(request.params.id, request.body));
 });
 
-app.get('/topics/:id', function(request, response, next) {
-	topicService.get(request.params.id,
-		successHandler(response),
-		errorHandler(response, next));
+app.get('/topics/:id', function(request, response) {
+	complete(response, topicService.get(request.params.id));
 });
 
 app.get('/topics/:id/:rel', function(request, response, next) {
-	complete(response, 
-		topicService.getRelated(request.params.id, request.params.rel));
+	complete(response, topicService.getRelated(request.params.id, request.params.rel));
 });
 
 app.post('/topics/:id/root', function(request, response, next) {
