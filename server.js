@@ -76,9 +76,7 @@ app.get('/topics', function(request, response, next) {
 });
 
 app.post('/topics', function(request, response, next) {
-	topicService.create(request.body,
-		successHandler(response),
-		errorHandler(response, next));
+	complete(response, topicService.create(request.body));
 });
 
 app.put('/topics/:id', function(request, response, next) {
