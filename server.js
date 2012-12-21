@@ -87,14 +87,12 @@ app.get('/topics/:id', function(request, response) {
 	complete(response, topicService.get(request.params.id));
 });
 
-app.get('/topics/:id/:rel', function(request, response, next) {
+app.get('/topics/:id/:rel', function(request, response) {
 	complete(response, topicService.getRelated(request.params.id, request.params.rel));
 });
 
-app.post('/topics/:id/root', function(request, response, next) {
-	topicService.createRelationship(0, request.params.id, 'root',
-		successHandler(response),
-		errorHandler(response, next));
+app.post('/topics/:id/root', function(request, response) {
+	complete(response, topicService.createRelationshipPromise(0, request.params.id, 'root'));
 });
 
 app.post('/topics/:id/resources', function(request, response, next) {
@@ -109,10 +107,8 @@ app.delete('/topics/:id/resources/:resid', function(request, response, next) {
 		errorHandler(response, next));
 });
 
-app.post('/topics/:id/:rel', function(request, response, next) {
-	topicService.createRelationship(request.params.id, request.body.toid, request.params.rel,
-		successHandler(response),
-		errorHandler(response, next));
+app.post('/topics/:id/:rel', function(request, response) {
+	complete(response, topicService.createRelationshipPromise(request.params.id, request.body.toid, request.params.rel));
 });
 
 app.delete('/topics/:id/root', function(request, response, next) {
