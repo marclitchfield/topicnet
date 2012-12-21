@@ -92,7 +92,7 @@ app.get('/topics/:id/:rel', function(request, response) {
 });
 
 app.post('/topics/:id/root', function(request, response) {
-	complete(response, topicService.createRelationshipPromise(0, request.params.id, 'root'));
+	complete(response, topicService.createRelationship(0, request.params.id, 'root'));
 });
 
 app.post('/topics/:id/resources', function(request, response, next) {
@@ -108,7 +108,7 @@ app.delete('/topics/:id/resources/:resid', function(request, response, next) {
 });
 
 app.post('/topics/:id/:rel', function(request, response) {
-	complete(response, topicService.createRelationshipPromise(request.params.id, request.body.toid, request.params.rel));
+	complete(response, topicService.createRelationship(request.params.id, request.body.toid, request.params.rel));
 });
 
 app.delete('/topics/:id/root', function(request, response, next) {
