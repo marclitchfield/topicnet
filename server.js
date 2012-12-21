@@ -80,9 +80,7 @@ app.post('/topics', function(request, response, next) {
 });
 
 app.put('/topics/:id', function(request, response, next) {
-	topicService.update(request.params.id, request.body,
-		successHandler(response),
-		errorHandler(response, next));
+	complete(response, topicService.update(request.params.id, request.body));
 });
 
 app.get('/topics/:id', function(request, response, next) {
