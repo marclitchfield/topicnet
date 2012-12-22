@@ -119,10 +119,8 @@ app.delete('/topics/:id', function(request, response) {
 	complete(response, topicService.deleteTopic(request.params.id));
 });
 
-app.post('/resources', function(request, response, next) {
-	resourceService.create(request.body,
-		successHandler(response),
-		errorHandler(response, next));
+app.post('/resources', function(request, response) {
+	complete(response, resourceService.create(request.body));
 });
 
 app.get('/resources/:id', function(request, response) {
