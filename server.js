@@ -100,9 +100,7 @@ app.post('/topics/:id/resources', function(request, response) {
 });
 
 app.delete('/topics/:id/resources/:resid', function(request, response, next) {
-	topicService.unlinkResource(request.params.id, request.params.resid,
-		successHandler(response),
-		errorHandler(response, next));
+	complete(response, topicService.unlinkResource(request.params.id, request.params.resid));
 });
 
 app.post('/topics/:id/:rel', function(request, response) {
