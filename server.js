@@ -13,38 +13,7 @@ console.log(config);
 app.use(express.bodyParser());
 app.use(express.static('public'));
 
-function successHandler(response) {
-	return function(result) {
-		if (result === undefined) {
-			response.send(200);
-		} else {
-			response.json(result);
-		}
-	};
-}
-
-function errorHandler(response, next) {
-	return function(err) {
-		if (typeof err === 'object' && err.hasOwnProperty('name')) {
-			var statusCodes = {
-				'notfound': 404,
-				'duplicate': 400
-			};
-
-			if (!(err.name in statusCodes)) {
-				next(err);
-			} else if (err.hasOwnProperty('message')) {
-				response.send(err.message, statusCodes[err.name]);
-			} else {
-				response.send(statusCodes[err.name]);
-			}
-		} else {
-			next(new Error(err));
-		}
-	};
-}
-
-function promiseSuccessHandler(response, result) {
+function successHandler(response, result) {
 	if (result === undefined) {
 		response.send(200);
 	} else {
@@ -52,7 +21,7 @@ function promiseSuccessHandler(response, result) {
 	}
 }
 
-function promiseErrorHandler(response, error) {
+function errorHandler(response, error) {
 	var statusCodes = {
 		'notfound': 404,
 		'duplicate': 400
@@ -62,8 +31,8 @@ function promiseErrorHandler(response, error) {
 }
 
 function complete(response, promise) {
-	promise.then(function(result) { promiseSuccessHandler(response, result); })
-		.fail(function(error) { promiseErrorHandler(response, error); })
+	promise.then(function(result) { successHandler(response, result); })
+		.fail(function(error) { errorHandler(response, error); })
 		.done();
 }
 
