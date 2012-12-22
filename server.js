@@ -139,10 +139,8 @@ app.get('/resources', function(request, response) {
 	}
 });
 
-app.put('/resources/:id', function(request, response, next) {
-	resourceService.update(request.params.id, request.body,
-		successHandler(response),
-		errorHandler(response, next));
+app.put('/resources/:id', function(request, response) {
+	complete(response, resourceService.update(request.params.id, request.body));
 });
 
 app.delete('/resources/:id', function(request, response, next) {
