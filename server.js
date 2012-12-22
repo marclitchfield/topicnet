@@ -143,10 +143,8 @@ app.put('/resources/:id', function(request, response) {
 	complete(response, resourceService.update(request.params.id, request.body));
 });
 
-app.delete('/resources/:id', function(request, response, next) {
-	resourceService.deleteResource(request.params.id,
-		successHandler(response),
-		errorHandler(response, next));
+app.delete('/resources/:id', function(request, response) {
+	complete(response, resourceService.deleteResource(request.params.id));
 });
 
 var port = process.env.PORT || 5000;
