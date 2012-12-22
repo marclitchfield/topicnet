@@ -115,10 +115,8 @@ app.delete('/topics/:id/:rel/:toid', function(request, response) {
 	complete(response, topicService.deleteRelationship(request.params.id, request.params.toid, request.params.rel));
 });
 
-app.delete('/topics/:id', function(request, response, next) {
-	topicService.deleteTopic(request.params.id,
-		successHandler(response),
-		errorHandler(response, next));
+app.delete('/topics/:id', function(request, response) {
+	complete(response, topicService.deleteTopic(request.params.id));
 });
 
 app.post('/resources', function(request, response, next) {
