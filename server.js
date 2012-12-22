@@ -107,16 +107,12 @@ app.post('/topics/:id/:rel', function(request, response) {
 	complete(response, topicService.createRelationship(request.params.id, request.body.toid, request.params.rel));
 });
 
-app.delete('/topics/:id/root', function(request, response, next) {
-	topicService.deleteRelationship(0, request.params.id, 'root',
-		successHandler(response),
-		errorHandler(response, next));
+app.delete('/topics/:id/root', function(request, response) {
+	complete(response, topicService.deleteRelationship(0, request.params.id, 'root'));
 });
 
-app.delete('/topics/:id/:rel/:toid', function(request, response, next) {
-	topicService.deleteRelationship(request.params.id, request.params.toid, request.params.rel,
-		successHandler(response),
-		errorHandler(response, next));
+app.delete('/topics/:id/:rel/:toid', function(request, response) {
+	complete(response, topicService.deleteRelationship(request.params.id, request.params.toid, request.params.rel));
 });
 
 app.delete('/topics/:id', function(request, response, next) {
