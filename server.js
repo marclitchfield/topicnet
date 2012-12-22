@@ -95,10 +95,8 @@ app.post('/topics/:id/root', function(request, response) {
 	complete(response, topicService.createRelationship(0, request.params.id, 'root'));
 });
 
-app.post('/topics/:id/resources', function(request, response, next) {
-	topicService.linkResource(request.params.id, request.body.resid,
-		successHandler(response),
-		errorHandler(response, next));
+app.post('/topics/:id/resources', function(request, response) {
+	complete(response, topicService.linkResource(request.params.id, request.body.resid));
 });
 
 app.delete('/topics/:id/resources/:resid', function(request, response, next) {
