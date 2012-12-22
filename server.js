@@ -127,15 +127,13 @@ app.get('/resources/:id', function(request, response) {
 	complete(response, resourceService.get(request.params.id));
 });
 
-app.get('/resources', function(request, response, next) {
+app.get('/resources', function(request, response) {
 	if (request.query.title) {
 		complete(response, resourceService.searchByTitle(request.query.title));
 	} else if(request.query.url) {
 		complete(response, resourceService.searchByUrl(request.query.url));
 	} else if(request.query.q) {
-		resourceService.search(request.query,
-			successHandler(response),
-			errorHandler(response, next));
+		complete(response, resourceService.search(request.query));
 	} else {
 		response.send(404);
 	}
