@@ -61,7 +61,7 @@ function promiseErrorHandler(response, error) {
 	response.send(error.message || error, statusCodes[error.name] || 500);
 }
 
-function complete(response, promise) {		
+function complete(response, promise) {
 	promise.then(function(result) { promiseSuccessHandler(response, result); })
 		.fail(function(error) { promiseErrorHandler(response, error); })
 		.done();
@@ -129,9 +129,7 @@ app.get('/resources/:id', function(request, response) {
 
 app.get('/resources', function(request, response, next) {
 	if (request.query.title) {
-		resourceService.searchByTitle(request.query.title,
-			successHandler(response),
-			errorHandler(response, next));
+		complete(response, resourceService.searchByTitle(request.query.title));
 	} else if(request.query.url) {
 		resourceService.searchByUrl(request.query.url,
 			successHandler(response),
