@@ -4,7 +4,8 @@ var config = require('./config.js');
 
 var app = express.createServer(express.logger());
 var neo4jUrl = process.env.NEO4J_URL || 'http://localhost:' + config.neo4j.port;
-var graph = new neo4j.GraphDatabase(neo4jUrl);
+var graphDatabase = new neo4j.GraphDatabase(neo4jUrl);
+var graph = new require('./lib/graph').create(graphDatabase);
 var topicService = require('./lib/topic-service').createService(graph);
 var resourceService = require('./lib/resource-service').createService(graph);
 
