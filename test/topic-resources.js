@@ -33,6 +33,25 @@ describe('Topic Resources', function() {
 
 	});
 
+	describe('POST to /topics/:id/resources with duplicate resource', function() {
+
+		var topicPost = api.request();
+		var resPost = api.request();
+
+		it('returns status 200', function(done) {
+			topicPost.postTopic(function(err, res) {
+				resPost.postResource(function(err, res) {
+					api.post('/topics/' + topicPost.returnedTopic.id + '/resources', { resid: resPost.returnedResource.id }, function(err, res) {
+						api.post('/topics/' + topicPost.returnedTopic.id + '/resources', { resid: resPost.returnedResource.id }, function(err, res) {
+							assert.equal(res.statusCode, 400);
+							done();
+						});
+					});
+				});
+			});
+		});
+	});
+
 	describe('POST to /topics/:id/resources with valid data', function() {
 
 		var topicPost = api.request();
