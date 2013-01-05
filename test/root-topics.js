@@ -1,7 +1,6 @@
 var assert = require('assert');
 var _ = require('underscore');
 var api = require('./helper-api.js');
-var Q = require('q');
 
 describe('Root Topics', function() {
 
