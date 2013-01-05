@@ -1,6 +1,7 @@
 var assert = require('assert');
 var _ = require('underscore');
 var api = require('./helper-api.js');
+var Q = require('q');
 
 describe('Root Topics', function() {
 
@@ -10,12 +11,15 @@ describe('Root Topics', function() {
 		var rootResponse;
 
 		before(function(done) {
-			p.postTopic(function() {
-				api.post('/topics/' + p.returnedTopic.id + '/root', {}, function(err, res) {
-					rootResponse = res;
-					done();
-				});
-			});
+			p.postTopicPromise()
+			.then(function() {
+				return api.postPromise('/topics/' + p.returnedTopic.id + '/root', {});
+			})
+			.then(function(res) {
+				rootResponse = res;
+				done();
+			})
+			.done();
 		});
 
 		it('returns status 200', function() {
@@ -27,10 +31,12 @@ describe('Root Topics', function() {
 			var rootTopicsResponse;
 
 			before(function(done) {
-				api.get('/topics', function(err, res) {
+				api.getPromise('/topics')
+				.then(function(res) {
 					rootTopicsResponse = res;
 					done();
-				});
+				})
+				.done();
 			});
 
 			it('returns status 200', function() {
@@ -53,34 +59,37 @@ describe('Root Topics', function() {
 		var rootPost = api.request();
 
 		before(function(done) {
-			rootPost.postTopic(function() {
-				api.post('/topics/' + rootPost.returnedTopic.id + '/root', {}, 
-					function(err, results) {
-						done(err);
-					}
-				);
-			});
+			rootPost.postTopicPromise()
+			.then(function() {
+				return api.postPromise('/topics/' + rootPost.returnedTopic.id + '/root', {});
+			})
+			.then(function(results) {
+				done();
+			})
+			.done();
 		});
 
 		it('returns status 200', function(done) {
-			api.del('/topics/' + rootPost.returnedTopic.id + '/root',
-				function(err, results) {
-					assert.equal(results.statusCode, 200);
-					done(err);
-				}
-			);
+			api.delPromise('/topics/' + rootPost.returnedTopic.id + '/root')
+			.then(function(results) {
+				assert.equal(results.statusCode, 200);
+				done();
+			})
+			.done();
 		});
 
 		describe('then GET /topics', function() {
 
 			it('does not include the topic in the root topics', function(done) {
-				api.get('/topics', function(err, results) {
+				api.getPromise('/topics')
+				.then(function(results) {
 					var rootTopics = api.parseBody(results.body);
 					assert.ok(!_.any(rootTopics, function(t) {
 						return t.id === rootPost.returnedTopic.id;
 					}));
 					done();
-				});
+				})
+				.done();
 			});
 
 		});
