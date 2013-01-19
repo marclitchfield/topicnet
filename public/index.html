@@ -17,6 +17,7 @@
 
 	<script src="js/controllers/add-resource.js"></script>
 	<script src="js/controllers/add-topic.js"></script>
+	<script src="js/controllers/error.js"></script>
 	<script src="js/controllers/next-topic.js"></script>
 	<script src="js/controllers/resource-detail.js"></script>
 	<script src="js/controllers/root.js"></script>
@@ -35,7 +36,12 @@
 		</div>
 	</header>
 
-	<div ng-view>
+	<div ng-controller="ErrorController">
+		<div ng-show="errorMessage" class="alert alert-error">
+			<button type="button" class="close" data-dismiss="alert">&times;</button>{{ errorMessage }}</div>
+
+		<div ng-view>
+		</div>
 	</div>
 </body>
 </html>

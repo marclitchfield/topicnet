@@ -2,6 +2,8 @@ function NextTopicController($scope, $http) {
 	$scope.linkfn = function addNextTopic(toTopic) {
 		$http.post('/topics/' + $scope.topic.id + '/next', { toid: toTopic.id }).success(function() {
 			$scope.topic.next.push(toTopic);
+		}).error(function(message) {
+			$scope.$emit('error', message);
 		});
 	};
 
@@ -10,6 +12,8 @@ function NextTopicController($scope, $http) {
 			$scope.topic.next = $scope.topic.next.filter(function(t) {
 				return t.id !== nextTopic.id;
 			});
+		}).error(function(message) {
+			$scope.$emit('error', message);
 		});
 	};
 }
