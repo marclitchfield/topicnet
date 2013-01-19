@@ -54,7 +54,8 @@ describe('Resource Search', function() {
 	describe('GET /resources?title with title differing only by case', function() {
 
 		it('returns existing resource', function(done) {
-			api.get('/resources?title=' + resourceToFind.title.toUpperCase(), function(err, res) {
+			api.getPromise('/resources?title=' + resourceToFind.title.toUpperCase())
+			.then(function(res) {
 				var searchResults = api.parseBody(res.body);
 				assert.ok(_.all(searchResults, function(r) {
 					return r.title === resourceToFind.title;
@@ -63,7 +64,8 @@ describe('Resource Search', function() {
 					return r.id === resourceToFind.id;
 				}));
 				done();
-			});
+			})
+			.done();
 		});
 
 	});
