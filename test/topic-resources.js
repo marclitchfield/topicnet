@@ -7,10 +7,12 @@ describe('Topic Resources', function() {
 	describe('POST to /topics/:id/resources with invalid id', function() {
 
 		it('returns status 404', function(done) {
-			api.post('/topics/-9999999/resources', {}, function(err, res) {
+			api.postPromise('/topics/-9999999/resources', {})
+			.then(function(res) {
 				assert.equal(res.statusCode, 404);
-				done(err);
-			});
+				done();
+			})
+			.done();
 		});
 
 	});
@@ -20,15 +22,20 @@ describe('Topic Resources', function() {
 		var p = api.request();
 
 		before(function(done) {
-			p.postTopic(done);
+			p.postTopicPromise()
+			.then(function() {
+				done();
+			})
+			.done();
 		});		
 		
 		it('returns status 404', function(done) {
-			api.post('/topics/' + p.returnedTopic.id + '/resources', { resid: -9999999 },
-				function(err, res) {
+			api.postPromise('/topics/' + p.returnedTopic.id + '/resources')
+			.then(function(res) {
 				assert.equal(res.statusCode, 404);
-				done(err);
-			});
+				done();
+			})
+			.done();
 		});
 
 	});
@@ -39,16 +46,21 @@ describe('Topic Resources', function() {
 		var resPost = api.request();
 
 		it('returns status 200', function(done) {
-			topicPost.postTopic(function(err, res) {
-				resPost.postResource(function(err, res) {
-					api.post('/topics/' + topicPost.returnedTopic.id + '/resources', { resid: resPost.returnedResource.id }, function(err, res) {
-						api.post('/topics/' + topicPost.returnedTopic.id + '/resources', { resid: resPost.returnedResource.id }, function(err, res) {
-							assert.equal(res.statusCode, 400);
-							done();
-						});
-					});
-				});
-			});
+			topicPost.postTopicPromise()
+			.then(function() {
+				return resPost.postResourcePromise();
+			})
+			.then(function() {
+				return api.postPromise('/topics/' + topicPost.returnedTopic.id + '/resources', { resid: resPost.returnedResource.id });
+			})
+			.then(function() {
+				return api.postPromise('/topics/' + topicPost.returnedTopic.id + '/resources', { resid: resPost.returnedResource.id });
+			})
+			.then(function(res) {
+				assert.equal(res.statusCode, 400);
+				done();
+			})
+			.done();
 		});
 	});
 
@@ -58,29 +70,34 @@ describe('Topic Resources', function() {
 		var resPost = api.request();
 
 		it('returns status 200', function(done) {
-			topicPost.postTopic(function(err, res) {
-				resPost.postResource(function(err, res) {
-					api.post('/topics/' + topicPost.returnedTopic.id + '/resources', 
-						{ resid: resPost.returnedResource.id },
-						function(err, res) {
-							assert.equal(res.statusCode, 200);
-							done();	
-						});
-				});
-			});
+			topicPost.postTopicPromise()
+			.then(function() {
+				return resPost.postResourcePromise();
+			})
+			.then(function() {
+				return api.postPromise('/topics/' + topicPost.returnedTopic.id + '/resources', 
+					{ resid: resPost.returnedResource.id });
+			})
+			.then(function(res) {
+				assert.equal(res.statusCode, 200);
+				done();	
+			})
+			.done();
 		});
 
 		describe('then GET /topics/:id', function() {
 
 			it('returns the topic with the newly associated resource', function(done) {
-				api.get('/topics/' + topicPost.returnedTopic.id, function(err, res) {
+				api.getPromise('/topics/' + topicPost.returnedTopic.id)
+				.then(function(res) {
 					assert.equal(res.statusCode, 200);
 					var topic = api.parseBody(res.body);
 					assert.ok(_.any(topic.resources, function(r) {
 						return r.id === resPost.returnedResource.id;
 					}));
 					done();
-				});
+				})
+				.done();
 			});
 
 		});
@@ -90,10 +107,12 @@ describe('Topic Resources', function() {
 	describe('DELETE /topics/:id/resources/:resid with invalid id', function() {
 
 		it('returns status 404', function(done) {
-			api.del('/topics/-9999999/resources/-9999999', function(err, res) {
+			api.delPromise('/topics/-9999999/resources/-9999999')
+			.then(function(res) {
 				assert.equal(res.statusCode, 404);
 				done();
-			});
+			})
+			.done();
 		});
 
 	});
@@ -103,16 +122,20 @@ describe('Topic Resources', function() {
 		var p = api.request();
 		
 		before(function(done) {
-			p.postTopic(done);
+			p.postTopicPromise()
+			.then(function() {
+				done();
+			})
+			.done();
 		});
 
 		it('returns status 404', function(done) {
-			api.del('/topics/' + p.returnedTopic.id + '/resources/-9999999', 
-				function(err, res) {
-					assert.equal(res.statusCode, 404);
-					done();
-				}
-			);
+			api.delPromise('/topics/' + p.returnedTopic.id + '/resources/-9999999')
+			.then(function(res) {	
+				assert.equal(res.statusCode, 404);
+				done();
+			})
+			.done();
 		});
 
 	});
@@ -123,38 +146,42 @@ describe('Topic Resources', function() {
 		var resourcePost = api.request();
 
 		before(function(done) {
-			topicPost.postTopic(function() {
-				resourcePost.postResource(function() {
-					api.post('/topics/' + topicPost.returnedTopic.id + '/resources',
-						{ resid: resourcePost.returnedResource.id },
-						function(err, res) {
-							done();
-						}
-					);
-				});
-			});
+			topicPost.postTopicPromise()
+			.then(function() {
+				return resourcePost.postResourcePromise();
+			})
+			.then(function() {
+				return api.postPromise('/topics/' + topicPost.returnedTopic.id + '/resources',
+					{ resid: resourcePost.returnedResource.id });
+			})
+			.then(function() {
+				done();
+			})
+			.done();
 		});
 
 		it('returns status 200', function(done) {
-			api.del('/topics/' + topicPost.returnedTopic.id + '/resources/' + resourcePost.returnedResource.id,
-				function(err, res) {
-					assert.equal(res.statusCode, 200);
-					done();
-				}
-			);
+			api.delPromise('/topics/' + topicPost.returnedTopic.id + '/resources/' + resourcePost.returnedResource.id)
+			.then(function(res) {
+				assert.equal(res.statusCode, 200);
+				done();
+			})
+			.done();
 		});
 
 		describe('then GET /topics/:id', function() {
 
 			it('does not include the unlinked resource', function(done) {
 				var g = api.request();
-				g.getTopic(topicPost.returnedTopic.id, function() {
+				g.getTopicPromise(topicPost.returnedTopic.id)
+				.then(function() {
 					assert.ok(g.returnedTopic.resources === undefined || 
 						!_.any(g.returnedTopic.resources, function(r) {
 							return r.id === resourcePost.returnedResource.id;
 						}));
 					done();		
-				});
+				})
+				.done();
 			});
 
 		});
