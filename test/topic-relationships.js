@@ -9,10 +9,12 @@ describe('Topic Relationships', function() {
 		var r;
 
 		before(function(done) {
-			api.post('/topics/1/invalid', { toid: 2 }, function(err, res) {
+			api.postPromise('/topics/1/invalid', { toid: 2 })
+			.then(function(res) {
 				r = res;
 				done();
-			});
+			})
+			.done();
 		});
 
 		it('returns status 500', function() {
@@ -28,10 +30,12 @@ describe('Topic Relationships', function() {
 	describe('POST to /topics/:id/:rel with an invalid id', function() {
 
 		it('returns status 404', function(done) {
-			api.post('/topics/-9999999/sub', {}, function(err, res) {
+			api.postPromise('/topics/-9999999/sub', {})
+			.then(function(res) {
 				assert.equal(res.statusCode, 404);
-				done(err);
-			});
+				done();
+			})
+			.done();
 		});
 
 	});
@@ -41,14 +45,20 @@ describe('Topic Relationships', function() {
 		var post = api.request();
 		
 		before(function(done) {
-			post.postTopic(done);
+			post.postTopicPromise()
+			.then(function() {
+				done();
+			})
+			.done();
 		});
 
 		it('returns status 500', function(done) {
-			api.del('/topics/' + post.returnedTopic.id + '/invalidrel/-9999999', function(err, res) {
+			api.delPromise('/topics/' + post.returnedTopic.id + '/invalidrel/-9999999')
+			.then(function(res) {
 				assert.equal(res.statusCode, 500);
 				done();
-			});
+			})
+			.done();
 		});
 
 	});
