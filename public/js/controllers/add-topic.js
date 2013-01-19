@@ -13,6 +13,8 @@ function AddTopicController($scope, $http) {
 		} else {
 			$http.post('/topics', { name: $scope.searchQuery }).success(function(topic) {
 				$scope.linkfn(topic);
+			}).error(function(message) {
+				$scope.$emit('error', message);
 			});
 		}
 		 

@@ -1,6 +1,8 @@
 function AddResourceController($scope, $http, $routeParams, $location) {
 	$http.get('/topics/' + $routeParams.topicId).success(function(topic) {
 		$scope.topic = topic;
+	}).error(function(message) {
+		$scope.$emit('error', message);
 	});
 
 	function redirectToTopic() {
@@ -24,6 +26,8 @@ function AddResourceController($scope, $http, $routeParams, $location) {
 					$scope.isNewResource = true;
 					$scope.statusMessage = 'Resource was not in the system. Please enter details';
 				}
+			}).error(function(message) {
+				$scope.$emit('error', message);
 			});
 		}
 	};
@@ -35,11 +39,17 @@ function AddResourceController($scope, $http, $routeParams, $location) {
 			$http.post('/resources', resourceData).success(function(resource) {
 				$http.post('/topics/' + $scope.topic.id + '/resources', { resid: resource.id }).success(function() {
 					redirectToTopic();
+				}).error(function(message) {
+					$scope.$emit('error', message);
 				});
+			}).error(function(message) {
+				$scope.$emit('error', message);
 			});
 		} else {
 			$http.post('/topics/' + $scope.topic.id + '/resources', { resid: $scope.resourceId }).success(function() {
 				redirectToTopic();
+			}).error(function(message) {
+				$scope.$emit('error', message);
 			});
 		}
 	};

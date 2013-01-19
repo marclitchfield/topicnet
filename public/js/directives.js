@@ -46,4 +46,3 @@ angular.module('artoplasm.directives', []).
 			});
 		};
 	});
-

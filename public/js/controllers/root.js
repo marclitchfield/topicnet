@@ -6,6 +6,8 @@ function RootController($scope, $http) {
 	$scope.linkfn = function makeRoot(topic) {
 		$http.post('/topics/' + topic.id + '/root').success(function() {
 			$scope.rootTopics.push(topic);
+		}).error(function(message) {
+			$scope.$emit('error', message);
 		});
 	};
 
@@ -14,6 +16,8 @@ function RootController($scope, $http) {
 			$scope.rootTopics = $scope.rootTopics.filter(function(t) {
 				return t.id !== topic.id;
 			});
+		}).error(function(message) {
+			$scope.$emit('error', message);
 		});
 	};
 }
