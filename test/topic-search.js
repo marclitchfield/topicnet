@@ -9,7 +9,7 @@ describe('Topic Search', function() {
 	var topicToFind;
 
 	before(function(done) {
-		api.postPromise('/topics', { name: 'testNode to find! ' + guid.raw() })
+		api.post('/topics', { name: 'testNode to find! ' + guid.raw() })
 		.then(function(res) {
 			topicToFind = api.parseBody(res.body);
 			done();
@@ -22,7 +22,7 @@ describe('Topic Search', function() {
 		var searchResults;
 
 		before(function(done) {
-			api.getPromise('/topics?q=' + searchString)
+			api.get('/topics?q=' + searchString)
 			.then(function(res) {
 				searchResults = api.parseBody(res.body);
 				done();
@@ -42,7 +42,7 @@ describe('Topic Search', function() {
 		var searchResults;
 
 		before(function(done) {
-			api.getPromise('/topics?q=' + searchString)
+			api.get('/topics?q=' + searchString)
 			.then(function(res) {
 				searchResults = api.parseBody(res.body);
 				done();
@@ -61,7 +61,7 @@ describe('Topic Search', function() {
 
 		it('returns existing topic', function(done) {
 			var searchString = 'ind!';
-			api.getPromise('/topics?q=' + searchString)
+			api.get('/topics?q=' + searchString)
 			.then(function(res) {
 				var searchResults = api.parseBody(res.body);
 				assert.ok(_.any(searchResults, function(t) {
@@ -88,14 +88,14 @@ describe('Topic Search', function() {
 					done();
 			}
 			for(var i = 0; i < 11; i++) {
-				api.postPromise('/topics', { name: 'similar topic ' + guid.raw() })
+				api.post('/topics', { name: 'similar topic ' + guid.raw() })
 				.then(postCallback())
 				.done();
 			}
 		});
 
 		it('returns 10 matching results', function(done) {
-			api.getPromise('/topics?q=' + searchString)
+			api.get('/topics?q=' + searchString)
 			.then(function(res) {
 				var searchResults = api.parseBody(res.body);
 				assert.equal(searchResults.length, 10);
@@ -112,7 +112,7 @@ describe('Topic Search', function() {
 		describe('then GET /topics?q with the same query but p=1 and pp=5', function() {
 
 			it('returns the first 5 matching results from the previous set', function(done) {
-				api.getPromise('/topics?q=' + searchString + '&p=1&pp=5')
+				api.get('/topics?q=' + searchString + '&p=1&pp=5')
 				.then(function(res) {
 					var searchResults = api.parseBody(res.body);
 					assert.equal(searchResults.length, 5);
@@ -129,7 +129,7 @@ describe('Topic Search', function() {
 		describe('then GET /topics?q with same the query but p=2 and pp=5', function() {
 
 			it('returns the last 5 matching results from the previous set', function(done) {
-				api.getPromise('/topics?q=' + searchString + '&p=2&pp=5')
+				api.get('/topics?q=' + searchString + '&p=2&pp=5')
 				.then(function(res) {
 					var searchResults = api.parseBody(res.body);
 					assert.equal(searchResults.length, 5);

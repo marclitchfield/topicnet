@@ -12,7 +12,7 @@
 	"q": "0.8.x"
   },
   "scripts": {
-    "test": "mocha -R spec"
+    "test": "mocha --timeout 3000 -R spec"
   },
   "engines": {
     "node": "0.8.x",

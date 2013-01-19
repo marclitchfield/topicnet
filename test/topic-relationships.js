@@ -9,7 +9,7 @@ describe('Topic Relationships', function() {
 		var r;
 
 		before(function(done) {
-			api.postPromise('/topics/1/invalid', { toid: 2 })
+			api.post('/topics/1/invalid', { toid: 2 })
 			.then(function(res) {
 				r = res;
 				done();
@@ -30,7 +30,7 @@ describe('Topic Relationships', function() {
 	describe('POST to /topics/:id/:rel with an invalid id', function() {
 
 		it('returns status 404', function(done) {
-			api.postPromise('/topics/-9999999/sub', {})
+			api.post('/topics/-9999999/sub', {})
 			.then(function(res) {
 				assert.equal(res.statusCode, 404);
 				done();
@@ -45,7 +45,7 @@ describe('Topic Relationships', function() {
 		var post = api.request();
 		
 		before(function(done) {
-			post.postTopicPromise()
+			post.postTopic()
 			.then(function() {
 				done();
 			})
@@ -53,7 +53,7 @@ describe('Topic Relationships', function() {
 		});
 
 		it('returns status 500', function(done) {
-			api.delPromise('/topics/' + post.returnedTopic.id + '/invalidrel/-9999999')
+			api.del('/topics/' + post.returnedTopic.id + '/invalidrel/-9999999')
 			.then(function(res) {
 				assert.equal(res.statusCode, 500);
 				done();

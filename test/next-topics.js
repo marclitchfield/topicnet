@@ -11,12 +11,12 @@ describe('Next Topics', function() {
 		var makeNextResponse;
 
 		before(function(done) {
-			postPrev.postTopicPromise()
+			postPrev.postTopic()
 			.then(function() {
-				return postNext.postTopicPromise();
+				return postNext.postTopic();
 			})
 			.then(function() {
-				return api.postPromise('/topics/' + postPrev.returnedTopic.id + '/next',
+				return api.post('/topics/' + postPrev.returnedTopic.id + '/next',
 					{ toid: postNext.returnedTopic.id });
 			})
 			.then(function(res) {
@@ -35,7 +35,7 @@ describe('Next Topics', function() {
 			var getNextResponse;		
 	
 			before(function(done) {
-				api.getPromise('/topics/' + postPrev.returnedTopic.id + '/next')
+				api.get('/topics/' + postPrev.returnedTopic.id + '/next')
 				.then(function(res) {
 					getNextResponse = res;
 					done();
@@ -64,12 +64,12 @@ describe('Next Topics', function() {
 		var postNext = api.request();
 
 		before(function(done) {
-			postPrev.postTopicPromise()
+			postPrev.postTopic()
 			.then(function() {
-				return postNext.postTopicPromise();
+				return postNext.postTopic();
 			})
 			.then(function() {
-				return api.postPromise('/topics/' + postPrev.returnedTopic.id + '/next', { toid: postNext.returnedTopic.id });
+				return api.post('/topics/' + postPrev.returnedTopic.id + '/next', { toid: postNext.returnedTopic.id });
 			})
 			.then(function(results) {
 				done();
@@ -78,7 +78,7 @@ describe('Next Topics', function() {
 		});
 
 		it('returns status 200', function(done) {
-			api.delPromise('/topics/' + postPrev.returnedTopic.id + '/next/' + postNext.returnedTopic.id)
+			api.del('/topics/' + postPrev.returnedTopic.id + '/next/' + postNext.returnedTopic.id)
 			.then(function(results) {
 				assert.equal(results.statusCode, 200);
 				done();
@@ -89,7 +89,7 @@ describe('Next Topics', function() {
 		describe('then GET /topics/:id/next', function() {
 
 			it('does not include the topic whose next relationship was deleted', function(done) {
-				api.getPromise('/topics/' + postPrev.returnedTopic.id + '/next')
+				api.get('/topics/' + postPrev.returnedTopic.id + '/next')
 				.then(function(results) {
 					var nextTopics = api.parseBody(results.body);
 					assert.ok(!_.any(nextTopics, function(t) {

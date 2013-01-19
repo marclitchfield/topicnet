@@ -10,9 +10,9 @@ describe('Root Topics', function() {
 		var rootResponse;
 
 		before(function(done) {
-			p.postTopicPromise()
+			p.postTopic()
 			.then(function() {
-				return api.postPromise('/topics/' + p.returnedTopic.id + '/root', {});
+				return api.post('/topics/' + p.returnedTopic.id + '/root', {});
 			})
 			.then(function(res) {
 				rootResponse = res;
@@ -30,7 +30,7 @@ describe('Root Topics', function() {
 			var rootTopicsResponse;
 
 			before(function(done) {
-				api.getPromise('/topics')
+				api.get('/topics')
 				.then(function(res) {
 					rootTopicsResponse = res;
 					done();
@@ -58,9 +58,9 @@ describe('Root Topics', function() {
 		var rootPost = api.request();
 
 		before(function(done) {
-			rootPost.postTopicPromise()
+			rootPost.postTopic()
 			.then(function() {
-				return api.postPromise('/topics/' + rootPost.returnedTopic.id + '/root', {});
+				return api.post('/topics/' + rootPost.returnedTopic.id + '/root', {});
 			})
 			.then(function(results) {
 				done();
@@ -69,7 +69,7 @@ describe('Root Topics', function() {
 		});
 
 		it('returns status 200', function(done) {
-			api.delPromise('/topics/' + rootPost.returnedTopic.id + '/root')
+			api.del('/topics/' + rootPost.returnedTopic.id + '/root')
 			.then(function(results) {
 				assert.equal(results.statusCode, 200);
 				done();
@@ -80,7 +80,7 @@ describe('Root Topics', function() {
 		describe('then GET /topics', function() {
 
 			it('does not include the topic in the root topics', function(done) {
-				api.getPromise('/topics')
+				api.get('/topics')
 				.then(function(results) {
 					var rootTopics = api.parseBody(results.body);
 					assert.ok(!_.any(rootTopics, function(t) {

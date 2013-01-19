@@ -7,7 +7,7 @@ describe('Topic Resources', function() {
 	describe('POST to /topics/:id/resources with invalid id', function() {
 
 		it('returns status 404', function(done) {
-			api.postPromise('/topics/-9999999/resources', {})
+			api.post('/topics/-9999999/resources', {})
 			.then(function(res) {
 				assert.equal(res.statusCode, 404);
 				done();
@@ -22,7 +22,7 @@ describe('Topic Resources', function() {
 		var p = api.request();
 
 		before(function(done) {
-			p.postTopicPromise()
+			p.postTopic()
 			.then(function() {
 				done();
 			})
@@ -30,7 +30,7 @@ describe('Topic Resources', function() {
 		});		
 		
 		it('returns status 404', function(done) {
-			api.postPromise('/topics/' + p.returnedTopic.id + '/resources')
+			api.post('/topics/' + p.returnedTopic.id + '/resources')
 			.then(function(res) {
 				assert.equal(res.statusCode, 404);
 				done();
@@ -46,15 +46,15 @@ describe('Topic Resources', function() {
 		var resPost = api.request();
 
 		it('returns status 200', function(done) {
-			topicPost.postTopicPromise()
+			topicPost.postTopic()
 			.then(function() {
-				return resPost.postResourcePromise();
+				return resPost.postResource();
 			})
 			.then(function() {
-				return api.postPromise('/topics/' + topicPost.returnedTopic.id + '/resources', { resid: resPost.returnedResource.id });
+				return api.post('/topics/' + topicPost.returnedTopic.id + '/resources', { resid: resPost.returnedResource.id });
 			})
 			.then(function() {
-				return api.postPromise('/topics/' + topicPost.returnedTopic.id + '/resources', { resid: resPost.returnedResource.id });
+				return api.post('/topics/' + topicPost.returnedTopic.id + '/resources', { resid: resPost.returnedResource.id });
 			})
 			.then(function(res) {
 				assert.equal(res.statusCode, 400);
@@ -70,12 +70,12 @@ describe('Topic Resources', function() {
 		var resPost = api.request();
 
 		it('returns status 200', function(done) {
-			topicPost.postTopicPromise()
+			topicPost.postTopic()
 			.then(function() {
-				return resPost.postResourcePromise();
+				return resPost.postResource();
 			})
 			.then(function() {
-				return api.postPromise('/topics/' + topicPost.returnedTopic.id + '/resources', 
+				return api.post('/topics/' + topicPost.returnedTopic.id + '/resources', 
 					{ resid: resPost.returnedResource.id });
 			})
 			.then(function(res) {
@@ -88,7 +88,7 @@ describe('Topic Resources', function() {
 		describe('then GET /topics/:id', function() {
 
 			it('returns the topic with the newly associated resource', function(done) {
-				api.getPromise('/topics/' + topicPost.returnedTopic.id)
+				api.get('/topics/' + topicPost.returnedTopic.id)
 				.then(function(res) {
 					assert.equal(res.statusCode, 200);
 					var topic = api.parseBody(res.body);
@@ -107,7 +107,7 @@ describe('Topic Resources', function() {
 	describe('DELETE /topics/:id/resources/:resid with invalid id', function() {
 
 		it('returns status 404', function(done) {
-			api.delPromise('/topics/-9999999/resources/-9999999')
+			api.del('/topics/-9999999/resources/-9999999')
 			.then(function(res) {
 				assert.equal(res.statusCode, 404);
 				done();
@@ -122,7 +122,7 @@ describe('Topic Resources', function() {
 		var p = api.request();
 		
 		before(function(done) {
-			p.postTopicPromise()
+			p.postTopic()
 			.then(function() {
 				done();
 			})
@@ -130,7 +130,7 @@ describe('Topic Resources', function() {
 		});
 
 		it('returns status 404', function(done) {
-			api.delPromise('/topics/' + p.returnedTopic.id + '/resources/-9999999')
+			api.del('/topics/' + p.returnedTopic.id + '/resources/-9999999')
 			.then(function(res) {	
 				assert.equal(res.statusCode, 404);
 				done();
@@ -146,12 +146,12 @@ describe('Topic Resources', function() {
 		var resourcePost = api.request();
 
 		before(function(done) {
-			topicPost.postTopicPromise()
+			topicPost.postTopic()
 			.then(function() {
-				return resourcePost.postResourcePromise();
+				return resourcePost.postResource();
 			})
 			.then(function() {
-				return api.postPromise('/topics/' + topicPost.returnedTopic.id + '/resources',
+				return api.post('/topics/' + topicPost.returnedTopic.id + '/resources',
 					{ resid: resourcePost.returnedResource.id });
 			})
 			.then(function() {
@@ -161,7 +161,7 @@ describe('Topic Resources', function() {
 		});
 
 		it('returns status 200', function(done) {
-			api.delPromise('/topics/' + topicPost.returnedTopic.id + '/resources/' + resourcePost.returnedResource.id)
+			api.del('/topics/' + topicPost.returnedTopic.id + '/resources/' + resourcePost.returnedResource.id)
 			.then(function(res) {
 				assert.equal(res.statusCode, 200);
 				done();
@@ -173,7 +173,7 @@ describe('Topic Resources', function() {
 
 			it('does not include the unlinked resource', function(done) {
 				var g = api.request();
-				g.getTopicPromise(topicPost.returnedTopic.id)
+				g.getTopic(topicPost.returnedTopic.id)
 				.then(function() {
 					assert.ok(g.returnedTopic.resources === undefined || 
 						!_.any(g.returnedTopic.resources, function(r) {

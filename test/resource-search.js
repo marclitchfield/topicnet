@@ -9,7 +9,7 @@ describe('Resource Search', function() {
 	var resourceToFind;
 
 	before(function(done) {
-		api.postPromise('/resources', { title: 'Resource to find! ' + guid.raw(),
+		api.post('/resources', { title: 'Resource to find! ' + guid.raw(),
 			url: 'http://example.com/Upper/' + guid.raw(), source: 'example.com',
 			verb: 'read' })
 		.then(function(res) {
@@ -22,7 +22,7 @@ describe('Resource Search', function() {
 	describe('GET /resources?invalid', function() {
 
 		it('returns status 404', function(done) {
-			api.getPromise('/resources?invalid')
+			api.get('/resources?invalid')
 			.then(function(res) {
 				assert.equal(res.statusCode, 404);
 				done();
@@ -35,7 +35,7 @@ describe('Resource Search', function() {
 	describe('GET /resources?title with exact matching title', function() {
 
 		it('returns existing resource', function(done) {
-			api.getPromise('/resources?title=' + resourceToFind.title)
+			api.get('/resources?title=' + resourceToFind.title)
 			.then(function(res) {
 				var searchResults = api.parseBody(res.body);
 				assert.ok(_.all(searchResults, function(r) {
@@ -54,7 +54,7 @@ describe('Resource Search', function() {
 	describe('GET /resources?title with title differing only by case', function() {
 
 		it('returns existing resource', function(done) {
-			api.getPromise('/resources?title=' + resourceToFind.title.toUpperCase())
+			api.get('/resources?title=' + resourceToFind.title.toUpperCase())
 			.then(function(res) {
 				var searchResults = api.parseBody(res.body);
 				assert.ok(_.all(searchResults, function(r) {
@@ -73,7 +73,7 @@ describe('Resource Search', function() {
 	describe('GET /resources?url with exact matching url', function() {
 
 		it('returns resource ', function(done) {
-			api.getPromise('/resources?url=' + encodeURIComponent(resourceToFind.url))
+			api.get('/resources?url=' + encodeURIComponent(resourceToFind.url))
 			.then(function(res) {
 				var searchResults = api.parseBody(res.body);
 				assert.ok(_.all(searchResults, function(r) {
@@ -94,7 +94,7 @@ describe('Resource Search', function() {
 		var searchString = 'o Find!';
 
 		it('returns a resource with the search string in the title', function(done) {
-			api.getPromise('/resources?q=' + searchString)
+			api.get('/resources?q=' + searchString)
 			.then(function(res) {
 				var searchResults = api.parseBody(res.body);
 				assert.ok(_.all(searchResults, function(r) {
@@ -130,12 +130,12 @@ describe('Resource Search', function() {
 					done();
 			}
 			for(var i = 0; i < 11; i++) {
-				api.postPromise('/resources', getResource()).then(postCallback).done();
+				api.post('/resources', getResource()).then(postCallback).done();
 			}
 		});
 
 		it('returns 10 matching results', function(done) {
-			api.getPromise('/resources?q=' + searchString)
+			api.get('/resources?q=' + searchString)
 			.then(function(res) {
 				var searchResults = api.parseBody(res.body);
 				assert.equal(searchResults.length, 10);
@@ -152,7 +152,7 @@ describe('Resource Search', function() {
 		describe('then GET /resources?q with the same query but p=1 and pp=5', function() {
 
 			it('returns the first 5 matching results from the previous set', function(done) {
-				api.getPromise('/resources?q=' + searchString + '&p=1&pp=5')
+				api.get('/resources?q=' + searchString + '&p=1&pp=5')
 				.then(function(res) {
 					var searchResults = api.parseBody(res.body);
 					assert.equal(searchResults.length, 5);
@@ -169,7 +169,7 @@ describe('Resource Search', function() {
 		describe('then GET /resources?q with same the query but p=2 and pp=5', function() {
 
 			it('returns the last 5 matching results from the previous set', function(done) {
-				api.getPromise('/resources?q=' + searchString + '&p=2&pp=5')
+				api.get('/resources?q=' + searchString + '&p=2&pp=5')
 				.then(function(res) {
 					var searchResults = api.parseBody(res.body);
 					assert.equal(searchResults.length, 5);

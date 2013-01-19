@@ -4,7 +4,7 @@ var assert = require('assert');
 var _ = require('underscore');
 var Q = require('q');
 
-exports.getPromise = function(path) {
+exports.get = function(path) {
 	var deferred = Q.defer();
 	request({
 		uri: 'http://localhost:5000' + path,
@@ -17,7 +17,7 @@ exports.getPromise = function(path) {
 	});
 };
 
-exports.postPromise = function(path, body) {
+exports.post = function(path, body) {
 	var deferred = Q.defer();
 	request({
 		uri: 'http://localhost:5000' + path,
@@ -31,7 +31,7 @@ exports.postPromise = function(path, body) {
 	});
 };
 
-exports.putPromise = function(path, body) {
+exports.put = function(path, body) {
 	var deferred = Q.defer();	
 	request({
 		uri: 'http://localhost:5000' + path,
@@ -45,7 +45,7 @@ exports.putPromise = function(path, body) {
 	});
 };
 
-exports.delPromise = function(path) {
+exports.del = function(path) {
 	var deferred = Q.defer();
 	request({
 		uri: 'http://localhost:5000' + path,
@@ -71,42 +71,42 @@ exports.request = function() {
 
 	return {
 
-		postTopicPromise: function() {
+		postTopic: function() {
 			var self = this;
 			self.postedTopic = { name: 'Topic ' + guid.raw() };
-			return exports.postPromise('/topics', self.postedTopic)
+			return exports.post('/topics', self.postedTopic)
 			.then(function(res) {
 				self.response = res;
 				self.returnedTopic = exports.parseBody(res.body);
 			});
 		},
 
-		getTopicPromise: function(id) {
+		getTopic: function(id) {
 			var self = this;
-			return exports.getPromise('/topics/' + id)
+			return exports.get('/topics/' + id)
 			.then(function(res) {
 				self.response = res;
 				self.returnedTopic = exports.parseBody(res.body);
 			});
 		},
 
-		postResourcePromise: function() {
+		postResource: function() {
 			var self = this;
 			self.postedResource = { title: 'Resource ' + guid.raw(),
 				url: 'http://example.com/UpperCase/' + guid.raw(),
 				source: 'example.com',
 				verb: 'read'
 			};
-			return exports.postPromise('/resources', self.postedResource)
+			return exports.post('/resources', self.postedResource)
 			.then(function(res) {
 				self.response = res;
 				self.returnedResource = exports.parseBody(res.body);
 			});
 		},
 
-		getResourcePromise: function(id) {
+		getResource: function(id) {
 			var self = this;
-			return exports.getPromise('/resources/' + id)
+			return exports.get('/resources/' + id)
 			.then(function(res) {
 				self.response = res;
 				self.returnedResource = exports.parseBody(res.body);

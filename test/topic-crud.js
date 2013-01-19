@@ -7,7 +7,7 @@ describe('Topic CRUD', function() {
 
 	describe('POST to /topics with no name', function() {
 		it('returns status 500 and error message', function(done) {
-			api.postPromise('/topics', {})
+			api.post('/topics', {})
 			.then(function(res) {
 				assert.equal(500, res.statusCode);
 				assert.notEqual(-1, res.body.indexOf('name is required'));
@@ -22,7 +22,7 @@ describe('Topic CRUD', function() {
 		var p = api.request();
 
 		before(function(done) {
-			p.postTopicPromise()
+			p.postTopic()
 			.then(function() {
 				done();
 			})
@@ -49,9 +49,9 @@ describe('Topic CRUD', function() {
 		var duplicatePostResponse;		
 
 		before(function(done) {
-			p.postTopicPromise()
+			p.postTopic()
 			.then(function() {
-				return api.postPromise('/topics', p.postedTopic);
+				return api.post('/topics', p.postedTopic);
 			})
 			.then(function(res) {
 				duplicatePostResponse = res;
@@ -73,7 +73,7 @@ describe('Topic CRUD', function() {
 	describe('GET /topics/:id with invalid id', function() {
 
 		it('returns status 404', function(done) {
-			api.getPromise('/topics/-99999')
+			api.get('/topics/-99999')
 			.then(function(res) {
 				assert.equal(res.statusCode, 404);
 				done();
@@ -89,9 +89,9 @@ describe('Topic CRUD', function() {
 		var g = api.request();
 	
 		before(function(done) {
-			p.postTopicPromise()
+			p.postTopic()
 			.then(function() {
-				return g.getTopicPromise(p.returnedTopic.id);
+				return g.getTopic(p.returnedTopic.id);
 			})
 			.then(function() {
 				done();
@@ -119,9 +119,9 @@ describe('Topic CRUD', function() {
 		var updatedTopic = { name: 'updated ' + guid.raw() };
 
 		before(function(done) {
-			p.postTopicPromise()
+			p.postTopic()
 			.then(function() {
-				return api.putPromise('/topics/' + p.returnedTopic.id, updatedTopic);
+				return api.put('/topics/' + p.returnedTopic.id, updatedTopic);
 			})
 			.then(function() {
 				done();
@@ -134,7 +134,7 @@ describe('Topic CRUD', function() {
 			var g = api.request();
 			
 			before(function(done) {
-				g.getTopicPromise(p.returnedTopic.id)
+				g.getTopic(p.returnedTopic.id)
 				.then(function() {
 					done();
 				})
@@ -154,12 +154,12 @@ describe('Topic CRUD', function() {
 		var putResponse;
 
 		before(function(done) {
-			p1.postTopicPromise()
+			p1.postTopic()
 			.then(function() {
-				return p2.postTopicPromise();
+				return p2.postTopic();
 			})
 			.then(function() {
-				return api.putPromise('/topics/' + p2.returnedTopic.id, { name: p1.returnedTopic.name });
+				return api.put('/topics/' + p2.returnedTopic.id, { name: p1.returnedTopic.name });
 			})
 			.then(function(res) {
 				putResponse = res;
@@ -181,7 +181,7 @@ describe('Topic CRUD', function() {
 	describe('DELETE /topics/:id with invalid id', function() {
 
 		it('returns status 404', function(done) {
-			api.delPromise('/topics/-9999999')
+			api.del('/topics/-9999999')
 			.then(function(res) {
 				assert.equal(res.statusCode, 404);
 				done();
@@ -198,16 +198,16 @@ describe('Topic CRUD', function() {
 		var delResponse;
 		
 		before(function(done) {
-			pTopic.postTopicPromise()
+			pTopic.postTopic()
 			.then(function() {
-				return pResource.postResourcePromise();
+				return pResource.postResource();
 			})
 			.then(function() {
-				return api.postPromise('/topics/' + pTopic.returnedTopic.id + '/resources/',
+				return api.post('/topics/' + pTopic.returnedTopic.id + '/resources/',
 					{ resid: pResource.returnedResource.id });
 			})
 			.then(function() {
-				return api.delPromise('/topics/' + pTopic.returnedTopic.id);
+				return api.del('/topics/' + pTopic.returnedTopic.id);
 			})
 			.then(function(res) {
 				delResponse = res;
@@ -223,7 +223,7 @@ describe('Topic CRUD', function() {
 		describe('then GET /topics/:id', function() {
 
 			it('returns the topic', function(done) {
-				api.getPromise('/topics/' + pTopic.returnedTopic.id)
+				api.get('/topics/' + pTopic.returnedTopic.id)
 				.then(function(res) {
 					var topic = api.parseBody(res.body);
 					assert.equal(topic.id, pTopic.returnedTopic.id);
@@ -241,7 +241,7 @@ describe('Topic CRUD', function() {
 		var p = api.request();
 
 		before(function(done) {
-			p.postTopicPromise()
+			p.postTopic()
 			.then(function() {
 				done();
 			})
@@ -249,7 +249,7 @@ describe('Topic CRUD', function() {
 		});
 
 		it('returns status 200', function(done) {
-			api.delPromise('/topics/' + p.returnedTopic.id)
+			api.del('/topics/' + p.returnedTopic.id)
 			.then(function(res) {
 				assert.equal(res.statusCode, 200);
 				done();
@@ -260,7 +260,7 @@ describe('Topic CRUD', function() {
 		describe('then GET /topics/:id with the deleted id', function() {
 
 			it('returns status 404', function(done) {
-				api.getPromise('/topics/' + p.returnedTopic.id)
+				api.get('/topics/' + p.returnedTopic.id)
 				.then(function(res) {
 					assert.equal(res.statusCode, 404);
 					done();
