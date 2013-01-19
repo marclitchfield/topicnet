@@ -7,60 +7,64 @@ describe('Resource CRUD', function() {
 
 	describe('POST to /resources without title', function() {
 		it('returns status 500 and error message', function(done) {
-			api.post('/resources', {}, function(err, res) {
+			api.postPromise('/resources', {})
+			.then(function(res) {
 				assert.equal(res.statusCode, 500);
 				assert.notEqual(-1, res.body.indexOf('title is required'));
 				done();
-			});
+			})
+			.done();
 		});
 	});
 
 	describe('POST to /resources without url', function() {
 		it('returns status 500 and error message', function(done) {
-			api.post('/resources', { title: 'test resource ' + guid.raw() }, function(err, res) {
+			api.postPromise('/resources', { title: 'test resource ' + guid.raw() })
+			.then(function(res) {
 				assert.equal(res.statusCode, 500);
 				assert.notEqual(-1, res.body.indexOf('url is required'));
 				done();
-			});
+			})
+			.done();
 		});
 	});
 
 	describe('POST to /resources without source', function() {
 		it('returns status 500 and error message', function(done) {
-			api.post('/resources', { title: 'test resource ' + guid.raw() , url: 'http://example.com/' + guid.raw() }, 
-				function(err, res) {
-					assert.equal(res.statusCode, 500);
-					assert.notEqual(-1, res.body.indexOf('source is required'));
-					done();
-				}
-			);
+			api.postPromise('/resources', { title: 'test resource ' + guid.raw() , url: 'http://example.com/' + guid.raw() })
+			.then(function(res) {	
+				assert.equal(res.statusCode, 500);
+				assert.notEqual(-1, res.body.indexOf('source is required'));
+				done();
+			})
+			.done();
 		});
 	});
 
 	describe('POST to /resources without verb', function() {
 		it('returns status 500 and error message', function(done) {
-			api.post('/resources', { title: 'test resource', url: 'http://example/com', source: 'example.com' },
-				function(err, res) {
-					assert.equal(res.statusCode, 500);
-					assert.notEqual(-1, res.body.indexOf('verb is required'));
-					done();
-				}
-			);
-		});		
+			api.postPromise('/resources', { title: 'test resource', url: 'http://example/com', source: 'example.com' })
+			.then(function(res) {
+				assert.equal(res.statusCode, 500);
+				assert.notEqual(-1, res.body.indexOf('verb is required'));
+				done();
+			})
+			.done();
+		});
 	});
 
 	describe('POST to /resources with invalid verb', function() {
 		it('returns status 500 and error message', function(done) {
-			api.post('/resources', { title: 'test resource ' + guid.raw(),
+			api.postPromise('/resources', { title: 'test resource ' + guid.raw(),
 				url: 'http://example.com/' + guid.raw(), 
 				source: 'example.com',
-				verb: 'invalid' },
-				function(err, res) {
-					assert.equal(res.statusCode, 500);
-					assert.notEqual(-1, res.body.indexOf('invalid verb'));
-					done();
-				}
-			);
+				verb: 'invalid' })
+			.then(function(res) {
+				assert.equal(res.statusCode, 500);
+				assert.notEqual(-1, res.body.indexOf('invalid verb'));
+				done();
+			})
+			.done();
 		});
 	});
 
@@ -69,7 +73,11 @@ describe('Resource CRUD', function() {
 		var p = api.request();
 
 		before(function(done) {
-			p.postResource(done);
+			p.postResourcePromise()
+			.then(function() {
+				done();	
+			})
+			.done();
 		});
 
 		it('returns status 200', function() {
@@ -104,16 +112,17 @@ describe('Resource CRUD', function() {
 		var duplicatePostResults;
 
 		before(function(done) {
-			p.postResource(function() {
-				api.post('/resources', { title: p.postedResource.title,
+			p.postResourcePromise()
+			.then(function() {
+				return api.postPromise('/resources', { title: p.postedResource.title,
 					url: 'http://uniqueurl/' + guid.raw(),
-					source: 'example.com', verb: 'read' },
-					function(err, res) {
-						duplicatePostResults = res;
-						done();
-					}
-				);		
-			});	
+					source: 'example.com', verb: 'read' });
+			})
+			.then(function(res) {
+				duplicatePostResults = res;
+				done();
+			})
+			.done();
 		});
 
 		it('returns status 400', function() {
@@ -132,16 +141,17 @@ describe('Resource CRUD', function() {
 		var duplicatePostResults;
 
 		before(function(done) {
-			p.postResource(function() {
-				api.post('/resources', { title: 'unique title ' + guid.raw(),
+			p.postResourcePromise()
+			.then(function() {
+				return api.postPromise('/resources', { title: 'unique title ' + guid.raw(),
 					url: p.postedResource.url,
-					source: 'example.com', verb: 'read' },
-					function(err, res) {
-						duplicatePostResults = res;
-						done();
-					}
-				);		
-			});	
+					source: 'example.com', verb: 'read' });
+			})
+			.then(function(res) {
+				duplicatePostResults = res;
+				done();
+			})
+			.done();
 		});
 
 		it('returns status 400', function() {
@@ -157,10 +167,12 @@ describe('Resource CRUD', function() {
 	describe('GET /resources/:id with invalid id', function() {
 		
 		it('returns status 404', function(done) {
-			api.get('/resources/-9999999', function(err, res) {
+			api.getPromise('/resources/-9999999')
+			.then(function(res) {
 				assert.equal(res.statusCode, 404);
-				done(err);
-			});
+				done();
+			})
+			.done();
 		});
 
 	});
@@ -171,9 +183,14 @@ describe('Resource CRUD', function() {
 		var g = api.request();
 
 		before(function(done) {
-			p.postResource(function() {
-				g.getResource(p.returnedResource.id, done);
-			});
+			p.postResourcePromise()
+			.then(function() {
+				return g.getResourcePromise(p.returnedResource.id);
+			})
+			.then(function() {
+				done();
+			})
+			.done();
 		});
 
 		it('returns status 200', function() {
@@ -213,15 +230,16 @@ describe('Resource CRUD', function() {
 		var returnedResource;
 
 		before(function(done) {
-			p.postResource(function() {
-				api.put('/resources/' + p.returnedResource.id,
-					resourceUpdate,
-					function(err, res) {
-						putResponse = res;
-						returnedResource = api.parseBody(res.body);
-						done();
-				});
-			});
+			p.postResourcePromise()
+			.then(function() {
+				return api.putPromise('/resources/' + p.returnedResource.id, resourceUpdate);
+			})
+			.then(function(res) {
+				putResponse = res;
+				returnedResource = api.parseBody(res.body);
+				done();
+			})
+			.done();
 		});
 
 		it('returns status 200', function() {
@@ -249,7 +267,11 @@ describe('Resource CRUD', function() {
 			var g = api.request();
 			
 			before(function(done) {
-				g.getResource(p.returnedResource.id, done);
+				g.getResourcePromise(p.returnedResource.id)
+				.then(function() {
+					done();
+				})
+				.done();
 			});
 
 			it('returns resource with updated title', function() {
@@ -275,10 +297,12 @@ describe('Resource CRUD', function() {
 	describe('PUT /resources/:id with invalid id', function() {
 
 		it('returns status 404', function(done) {
-			api.put('/resources/-9999999', {}, function(err, res) {
+			api.putPromise('/resources/-9999999', {})
+			.then(function(res) {
 				assert.equal(res.statusCode, 404);
 				done();
-			});
+			})
+			.done();
 		});
 
 	});
@@ -288,52 +312,62 @@ describe('Resource CRUD', function() {
 		var p = api.request();
 
 		before(function(done) {
-			p.postResource(done);
+			p.postResourcePromise()
+			.then(function() {
+				done();
+			})
+			.done();
 		});
 
 		describe('without title', function() {
 			it('returns status 500 and error message', function(done) {
-				api.put('/resources/' + p.returnedResource.id, {}, function(err, res) {
+				api.putPromise('/resources/' + p.returnedResource.id, {})
+				.then(function(res) {
 					assert.equal(res.statusCode, 500);
 					assert.notEqual(-1, res.body.indexOf('title is required'));
 					done();
-				});
+				})
+				.done();
 			});
 		});
 
 		describe('without url', function() {
 			it('returns status 500 and error message', function(done) {
-				api.put('/resources/' + p.returnedResource.id, { title: 'updated resource ' + guid.raw() }, function(err, res) {
+				api.putPromise('/resources/' + p.returnedResource.id, { title: 'updated resource ' + guid.raw() })
+				.then(function(res) {
 					assert.equal(res.statusCode, 500);
 					assert.notEqual(-1, res.body.indexOf('url is required'));
 					done();
-				});
+				})
+				.done();
 			});
 		});
 
 		describe('without source', function() {
 			it('returns status 500 and error message', function(done) {
-				api.put('/resources/' + p.returnedResource.id, 
-					{ title: 'updated resource ' + guid.raw(), url: 'http://updatedexample.com/' + guid.raw() }, function(err, res) {
+				api.putPromise('/resources/' + p.returnedResource.id, 
+					{ title: 'updated resource ' + guid.raw(), url: 'http://updatedexample.com/' + guid.raw() })
+				.then(function(res) {
 					assert.equal(res.statusCode, 500);
 					assert.notEqual(-1, res.body.indexOf('source is required'));
 					done();
-				});
+				})
+				.done();
 			});
 		});
 		
 		describe('without verb', function() {
 			it('returns status 500 and error message', function(done) {
-				api.put('/resources/' + p.returnedResource.id, 
+				api.putPromise('/resources/' + p.returnedResource.id, 
 					{ title: 'updated resource ' + guid.raw(), 
 						url: 'http://updatedexample.com/' + guid.raw(),
-						source: 'updatedsource.com' }, 
-					function(err, res) {
-						assert.equal(res.statusCode, 500);
-						assert.notEqual(-1, res.body.indexOf('verb is required'));
-						done();
-					}
-				);
+						source: 'updatedsource.com' }) 
+				.then(function(res) {
+					assert.equal(res.statusCode, 500);
+					assert.notEqual(-1, res.body.indexOf('verb is required'));
+					done();
+				})
+				.done();
 			});
 		});
 
@@ -344,21 +378,23 @@ describe('Resource CRUD', function() {
 		var p = api.request();
 
 		before(function(done) {
-			p.postResource(done);
+			p.postResourcePromise()
+			.then(done)
+			.done();
 		});
 
 		it('returns status 500 and an appropriate error message', function(done) {
-			api.put('/resources/' + p.returnedResource.id,
+			api.putPromise('/resources/' + p.returnedResource.id,
 				{ title: p.postedResource.title, 
 					url: p.postedResource.url,
 					source: p.postedResource.source,
-					verb: 'invalid' },
-				function(err, res) {
-					assert.equal(res.statusCode, 500);
-					assert.notEqual(-1, res.body.indexOf('invalid verb'));
-					done();
-				}
-			);
+					verb: 'invalid' })
+			.then(function(res) {
+				assert.equal(res.statusCode, 500);
+				assert.notEqual(-1, res.body.indexOf('invalid verb'));
+				done();
+			})
+			.done();
 		});
 
 	});
@@ -370,19 +406,21 @@ describe('Resource CRUD', function() {
 		var duplicatePutResults;
 
 		before(function(done) {
-			p1.postResource(function() {
-				p2.postResource(function() {
-					api.put('/resources/' + p2.returnedResource.id,
-						{ title: p1.postedResource.title, 
-							url: 'http://uniqueurl/' + guid.raw(),
-							source: 'example.com', verb: 'read' },
-						function(err, res) {
-							duplicatePutResults = res;
-							done();
-						}
-					);
-				});
-			});
+			p1.postResourcePromise()
+			.then(function() {
+				return p2.postResourcePromise();
+			})
+			.then(function() {
+				return api.putPromise('/resources/' + p2.returnedResource.id,
+					{ title: p1.postedResource.title, 
+						url: 'http://uniqueurl/' + guid.raw(),
+						source: 'example.com', verb: 'read' });
+			})
+			.then(function(res) {
+				duplicatePutResults = res;
+				done();
+			})
+			.done();
 		});
 
 		it('returns status 400', function() {
@@ -402,19 +440,21 @@ describe('Resource CRUD', function() {
 		var duplicatePutResults;
 
 		before(function(done) {
-			p1.postResource(function() {
-				p2.postResource(function() {
-					api.put('/resources/' + p2.returnedResource.id,
-						{ title: 'unique title ' + guid.raw(), 
-							url: p1.postedResource.url,
-							source: 'example.com', verb: 'read' },
-						function(err, res) {
-							duplicatePutResults = res;
-							done();
-						}
-					);
-				});
-			});
+			p1.postResourcePromise()
+			.then(function() {
+				return p2.postResourcePromise();
+			})
+			.then(function() {
+				return api.putPromise('/resources/' + p2.returnedResource.id,
+					{ title: 'unique title ' + guid.raw(), 
+						url: p1.postedResource.url,
+						source: 'example.com', verb: 'read' });
+			})
+			.then(function(res) {
+				duplicatePutResults = res;
+				done();
+			})
+			.done();
 		});
 
 		it('returns status 400', function() {
@@ -430,10 +470,12 @@ describe('Resource CRUD', function() {
 	describe('DELETE /resources/:id with invalid id', function() {
 
 		it('returns status 404', function(done) {
-			api.del('/resources/-9999999', function(err, res) {
+			api.delPromise('/resources/-9999999')
+			.then(function(res) {
 				assert.equal(res.statusCode, 404);
 				done();	
-			});
+			})
+			.done();
 		});
 
 	});
@@ -445,21 +487,22 @@ describe('Resource CRUD', function() {
 		var delResponse;		
 
 		before(function(done) {
-			pTopic.postTopic(function() {
-				pResource.postResource(function() {
-					api.post('/topics/' + pTopic.returnedTopic.id + '/resources',
-						{ resid: pResource.returnedResource.id },
-						function(err, res) {
-							api.del('/resources/' + pResource.returnedResource.id,
-								function(err, res) {
-									delResponse = res;
-									done();
-								}
-							);	
-						}
-					);
-				});
-			});
+			pTopic.postTopicPromise()
+			.then(function() {
+				return pResource.postResourcePromise();
+			})
+			.then(function() {
+				return api.postPromise('/topics/' + pTopic.returnedTopic.id + '/resources',
+					{ resid: pResource.returnedResource.id });
+			})
+			.then(function(res) {
+				return api.delPromise('/resources/' + pResource.returnedResource.id);
+			})
+			.then(function(res) {
+				delResponse = res;
+				done();
+			})
+			.done();
 		});
 
 		it('returns status 500', function() {
@@ -469,11 +512,13 @@ describe('Resource CRUD', function() {
 		describe('then GET /resources/:id', function() {
 
 			it('returns the resource', function(done) {
-				api.get('/resources/' + pResource.returnedResource.id, function(err, res) {
+				api.getPromise('/resources/' + pResource.returnedResource.id)
+				.then(function(res) {
 					var resource = api.parseBody(res.body);
 					assert.equal(resource.id, pResource.returnedResource.id);
 					done();
-				});
+				})
+				.done();
 			});
 
 		});
@@ -482,12 +527,14 @@ describe('Resource CRUD', function() {
 
 			it('returns the topic including the not deleted resource', function(done) {
 				var g = api.request();
-				g.getTopic(pTopic.returnedTopic.id, function() {
+				g.getTopicPromise(pTopic.returnedTopic.id)
+				.then(function() {
 					assert.ok(_.any(g.returnedTopic.resources, function(r) {
 							return r.id === pResource.returnedResource.id;
 						}));
 					done();		
-				});
+				})
+				.done();
 			});
 
 		});
@@ -499,23 +546,29 @@ describe('Resource CRUD', function() {
 		var p = api.request();
 
 		before(function(done) {
-			p.postResource(done);
+			p.postResourcePromise()
+			.then(done)
+			.done();
 		});
 
 		it('returns status 200', function(done) {
-			api.del('/resources/' + p.returnedResource.id, function(err, res) {
+			api.delPromise('/resources/' + p.returnedResource.id)
+			.then(function(res) {
 				assert.equal(res.statusCode, 200);
 				done();
-			});
+			})
+			.done();
 		});
 
 		describe('then GET /resources/:id with the deleted resource id', function() {
 
 			it('returns status 404', function(done) {
-				api.get('/resources/' + p.returnedResource.id, function(err, res) {
+				api.getPromise('/resources/' + p.returnedResource.id)
+				.then(function(res) {
 					assert.equal(res.statusCode, 404);
 					done();
-				});
+				})
+				.done();
 			});
 
 		});
