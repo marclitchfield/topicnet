@@ -15,8 +15,6 @@ function RootController($scope, $http) {
 		$http['delete']('/topics/' + topic.id + '/root').success(function() {
 			$scope.rootTopics = $scope.rootTopics.filter(function(t) {
 				return t.id !== topic.id;
-			}).error(function(message) {
-				$scope.$emit('error', message);
 			});
 		}).error(function(message) {
 			$scope.$emit('error', message);
