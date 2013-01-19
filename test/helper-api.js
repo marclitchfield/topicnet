@@ -168,7 +168,7 @@ exports.request = function() {
 			return exports.postPromise('/resources', self.postedResource)
 			.then(function(res) {
 				self.response = res;
-				self.returnedResponse = exports.parseBody(res.body);
+				self.returnedResource = exports.parseBody(res.body);
 			});
 		},
 
