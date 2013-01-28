@@ -122,6 +122,7 @@ describe('AddResourceController', function() {
 				scope.title = requestedResource.title;
 				scope.url = requestedResource.url;
 				scope.source = requestedResource.source;
+				scope.verb = 'Read';
 
 				httpBackend.expectPOST('/resources', requestedResource).respond(createdResource);
 				httpBackend.expectPOST('/topics/2/resources', { resid: createdResource.id }).respond(200, {});
@@ -158,6 +159,7 @@ describe('AddResourceController', function() {
 				scope.title = existingResource.title;
 				scope.url = existingResource.url;
 				scope.source = existingResource.source;
+				scope.verb = 'Read';
 
 				httpBackend.expectPOST('/topics/2/resources', { resid: existingResource.id }).respond(200, {});
 

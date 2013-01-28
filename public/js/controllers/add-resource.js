@@ -1,4 +1,6 @@
 function AddResourceController($scope, $http, $routeParams, $location) {
+	$scope.allVerbs = ['Read', 'Watch', 'Listen', 'Engage'];
+
 	$http.get('/topics/' + $routeParams.topicId).success(function(topic) {
 		$scope.topic = topic;
 	}).error(function(message) {
@@ -33,7 +35,7 @@ function AddResourceController($scope, $http, $routeParams, $location) {
 	};
 
 	$scope.add = function() {
-		var resourceData = { title: $scope.title, url: $scope.url, source: $scope.source, verb: 'read' };
+		var resourceData = { title: $scope.title, url: $scope.url, source: $scope.source, verb: $scope.verb.toLowerCase() };
 
 		if ($scope.isNewResource) {
 			$http.post('/resources', resourceData).success(function(resource) {

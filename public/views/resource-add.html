@@ -18,14 +18,22 @@
 				<div class="control-group">
 					<label class="control-label" for="newResourceTitle">Title</label>
 					<div class="controls">
-						<input id="newResourceTitle" type="text" class="input-xlarge" ng-disabled="!isNewResource" ng-model="title" required></input>
+						<input id="newResourceTitle" type="text" class="input-xlarge" ng-disabled="!isNewResource" ng-model="title" required />
 					</div>
 				</div>
 
 				<div class="control-group">
 					<label class="control-label" for="newResourceSource">Source</label>
 					<div class="controls">
-						<input id="newResourceSource" type="text" class="input-xlarge" ng-disabled="!isNewResource" ng-model="source" required></input>
+						<input id="newResourceSource" type="text" class="input-xlarge" ng-disabled="!isNewResource" ng-model="source" required />
+					</div>
+				</div>
+
+				<div class="control-group">
+					<label class="control-label">Verb</label>
+					<div class="controls">
+						<select ng-model="verb" required ng-options="v for v in allVerbs">
+						</select>
 					</div>
 				</div>
 			</div>

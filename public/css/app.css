@@ -27,10 +27,6 @@ li:hover .close {
 	margin-top: 32px;
 }
 
-.ng-invalid {
-	border: 0 solid;
-}
-
 .page-header {
 	padding: 10px 0;
 	margin-bottom: 10px;
