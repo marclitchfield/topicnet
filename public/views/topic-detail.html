@@ -8,8 +8,9 @@
 				<button class="close" ng-click="editingTitle=false">&times;</button>
 			</form>
 		</h3>
-		<ul class="unstyled">
+		<ul class="unstyled" ng-init="verbicon = { 'read':'icon-book', 'watch':'icon-facetime-video', 'listen':'icon-headphones', 'engage':'icon-user' }">
 			<li ng-repeat="resource in topic.resources">
+				<div class="verb-icon"><i class="{{ verbicon[resource.verb] }} icon-white"/></div>
 				<a href="#/resources/{{ resource.id }}">{{ resource.title }}</a>
 				<small>{{ resource.source }}</small>
 			</li>

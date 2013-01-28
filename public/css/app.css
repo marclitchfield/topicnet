@@ -26,11 +26,11 @@ li:hover .close {
 .nav-area {
 	margin-top: 32px;
 }
-
+	
 .page-header {
 	padding: 10px 0;
 	margin-bottom: 10px;
-	background-color: #D9E1EB;
+	background-color: #B2C2ED;
 	border-radius: 4px;
 }
 
@@ -76,4 +76,20 @@ li:hover .close {
 	.add-resource-form .url-submit-text {
 		width: 70%;
 	}
+}
+
+
+.verb-icon {
+	width: 1.2em;
+	height: 1.2em;
+	display: inline-block;
+	text-align: center;
+	vertical-align: middle;
+	background-color: #4D6199;
+	border: 1px solid #4D5366;
+	border-radius: 2px;
+}
+
+.verb-icon i {
+	margin: 0;
 }
