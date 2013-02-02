@@ -1,5 +1,4 @@
 function AddResourceController($scope, $http, $routeParams, $location) {
-	$scope.allVerbs = ['read', 'watch', 'listen', 'engage'];
 
 	$http.get('/topics/' + $routeParams.topicId).success(function(topic) {
 		$scope.topic = topic;
@@ -19,12 +18,14 @@ function AddResourceController($scope, $http, $routeParams, $location) {
 					$scope.title = resources[0].title;
 					$scope.source = resources[0].source;
 					$scope.resourceId = resources[0].id;
+					$scope.verb = resources[0].verb;
 					$scope.isNewResource = false;
 					$scope.statusMessage = 'Resource was found in the system';
 				} else {
 					$scope.title = null;
 					$scope.source = null;
 					$scope.resourceId = null;
+					$scope.verb = null;
 					$scope.isNewResource = true;
 					$scope.statusMessage = 'Resource was not in the system. Please enter details';
 				}

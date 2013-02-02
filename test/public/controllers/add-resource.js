@@ -47,6 +47,7 @@ describe('AddResourceController', function() {
 			it('should fill in the detail fields', function() {
 				expect(scope.title).toEqual('title');
 				expect(scope.source).toEqual('source');
+				expect(scope.verb).toEqual('read');
 			});
 
 			it('should set the resourceId', function() {
@@ -85,6 +86,7 @@ describe('AddResourceController', function() {
 			it('should not set detail fields', function() {
 				expect(scope.title).toBe(null);
 				expect(scope.source).toBe(null);
+				expect(scope.verb).toBe(null);
 			});
 
 			it('should not set the resourceId', function() {

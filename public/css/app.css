@@ -113,7 +113,3 @@ li:hover .close {
 	/* icon-user */
 	background-position: -168px 0; 
 }
-
-.verb-icon + span {
-	text-transform: capitalize;
-}

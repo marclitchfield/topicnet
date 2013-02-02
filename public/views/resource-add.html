@@ -32,23 +32,23 @@
 				<div class="control-group">
 					<label class="control-label">Verb</label>
 					<div class="controls" ng-init="verb='read'">
-						<label class="radio">
-							<input type="radio" name="newResourceVerb" ng-model="verb" value="read">
+ 						<label class="radio">
+							<input type="radio" name="newResourceVerb" ng-model="verb" value="read" ng-disabled="!isNewResource">
 							<div class="verb-icon"><i data-verb="read" class="icon-white"/></div>
 							Read
 						</label>
 						<label class="radio">
-							<input type="radio" name="newResourceVerb" ng-model="verb" value="watch">
+							<input type="radio" name="newResourceVerb" ng-model="verb" value="watch" ng-disabled="!isNewResource">
 							<div class="verb-icon"><i data-verb="watch" class="icon-white"/></div>
 							Watch
 						</label>
 						<label class="radio">
-							<input type="radio" name="newResourceVerb" ng-model="verb" value="listen">
+							<input type="radio" name="newResourceVerb" ng-model="verb" value="listen" ng-disabled="!isNewResource">
 							<div class="verb-icon"><i data-verb="listen" class="icon-white"/></div>
 							Listen
 						</label>
 						<label class="radio">
-							<input type="radio" name="newResourceVerb" ng-model="verb" value="engage">
+							<input type="radio" name="newResourceVerb" ng-model="verb" value="engage" ng-disabled="!isNewResource">
 							<div class="verb-icon"><i data-verb="engage" class="icon-white"/></div>
 							Engage
 						</label>
