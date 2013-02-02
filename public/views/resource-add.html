@@ -31,9 +31,27 @@
 
 				<div class="control-group">
 					<label class="control-label">Verb</label>
-					<div class="controls">
-						<select ng-model="verb" required ng-options="v for v in allVerbs">
-						</select>
+					<div class="controls" ng-init="verb='read'">
+						<label class="radio">
+							<input type="radio" ng-model="verb" value="read">
+							<div class="verb-icon"><i data-verb="read" class="icon-white"/></div>
+							Read
+						</label>
+						<label class="radio">
+							<input type="radio" ng-model="verb" value="watch">
+							<div class="verb-icon"><i data-verb="watch" class="icon-white"/></div>
+							Watch
+						</label>
+						<label class="radio">
+							<input type="radio" ng-model="verb" value="listen">
+							<div class="verb-icon"><i data-verb="listen" class="icon-white"/></div>
+							Listen
+						</label>
+						<label class="radio">
+							<input type="radio" ng-model="verb" value="engage">
+							<div class="verb-icon"><i data-verb="engage" class="icon-white"/></div>
+							Engage
+						</label>
 					</div>
 				</div>
 			</div>

@@ -1,5 +1,5 @@
 function AddResourceController($scope, $http, $routeParams, $location) {
-	$scope.allVerbs = ['Read', 'Watch', 'Listen', 'Engage'];
+	$scope.allVerbs = ['read', 'watch', 'listen', 'engage'];
 
 	$http.get('/topics/' + $routeParams.topicId).success(function(topic) {
 		$scope.topic = topic;

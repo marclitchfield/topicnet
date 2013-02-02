@@ -93,3 +93,27 @@ li:hover .close {
 .verb-icon i {
 	margin: 0;
 }
+
+.verb-icon i[data-verb="read"] { 
+	/* icon-book */
+	background-position: -48px -48px;  
+}
+
+.verb-icon i[data-verb="watch"] {
+	/* icon-facetime-video */
+	background-position: -432px -48px; 
+}
+
+.verb-icon i[data-verb="listen"] {
+	/* icon-headphones */
+	background-position: -336px -24px; 
+}
+
+.verb-icon i[data-verb="engage"] {
+	/* icon-user */
+	background-position: -168px 0; 
+}
+
+.verb-icon + span {
+	text-transform: capitalize;
+}
