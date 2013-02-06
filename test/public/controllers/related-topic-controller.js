@@ -14,7 +14,7 @@ describe('RelatedTopicController', function() {
 			scope.rel = 'next';
 			scope.topic = { id: 1, next: [] };
 			httpBackend.expectPOST(
-				'/topics/' + scope.topic.id + '/next',
+				'/topics/' + scope.topic.id + '/' + scope.rel,
 				{ toid: toTopic.id }).respond(200,{});
 			$controller(RelatedTopicController, {$scope: scope});
 			scope.linkfn(toTopic);
@@ -26,7 +26,7 @@ describe('RelatedTopicController', function() {
 		});
 
 		it("should add toTopic to scope.topic[rel]", function() {
-			expect(scope.topic.next).toEqual([toTopic]);
+			expect(scope.topic[scope.rel]).toEqual([toTopic]);
 		});
 
 	});
@@ -37,7 +37,7 @@ describe('RelatedTopicController', function() {
 			scope.topic = { id: 1, next: [toTopic] };
 			scope.rel = 'next'
 			httpBackend.expectDELETE(
-				'/topics/' + scope.topic.id + '/next/' + toTopic.id).respond(200,{});
+				'/topics/' + scope.topic.id + '/' + scope.rel + '/' + toTopic.id).respond(200,{});
 			$controller(RelatedTopicController, {$scope: scope});
 			scope.removeLink(toTopic);
 			httpBackend.flush();
@@ -48,7 +48,7 @@ describe('RelatedTopicController', function() {
 		});
 
 		it('should remove toTopic from scope.topic[rel]', function() {
-			expect(scope.topic.next).toEqual([]);
+			expect(scope.topic[scope.rel]).toEqual([]);
 		});
 
 	});
