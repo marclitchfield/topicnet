@@ -21,27 +21,17 @@
 	<div class="span5 nav-area tabbable">
 		<ul class="nav nav-tabs">
 			<li class="active"><a href="#sub-topic-pane" data-toggle="tab">sub topics</a></li>
-			<li><a href="#next-topic-pane" data-toggle="tab">next</a></li>
+			<li><a href="#next-topic-pane" data-toggle="tab">next topics</a></li>
 		</ul>
 
 		<div class="tab-content">
-			<div class="tab-pane active" id="sub-topic-pane" ng-controller="SubTopicController">
-				<ul class="unstyled">
-					<li ng-repeat="subTopic in topic.sub">
-						<a href="#/topics/{{ subTopic.id }}">{{ subTopic.name }}</a>
-						<button class="close" ng-click="removeLink(subTopic)">&times;</button>
-					</li>
-				</ul>
+ 			<div class="tab-pane active" id="sub-topic-pane" ng-controller="RelatedTopicController" ng-init="rel='sub'">
+				<div ng-include src="'partials/related-topic-list.html'" />
 				<div ng-include src="'partials/add-topic.html'" />
 			</div>
 
-			<div class="tab-pane" id="next-topic-pane" ng-controller="NextTopicController">
-				<ul class="unstyled">
-					<li ng-repeat="nextTopic in topic.next">
-						<a href="#/topics/{{ nextTopic.id }}">{{ nextTopic.name }}</a>
-						<button class="close" ng-click="removeLink(nextTopic)">&times;</button>
-					</li>
-				</ul>
+ 			<div class="tab-pane" id="next-topic-pane" ng-controller="RelatedTopicController" ng-init="rel='next'">
+				<div ng-include src="'partials/related-topic-list.html'" />
 				<div ng-include src="'partials/add-topic.html'" />
 			</div>
 		</div>
