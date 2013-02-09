@@ -19,4 +19,19 @@ function RelatedTopicController($scope, $http) {
 			$scope.$emit('error', message);
 		});
 	};
+
+	function vote(relationship, toTopic, dir) {
+		var voteUrl = '/topics/' + $scope.topic.id + '/' + relationship + '/' + toTopic.id + '/vote';
+		$http.post(voteUrl, {dir: dir}).error(function(message) {
+			$scope.$emit('error', message);
+		});
+	}
+
+	$scope.upvote = function(relationship, toTopic) {
+		vote(relationship, toTopic, 'up');
+	};
+
+	$scope.downvote = function(relationship, toTopic) {
+		vote(relationship, toTopic, 'down');
+	};
 }

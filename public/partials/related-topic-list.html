@@ -1,8 +1,8 @@
 <ul class="unstyled">
 	<li ng-repeat="relTopic in topic[rel]">
 		<div class="vote-buttons">
-			<a href="#" ng-click="upvote(relTopic)">▲</a>
-			<a href="#" ng-click="downvote(relTopic)">▼</a>
+			<a ng-click="upvote(rel, relTopic)">▲</a>
+			<a ng-click="downvote(rel, relTopic)">▼</a>
 		</div>
 		<a href="#/topics/{{ relTopic.id }}">{{ relTopic.name }}</a>
 		<button class="close" ng-click="removeLink(relTopic)">&times;</button>

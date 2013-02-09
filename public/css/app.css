@@ -115,17 +115,16 @@ li:hover .close {
 }
 
 
-
 .vote-buttons {
 	display: inline-block;
-	letter-spacing: -3px;
+	letter-spacing: -4px;
 	margin-right: 4px;
 }
 
 .vote-buttons a {
 	text-decoration: none;
-	color: #4D6199;
+	color: #B2C2ED;
 }
 .vote-buttons a:hover {
-	color: #B2C2ED;
+	color: #4D6199;
 }

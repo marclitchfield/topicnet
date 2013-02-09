@@ -1,4 +1,4 @@
-describe('AddTopicController', function() {
+describe('TopicDetailController', function() {
 	var scope, httpBackend;
 	var topic = { id: 1, name: 'topic', resources: [] };
 
@@ -51,4 +51,41 @@ describe('AddTopicController', function() {
 			expect(scope.topic.name).toEqual(scope.editedTopicName);
 		});
 	});
+
+	describe('upvote a resource', function() {
+		beforeEach(inject(function($controller) {
+			var params = { topicId: topic.id };
+			var resource = { id: 2 };
+			httpBackend.expectGET('/topics/1').respond(topic);
+			$controller(TopicDetailController, { $scope: scope, $routeParams: params });
+			httpBackend.flush();
+
+			httpBackend.expectPOST('/topics/1/resources/2/vote', { dir: 'up' }).respond(200, {});
+			scope.upvote(resource);
+			httpBackend.flush();
+		}));
+
+		it('should send vote to the server with direction "up"', function() {
+			httpBackend.verifyNoOutstandingExpectation();
+		});
+	});
+
+	describe('downvote a resource', function() {
+		beforeEach(inject(function($controller) {
+			var params = { topicId: topic.id };
+			var resource = { id: 2 };
+			httpBackend.expectGET('/topics/1').respond(topic);
+			$controller(TopicDetailController, { $scope: scope, $routeParams: params });
+			httpBackend.flush();
+
+			httpBackend.expectPOST('/topics/1/resources/2/vote', { dir: 'down' }).respond(200, {});
+			scope.downvote(resource);
+			httpBackend.flush();
+		}));
+
+		it('should send vote to the server with direction "down"', function() {
+			httpBackend.verifyNoOutstandingExpectation();
+		});
+	});
+
 });

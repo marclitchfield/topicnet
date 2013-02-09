@@ -10,6 +10,10 @@
 		</h3>
 		<ul class="unstyled">
 			<li ng-repeat="resource in topic.resources">
+				<div class="vote-buttons">
+					<a ng-click="upvote(resource)">▲</a>
+					<a ng-click="downvote(resource)">▼</a>
+				</div>				
 				<div class="verb-icon"><i data-verb="{{ resource.verb }}" class="icon-white"/></div>
 				<a href="#/resources/{{ resource.id }}">{{ resource.title }}</a>
 				<small>{{ resource.source }}</small>

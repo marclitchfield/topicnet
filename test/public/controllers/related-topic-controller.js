@@ -53,4 +53,35 @@ describe('RelatedTopicController', function() {
 
 	});
 
+	describe('upvote a related topic', function() {
+		beforeEach(inject(function($controller) {
+			scope.topic = { id: 1, next: [toTopic] };
+			scope.rel = 'next'
+			$controller(RelatedTopicController, {$scope: scope});
+
+			httpBackend.expectPOST('/topics/1/next/' + toTopic.id + '/vote', { dir: 'up' }).respond(200, {});
+			scope.upvote('next', toTopic);
+			httpBackend.flush();
+		}));
+
+		it('should send vote to the server with direction "up"', function() {
+			httpBackend.verifyNoOutstandingExpectation();
+		});
+	});
+
+	describe('downvote a related topic', function() {
+		beforeEach(inject(function($controller) {
+			scope.topic = { id: 1, next: [toTopic] };
+			scope.rel = 'next'
+			$controller(RelatedTopicController, {$scope: scope});
+
+			httpBackend.expectPOST('/topics/1/next/' + toTopic.id + '/vote', { dir: 'down' }).respond(200, {});
+			scope.downvote('next', toTopic);
+			httpBackend.flush();
+		}));
+
+		it('should send vote to the server with direction "down"', function() {
+			httpBackend.verifyNoOutstandingExpectation();
+		});
+	});
 });
