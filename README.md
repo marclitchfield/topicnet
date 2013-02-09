@@ -48,6 +48,17 @@ Relationship CRUD
 		]
 	}
 - GET  /topics/:fromid/sub   - get subtopics
+- GET /topics/:id/[rel]/:toid - get relationship data
+<pre>
+	{
+		fromId: 1,
+		toId: 2,
+		relationshipType: 'next',
+		upVotes: 2,
+		downVotes: 0,
+		score: 2
+	}
+</pre>
 - POST /topics/:id/root      - makes the node root
 - POST /topics/:fromid/next  - creates a 'next' relationship
 
