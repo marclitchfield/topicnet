@@ -85,6 +85,20 @@ Resource Search
 - GET /resources?url=[some url]
 - GET /resources?title=[some title]
 
+Vote CRUD
+---------
+- GET /topics/:id/[rel]/:toid/vote - returns votes on a relationship between two topics or between a topic and a resource
+- GET /topics/:id/[rel]/:toid/vote?user=1 - returns vote by specified user on a relationship
+- POST /topics/:id/[rel]/:toid/vote - creates or updates a vote on a relationship
+<pre>
+  { dir: 'up', user: 1 }
+</pre>
+- PUT /topics/:id/[rel]/:toid/vote - updates a vote on a relationship
+<pre>
+  { dir: 'down', user: 1 }
+</pre>
+- DEL /topics/:id/[rel]/:toid/vote - delete a vote on a relationship
+
 graph API
 ---------
 - GET /graph/:id?depth=3
