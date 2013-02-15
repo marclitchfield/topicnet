@@ -25,7 +25,6 @@ function AddResourceController($scope, $http, $routeParams, $location) {
 					$scope.title = null;
 					$scope.source = null;
 					$scope.resourceId = null;
-					$scope.verb = null;
 					$scope.isNewResource = true;
 					$scope.statusMessage = 'Resource was not in the system. Please enter details';
 				}

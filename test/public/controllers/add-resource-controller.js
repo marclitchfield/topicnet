@@ -86,7 +86,6 @@ describe('AddResourceController', function() {
 			it('should not set detail fields', function() {
 				expect(scope.title).toBe(null);
 				expect(scope.source).toBe(null);
-				expect(scope.verb).toBe(null);
 			});
 
 			it('should not set the resourceId', function() {
