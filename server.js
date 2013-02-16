@@ -61,6 +61,10 @@ app.get('/topics/:id/:rel', function(request, response) {
 	complete(response, topicService.getRelated(request.params.id, request.params.rel));
 });
 
+app.get('/topics/:id/:rel/:toid', function(request, response) {
+	complete(response, topicService.getRelationship(request.params.id, request.params.toid, request.params.rel));
+});
+
 app.post('/topics/:id/root', function(request, response) {
 	complete(response, topicService.createRelationship(0, request.params.id, 'root'));
 });
