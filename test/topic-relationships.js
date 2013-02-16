@@ -8,7 +8,9 @@ describe('Topic Relationships', function() {
 
 		var postFrom = api.request();
 		var postTo = api.request();
+		var relationshipType = 'next';
 		var response;
+		var rel;
 
 		before(function(done) {
 			postFrom.postTopic()
@@ -16,13 +18,16 @@ describe('Topic Relationships', function() {
 				return postTo.postTopic();
 			})
 			.then(function() {
-				return api.post('/topics/' + postFrom.returnedTopic.id + '/next', { toid: postTo.returnedTopic.id });
+				return api.post('/topics/' + postFrom.returnedTopic.id +
+					'/' + relationshipType, { toid: postTo.returnedTopic.id });
 			})
 			.then(function() {
-				return api.get('/topics/' + postFrom.returnedTopic.id + '/next/' + postTo.returnedTopic.id);
+				return api.get('/topics/' + postFrom.returnedTopic.id +
+					'/' + relationshipType + '/' + postTo.returnedTopic.id);
 			})
 			.then(function(res) {
 				response = res;
+				rel = JSON.parse(response.body);
 				done();
 			})
 			.done();
@@ -33,8 +38,32 @@ describe('Topic Relationships', function() {
 			assert.equal(response.statusCode, 200);
 		});
 
-		it('returns the relationship', function() {
-			assert.ok(JSON.parse(response.body).id !== undefined);
+		it('returns the relationship with a valid generated id', function() {
+			assert.ok(rel.id > 0);
+		});
+
+		it('returns the relationship with the correct fromId', function() {
+			assert.equal(rel.fromId, postFrom.returnedTopic.id);
+		});
+
+		it('returns the relationship with the correct toId', function() {
+			assert.equal(rel.toId, postTo.returnedTopic.id);
+		});
+
+		it('returns the relationship with the correct relationshipType', function() {
+			assert.equal(rel.relationshipType, relationshipType); 
+		});
+
+		it('returns the relationship with a valid number of upVotes', function() {
+			assert.ok(rel.upVotes >= 0);
+		});
+
+		it('returns the relationship with a valid number of downVotes', function() {
+			assert.ok(rel.downVotes >= 0);
+		});
+
+		it('returns the relationship with a score', function() {
+			assert.ok(rel.score !== undefined);
 		});
 
 	});
