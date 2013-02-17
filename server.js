@@ -8,6 +8,7 @@ var graphDatabase = new neo4j.GraphDatabase(neo4jUrl);
 var graph = new require('./lib/graph').create(graphDatabase);
 var topicService = require('./lib/topic-service').createService(graph);
 var resourceService = require('./lib/resource-service').createService(graph);
+var voteService = require('./lib/vote-service').createService(graph);
 
 console.log(config);
 
@@ -63,6 +64,10 @@ app.get('/topics/:id/:rel', function(request, response) {
 
 app.get('/topics/:id/:rel/:toid', function(request, response) {
 	complete(response, topicService.getRelationship(request.params.id, request.params.toid, request.params.rel));
+});
+
+app.post('/topics/:id/:rel/:toid/vote', function(request, response) {
+	complete(response, voteService.addVote(request.params.id, request.params.toid, request.params.rel, request.body));
 });
 
 app.post('/topics/:id/root', function(request, response) {
