@@ -3,13 +3,13 @@
   "version": "0.0.1",
   "dependencies": {
     "express": "2.5.x",
-	"neo4j": "0.2.x",
+    "neo4j": "0.2.x",
     "npm": "1.1.x",
-	"mocha": "1.4.x",
-	"request": "2.10.x",
-	"underscore": "1.3.x",
-	"guid": "0.0.x",
-	"q": "0.8.x"
+    "mocha": "1.4.x",
+    "request": "2.10.x",
+    "underscore": "1.3.x",
+    "guid": "0.0.x",
+    "q": "0.8.x"
   },
   "scripts": {
     "test": "mocha --timeout 3000 -R spec"
@@ -17,5 +17,9 @@
   "engines": {
     "node": "0.8.x",
     "npm": "1.1.x"
+  },
+  "devDependencies": {
+    "grunt-clean": "~0.4.0",
+    "grunt-jsmin-sourcemap": "~1.6.0"
   }
 }

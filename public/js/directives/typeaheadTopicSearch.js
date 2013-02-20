@@ -1,5 +1,4 @@
 angular.module('artoplasm.directives', []).
-
 	directive('typeaheadTopicSearch',function() {
 		return function(scope, el, attrs) {
 			el.typeahead({
@@ -23,26 +22,6 @@ angular.module('artoplasm.directives', []).
 				onselect: function(item) {
 					scope.$broadcast('topicSelected', item);
 				}
-			});
-		};
-	}).
-
-	directive('focusOn', function() {
-		return function (scope, element, attrs) {
-			scope.$watch(attrs.focusOn, function(value) {
-				if(attrs.focusOn) {
-					window.setTimeout(function() {
-						element.focus();
-					}, 0);
-				}
-			});
-		};
-	}).
-
-	directive('modalAutofocus', function() {
-		return function(scope, element, attrs) {
-			$(element).on('shown', function() {
-				$(this).find('[autofocus]').focus();
 			});
 		};
 	});

@@ -12,7 +12,7 @@ var resourceService = require('./lib/resource-service').createService(graph);
 console.log(config);
 
 app.use(express.bodyParser());
-app.use(express.static('public'));
+app.use(express['static']('public'));
 
 function successHandler(response, result) {
 	if (result === undefined) {
@@ -69,7 +69,7 @@ app.post('/topics/:id/resources', function(request, response) {
 	complete(response, topicService.linkResource(request.params.id, request.body.resid));
 });
 
-app.delete('/topics/:id/resources/:resid', function(request, response, next) {
+app['delete']('/topics/:id/resources/:resid', function(request, response, next) {
 	complete(response, topicService.unlinkResource(request.params.id, request.params.resid));
 });
 
@@ -77,15 +77,15 @@ app.post('/topics/:id/:rel', function(request, response) {
 	complete(response, topicService.createRelationship(request.params.id, request.body.toid, request.params.rel));
 });
 
-app.delete('/topics/:id/root', function(request, response) {
+app['delete']('/topics/:id/root', function(request, response) {
 	complete(response, topicService.deleteRelationship(0, request.params.id, 'root'));
 });
 
-app.delete('/topics/:id/:rel/:toid', function(request, response) {
+app['delete']('/topics/:id/:rel/:toid', function(request, response) {
 	complete(response, topicService.deleteRelationship(request.params.id, request.params.toid, request.params.rel));
 });
 
-app.delete('/topics/:id', function(request, response) {
+app['delete']('/topics/:id', function(request, response) {
 	complete(response, topicService.deleteTopic(request.params.id));
 });
 
@@ -113,7 +113,7 @@ app.put('/resources/:id', function(request, response) {
 	complete(response, resourceService.update(request.params.id, request.body));
 });
 
-app.delete('/resources/:id', function(request, response) {
+app['delete']('/resources/:id', function(request, response) {
 	complete(response, resourceService.deleteResource(request.params.id));
 });
 
