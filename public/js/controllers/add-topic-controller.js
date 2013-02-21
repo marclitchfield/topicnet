@@ -1,4 +1,4 @@
-function AddTopicController($scope, $http) {
+var AddTopicController = ['$scope', '$http', function($scope, $http) {
 	$scope.$on('topicSelected', function(e, topic) {
 		$scope.selectedTopic = topic;
 	});
@@ -25,4 +25,4 @@ function AddTopicController($scope, $http) {
 		$scope.formVisible = false;
 		$scope.searchQuery = '';
 	};
-}
+}];

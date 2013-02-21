@@ -1,4 +1,4 @@
-function ErrorController($scope) {
+var ErrorController = ['$scope', function($scope) {
 	$scope.$on('error', function(e, message) {
 		$scope.errorMessage = message;
 
@@ -9,4 +9,4 @@ function ErrorController($scope) {
 			}
 		}, 3000);
 	})
-}
+}];

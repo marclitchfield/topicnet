@@ -1,4 +1,4 @@
-function RelatedTopicController($scope, $http) {
+var RelatedTopicController = ['$scope', '$http', function($scope, $http) {
 
 	// $scope.rel must be defined
 	
@@ -34,4 +34,4 @@ function RelatedTopicController($scope, $http) {
 	$scope.downvote = function(relationship, toTopic) {
 		vote(relationship, toTopic, 'down');
 	};
-}
+}];

@@ -1,4 +1,4 @@
-function RootController($scope, $http) {
+var RootController = ['$scope', '$http', function($scope, $http) {
 	$http.get('/topics').success(function(topics) {
 		$scope.rootTopics = topics;
 	});
@@ -20,4 +20,4 @@ function RootController($scope, $http) {
 			$scope.$emit('error', message);
 		});
 	};
-}
+}];

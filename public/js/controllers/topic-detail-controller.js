@@ -1,4 +1,4 @@
-function TopicDetailController($scope, $http, $routeParams) {
+var TopicDetailController = ['$scope', '$http', '$routeParams', function($scope, $http, $routeParams) {
 	$http.get('/topics/' + $routeParams.topicId).success(function(topic) {
 		$scope.topic = topic;
 		$scope.topic.resources = $scope.topic.resources || [];
@@ -31,4 +31,4 @@ function TopicDetailController($scope, $http, $routeParams) {
 	$scope.downvote = function(resource) {
 		vote(resource, 'down');
 	};
-}
+}];

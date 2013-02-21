@@ -10,19 +10,12 @@ module.exports = function(grunt) {
 			folder: 'public/js/dist/*.*'
 		},
 		'jsmin-sourcemap': {
-			controllers: {
-				cwd: 'public/js/controllers',
-				src: '*.js',
-				dest: '../dist/controllers.min.js',
-				destMap: '../dist/controllers.js.map',
-				srcRoot: '/js/controllers'
-			},
-			directives: {
-				cwd: 'public/js/directives',
-				src: '*.js',
-				dest: '../dist/directives.min.js',
-				destMap: '../dist/directives.js.map',
-				srcRoot: '/js/directives'
+			app: {
+				cwd: 'public',
+				src: ['js/app.js', 'js/controllers/*.js', 'js/directives/*.js'],
+				dest: 'js/dist/app.min.js',
+				destMap: 'js/dist/app.min.js.map',
+				srcRoot: '/'
 			}
 		},
 		watch: {
