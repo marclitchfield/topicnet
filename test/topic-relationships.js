@@ -4,26 +4,38 @@ var api = require('./helper-api.js');
 
 describe('Topic Relationships', function() {
 
-	describe('GET /topics/:id/:rel/:toid', function() {
+	var testGetRelationship = function(relationshipType) {
 
 		var postFrom = api.request();
 		var postTo = api.request();
-		var relationshipType = 'next';
+		var toId;
+		var data;
 		var response;
 		var rel;
 
 		before(function(done) {
 			postFrom.postTopic()
 			.then(function() {
-				return postTo.postTopic();
+				if(relationshipType === 'resources') {
+					return postTo.postResource();
+				} else {
+					return postTo.postTopic();
+				}
 			})
 			.then(function() {
+				if(relationshipType === 'resources') {
+					toId = postTo.returnedResource.id;
+					data = { resid: toId };
+				} else {
+					toId = postTo.returnedTopic.id;
+					data = { toid: toId };
+				}
 				return api.post('/topics/' + postFrom.returnedTopic.id +
-					'/' + relationshipType, { toid: postTo.returnedTopic.id });
+					'/' + relationshipType, data);
 			})
 			.then(function() {
 				return api.get('/topics/' + postFrom.returnedTopic.id +
-					'/' + relationshipType + '/' + postTo.returnedTopic.id);
+					'/' + relationshipType + '/' + toId);
 			})
 			.then(function(res) {
 				response = res;
@@ -47,7 +59,7 @@ describe('Topic Relationships', function() {
 		});
 
 		it('returns the relationship with the correct toId', function() {
-			assert.equal(rel.toId, postTo.returnedTopic.id);
+			assert.equal(rel.toId, toId);
 		});
 
 		it('returns the relationship with the correct relationshipType', function() {
@@ -66,6 +78,18 @@ describe('Topic Relationships', function() {
 			assert.ok(rel.score !== undefined);
 		});
 
+	};
+
+	describe('GET /topics/:id/next/:toid', function() {
+		testGetRelationship('next');
+	});
+
+	describe('GET /topics/:id/sub/:toid', function() {
+		testGetRelationship('sub');
+	});
+
+	describe('GET /topics/:id/resources/:resid', function() {
+		testGetRelationship('resources');
 	});
 
 	describe('GET /topics/:id/:rel/:toid with invalid id', function() {
