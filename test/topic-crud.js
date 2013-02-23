@@ -113,6 +113,60 @@ describe('Topic CRUD', function() {
 
 	});
 
+	describe('GET /topics/:id when the topic has a next relationship', function() {
+
+		var postTopic = api.request();
+		var postNextTopic = api.request();
+		var retreivedTopic;
+
+		before(function(done) {
+			postTopic.postTopic()
+			.then(function() {
+				return postNextTopic.postTopic();
+			})
+			.then(function() {
+				return api.post('/topics/' + postTopic.returnedTopic.id +
+						'/next/', { toid: postNextTopic.returnedTopic.id });
+			})
+			.then(function() {
+				return api.get('/topics/' + postTopic.returnedTopic.id);
+			})
+			.then(function(res) {
+				retreivedTopic = JSON.parse(res.body);
+				done();
+			})
+			.done();
+		});
+
+		it('returns the topic with a next property that is an array of next topics', function() {
+			assert.ok(retreivedTopic.next !== undefined);
+			assert.equal(retreivedTopic.next.length, 1);
+		});
+
+		describe('and the next topic in the array', function() {
+
+			var nextTopic;
+
+			before(function() {
+				nextTopic = retreivedTopic.next[0];
+			});
+
+			it('has an id property with the expected value', function() {
+				assert.equal(nextTopic.id, postNextTopic.returnedTopic.id);
+			});
+
+			it('has a name property with the expected value', function() {
+				assert.equal(nextTopic.name, postNextTopic.returnedTopic.name);
+			});
+
+			it('has a score property', function() {
+				assert.ok(nextTopic.score !== undefined);
+			});
+
+		});
+
+	});
+
 	describe('PUT /topics/:id', function() {
 
 		var p = api.request();
