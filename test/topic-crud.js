@@ -113,20 +113,33 @@ describe('Topic CRUD', function() {
 
 	});
 
-	describe('GET /topics/:id when the topic has a next relationship', function() {
+	var testGetTopicWithRelationship = function(relationshipType) {
 
 		var postTopic = api.request();
-		var postNextTopic = api.request();
+		var postRelated = api.request();
+		var toId;
+		var data;
 		var retreivedTopic;
 
 		before(function(done) {
 			postTopic.postTopic()
 			.then(function() {
-				return postNextTopic.postTopic();
+				if(relationshipType === 'resources') {
+					return postRelated.postResource();
+				} else {
+					return postRelated.postTopic();
+				}
 			})
 			.then(function() {
+				if(relationshipType === 'resources') {
+					toId = postRelated.returnedResource.id;
+					data = { resid: toId };
+				} else {
+					toId = postRelated.returnedTopic.id;
+					data = { toid: toId };
+				}
 				return api.post('/topics/' + postTopic.returnedTopic.id +
-						'/next/', { toid: postNextTopic.returnedTopic.id });
+						'/' + relationshipType + '/', data);
 			})
 			.then(function() {
 				return api.get('/topics/' + postTopic.returnedTopic.id);
@@ -138,33 +151,42 @@ describe('Topic CRUD', function() {
 			.done();
 		});
 
-		it('returns the topic with a next property that is an array of next topics', function() {
-			assert.ok(retreivedTopic.next !== undefined);
-			assert.equal(retreivedTopic.next.length, 1);
+		it('returns the topic with a ' + relationshipType + 
+				' property that is an array of related objects', function() {
+			assert.ok(retreivedTopic[relationshipType] !== undefined);
+			assert.equal(retreivedTopic[relationshipType].length, 1);
 		});
 
-		describe('and the next topic in the array', function() {
+		describe('and the related object in the array', function() {
 
-			var nextTopic;
+			var related;
 
 			before(function() {
-				nextTopic = retreivedTopic.next[0];
+				related = retreivedTopic[relationshipType][0];
 			});
 
 			it('has an id property with the expected value', function() {
-				assert.equal(nextTopic.id, postNextTopic.returnedTopic.id);
-			});
-
-			it('has a name property with the expected value', function() {
-				assert.equal(nextTopic.name, postNextTopic.returnedTopic.name);
+				assert.equal(related.id, toId);
 			});
 
 			it('has a score property', function() {
-				assert.ok(nextTopic.score !== undefined);
+				assert.ok(related.score !== undefined);
 			});
 
 		});
 
+	};
+
+	describe('GET /topics/:id when the topic has a next relationship', function() {
+		testGetTopicWithRelationship('next');
+	});
+
+	describe('GET /topics/:id when the topic has a sub relationship', function() {
+		testGetTopicWithRelationship('sub');
+	});
+
+	describe('GET /topics/:id with the topic has a resource', function() {
+		testGetTopicWithRelationship('resources');
 	});
 
 	describe('PUT /topics/:id', function() {
