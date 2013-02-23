@@ -1,5 +1,4 @@
 node_modules
 *.swp
 *.sublime-workspace
-.idea
-public/js/dist
+dist
