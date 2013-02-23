@@ -3,34 +3,39 @@ Artoplasm
 
 Topic CRUD
 ----------
-- GET  /topics/:id       - get topic details and arrays of entire related nodes
-<pre>
-	{ id: 1, 
-		name: "main node",
-		resources: [
-			{ id: 88, title: "Res A", url: "http://example.url", source: "Src A", verb: "read" },
-			{ id: 77, title: "Res B", url: "http://example.url", source: "Src B", verb: "watch" },
-		],
-		sub: [ 
-			{ id: 2, name: "sub node" }
-		],
-		next: [
-			{ id: 42, title: "next topic" }
-		]
-	}
-</pre>
+- GET  /topics/:id  - Get the details of the specified topic and all related topics and resources
 
-- GET  /topics/          - return root topics
-<pre>
-	[ 
-		{ id: 1, name: "root topic" },
-		{ id: 54, name: "other root topic" }
-	] 
-</pre>
+```js
+{ 
+	id: 1,
+	name: "main node",
+	resources: [
+		{ id: 88, title: "Res A", url: "http://example.url",
+			source: "Src A", verb: "read", score: 1 },
+		{ id: 77, title: "Res B", url: "http://example.url",
+			source: "Src B", verb: "watch", score: 0 },
+	],
+	sub: [ 
+		{ id: 2, name: "sub node", score: 0 }
+	],
+	next: [
+		{ id: 42, title: "next topic", score: -1 }
+	]
+}
+```
 
-- POST /topics           - create a topic and return the created topic
-- PUT  /topics           - update a topic
-- DEL  /topics/:id       - delete a topic, and all relationships to it
+- GET  /topics/  - Get the root topics
+
+```js
+[ 
+	{ id: 1, name: "root topic" },
+	{ id: 54, name: "other root topic" }
+] 
+```
+
+- POST /topics  - Create a topic and return the created topic
+- PUT  /topics - Update a topic
+- DEL  /topics/:id - Delete a topic and all its relationships
 
 Topic search
 ------------
@@ -39,95 +44,83 @@ where p defaults to 1, and pp defaults to 10
 
 Relationship CRUD
 -----------------
-- GET  /topics/:fromid/next  - get next topics
-			{ id: 78, name: "other sub node" } 
-		],
-		next: [ 
-			{ id: 3, name: "next node" },
-			{ id: 10, name: "other next node" }
-		]
-	}
-- GET  /topics/:fromid/sub   - get subtopics
-- GET /topics/:id/[rel]/:toid - get relationship data
-<pre>
-	{
-		fromId: 1,
-		toId: 2,
-		relationshipType: 'next',
-		upVotes: 2,
-		downVotes: 0,
-		score: 2
-	}
-</pre>
-- POST /topics/:id/root      - makes the node root
-- POST /topics/:fromid/next  - creates a 'next' relationship
+- GET  /topics/:fromid/next  - Get next topics
 
-    { toid:X, score:Z }
+```js
+[
+	{ id: 3, name: "next topic" },
+	{ id: 10, name: "other next topic" }
+]
+```
 
-- PUT  /topics/:id/next/:toid  - update a relationship
+- GET  /topics/:fromid/sub  - Get subtopics
 
-    { score:Z } 
+```js
+[
+	{ id: 3, name: "sub topic" },
+	{ id: 10, name: "other sub topic" }
+]
+```
 
-- DEL  /topics/:id/next/:toid  - delete a 'next' relationship
+- GET /topics/:id/[rel]/:toid - Get relationship data
 
-- POST /topics/:id/resources - links a resource to a topic
-    
-    { resid:X }
+```js
+{
+	fromId: 1,
+	toId: 2,
+	relationshipType: 'next',
+	upVotes: 2,
+	downVotes: 0,
+	score: 2
+}
+```
 
-- DEL /topics/:id/resources/:resid - unlink a resource from a topic
+- POST /topics/:id/root  - Makes the specified topic a root topic
+- POST /topics/:fromid/next  - Create a 'next' relationship
+
+```js
+	{ toid: 4 }
+```
+
+- DEL  /topics/:id/next/:toid  - Delete the 'next' relationship
+
+- POST /topics/:id/resources -  Link a resource to a topic
+
+```js 
+    { resid: 5 }
+```
+
+- DEL /topics/:id/resources/:resid  - Unlink a resource from a topic
 
 Resource CRUD
 -------------
-- GET  /resources/:id
-<pre>
+- GET /resources/:id  - Get the details of the specified resource
+
+```js
   {
     id: 88,
     title: "Resource Title",
     url: "http://example.url",
     source: "Resource Source"
   }
-</pre>
-- POST    /resources
-- PUT     /resources/:id
-- DELETE  /resources/:id
+```
+
+- POST /resources  - Create a new resource
+- PUT /resources/:id  - Update the specified resource
+- DELETE  /resources/:id  - Delete the specified resource
 
 Resource Search
 ---------------
-- GET /resources?url=[some url]
-- GET /resources?title=[some title]
+- GET /resources?url=[some url]  - Search for a resource by url
+- GET /resources?title=[some title]  - Search for a resource by title
 
 Vote CRUD
 ---------
-- GET /topics/:id/[rel]/:toid/vote - returns votes on a relationship between two topics or between a topic and a resource
-- GET /topics/:id/[rel]/:toid/vote?user=1 - returns vote by specified user on a relationship
-- POST /topics/:id/[rel]/:toid/vote - creates or updates a vote on a relationship
-<pre>
-  { dir: 'up', user: 1 }
-</pre>
-- PUT /topics/:id/[rel]/:toid/vote - updates a vote on a relationship
-<pre>
-  { dir: 'down', user: 1 }
-</pre>
-- DEL /topics/:id/[rel]/:toid/vote - delete a vote on a relationship
+- POST /topics/:id/[rel]/:toid/vote - Vote on a relationship
 
-graph API
----------
-- GET /graph/:id?depth=3
-<pre>
-  {
-    topics: [
-      { id: 1,
-        next: [ 3, 2 ],
-        sub: [ 8, 3 ]
-      },
-      { id: 2,
-        next: [ 3, 1 ],
-        sub: [ 8, 1, 4 ] 
-      }
-    ]
-  }
-</pre>
-
+```js
+  { dir: 'up' }
+```
 
 Testing
 -------
