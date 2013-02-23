@@ -27,6 +27,16 @@ module.exports = function(grunt) {
 				}
 			}
 		},
+		jasmine: {
+			app: {
+				src: [
+					'public/js/vendor/angular.js',
+					'public/js/vendor/angular-mocks.js',
+					'public/js/dist/app.min.js',
+					'test/public/**/*.js'
+				]
+			}
+		},
 		watch: {
 			files: ['gruntfile.js', 'public/js/**/*.js', '!public/js/dist/**/*.js'],
 			tasks: ['jshint', 'clean', 'uglify']
@@ -34,10 +44,11 @@ module.exports = function(grunt) {
 	});
 
 	// Default task.
-	grunt.registerTask('default', ['jshint', 'clean', 'uglify']);
+	grunt.registerTask('default', ['jshint', 'clean', 'uglify', 'jasmine']);
 	
 	grunt.loadNpmTasks('grunt-contrib-jshint');
 	grunt.loadNpmTasks('grunt-contrib-clean');
 	grunt.loadNpmTasks('grunt-contrib-uglify');
 	grunt.loadNpmTasks('grunt-contrib-watch');
+	grunt.loadNpmTasks('grunt-contrib-jasmine');
 };
