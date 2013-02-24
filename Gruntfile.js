@@ -3,7 +3,7 @@ module.exports = function(grunt) {
 	// Project configuration.
 	grunt.initConfig({
 		jshint: {
-			all: ['gruntfile.js', 'server.js', 'lib/**/*.js', 'public/*.js', 
+			all: ['Gruntfile.js', 'server.js', 'lib/**/*.js', 'public/*.js', 
 				'public/directives/**/*.js', 'public/controllers/**/*.js']
 		},
 		clean: {
@@ -38,7 +38,7 @@ module.exports = function(grunt) {
 			}
 		},
 		watch: {
-			files: ['gruntfile.js', 'public/js/**/*.js', 'test/public/**/*.js', '!public/js/dist/**/*.js'],
+			files: ['Gruntfile.js', 'public/js/**/*.js', 'test/public/**/*.js', '!public/js/dist/**/*.js'],
 			tasks: ['jshint', 'clean', 'uglify', 'jasmine']
 		}
 	});

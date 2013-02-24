@@ -88,6 +88,6 @@ describe('TopicDetailController', function() {
 			it('should send vote to the server with direction "down"', function() {
 				httpBackend.verifyNoOutstandingExpectation();
 			});
-		});		
+		});	
 	});
 });
