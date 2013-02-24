@@ -113,6 +113,82 @@ describe('Topic CRUD', function() {
 
 	});
 
+	var testGetTopicWithRelationship = function(relationshipType) {
+
+		var postTopic = api.request();
+		var postRelated = api.request();
+		var toId;
+		var data;
+		var retreivedTopic;
+
+		before(function(done) {
+			postTopic.postTopic()
+			.then(function() {
+				if(relationshipType === 'resources') {
+					return postRelated.postResource();
+				} else {
+					return postRelated.postTopic();
+				}
+			})
+			.then(function() {
+				if(relationshipType === 'resources') {
+					toId = postRelated.returnedResource.id;
+					data = { resid: toId };
+				} else {
+					toId = postRelated.returnedTopic.id;
+					data = { toid: toId };
+				}
+				return api.post('/topics/' + postTopic.returnedTopic.id +
+						'/' + relationshipType + '/', data);
+			})
+			.then(function() {
+				return api.get('/topics/' + postTopic.returnedTopic.id);
+			})
+			.then(function(res) {
+				retreivedTopic = JSON.parse(res.body);
+				done();
+			})
+			.done();
+		});
+
+		it('returns the topic with a ' + relationshipType + 
+				' property that is an array of related objects', function() {
+			assert.ok(retreivedTopic[relationshipType] !== undefined);
+			assert.equal(retreivedTopic[relationshipType].length, 1);
+		});
+
+		describe('and the related object in the array', function() {
+
+			var related;
+
+			before(function() {
+				related = retreivedTopic[relationshipType][0];
+			});
+
+			it('has an id property with the expected value', function() {
+				assert.equal(related.id, toId);
+			});
+
+			it('has a score property', function() {
+				assert.ok(related.score !== undefined);
+			});
+
+		});
+
+	};
+
+	describe('GET /topics/:id when the topic has a next relationship', function() {
+		testGetTopicWithRelationship('next');
+	});
+
+	describe('GET /topics/:id when the topic has a sub relationship', function() {
+		testGetTopicWithRelationship('sub');
+	});
+
+	describe('GET /topics/:id with the topic has a resource', function() {
+		testGetTopicWithRelationship('resources');
+	});
+
 	describe('PUT /topics/:id', function() {
 
 		var p = api.request();

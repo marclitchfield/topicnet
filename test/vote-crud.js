@@ -46,10 +46,6 @@ describe('Vote CRUD', function() {
 			.done();
 		});
 
-		it('returns status 200', function() {
-			assert.equal(response.statusCode, 200);
-		});
-
 		it('increments the ' + votesKey + ' on the specified relationship by 1', function(done) {
 			api.get('/topics/' + postFrom.returnedTopic.id +
 				'/' + relationshipType + '/' + postTo.returnedTopic.id)
@@ -59,6 +55,14 @@ describe('Vote CRUD', function() {
 				done();
 			})
 			.done();
+		});
+
+		it('returns status 200', function() {
+			assert.equal(response.statusCode, 200);
+		});
+
+		it('returns the score', function() {
+			assert.ok(JSON.parse(response.body).score !== undefined);
 		});
 
 	};
@@ -84,10 +88,6 @@ describe('Vote CRUD', function() {
 			.done();
 		});
 
-		it('returns status 200', function() {
-			assert.equal(response.statusCode, 200);
-		});
-
 		it('increments the ' + votesKey + ' on the specified relationship by 1', function(done) {
 			api.get('/topics/' + postTopic.returnedTopic.id +
 				'/resources/' + postResource.returnedResource.id)
@@ -97,6 +97,14 @@ describe('Vote CRUD', function() {
 				done();
 			})
 			.done();
+		});
+
+		it('returns status 200', function() {
+			assert.equal(response.statusCode, 200);
+		});
+
+		it('returns the score', function() {
+			assert.ok(JSON.parse(response.body).score !== undefined);
 		});
 
 	};
