@@ -1,4 +1,4 @@
-var TopicDetailController = ['$scope', '$http', '$routeParams', function($scope, $http, $routeParams) {
+var TopicDetailController = ['$scope', '$http', '$routeParams', '$location', function($scope, $http, $routeParams, $location) {
 	$http.get('/topics/' + $routeParams.topicId).success(function(topic) {
 		$scope.topic = topic;
 		$scope.topic.resources = $scope.topic.resources || [];
@@ -19,7 +19,9 @@ var TopicDetailController = ['$scope', '$http', '$routeParams', function($scope,
 
 	function vote(resource, dir) {
 		var voteUrl = '/topics/' + $scope.topic.id + '/resources/' + resource.id + '/vote';
-		$http.post(voteUrl, {dir: dir}).error(function(message) {
+		$http.post(voteUrl, {dir: dir}).success(function() {
+			$location.path('topics/' + $scope.topic.id);
+		}).error(function(message) {
 			$scope.$emit('error', message);
 		});
 	}

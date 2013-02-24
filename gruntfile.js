@@ -38,7 +38,7 @@ module.exports = function(grunt) {
 			}
 		},
 		watch: {
-			files: ['gruntfile.js', 'public/js/**/*.js', '!public/js/dist/**/*.js'],
+			files: ['gruntfile.js', 'public/js/**/*.js', 'test/public/**/*.js', '!public/js/dist/**/*.js'],
 			tasks: ['jshint', 'clean', 'uglify', 'jasmine']
 		}
 	});
