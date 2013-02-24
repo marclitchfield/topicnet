@@ -2,6 +2,7 @@
 	<li ng-repeat="relTopic in topic[rel]">
 		<div class="vote-buttons">
 			<a ng-click="upvote(rel, relTopic)">▲</a>
+			<span class="score">{{ relTopic.score }}</span>
 			<a ng-click="downvote(rel, relTopic)">▼</a>
 		</div>
 		<a href="#/topics/{{ relTopic.id }}">{{ relTopic.name }}</a>

@@ -22,7 +22,9 @@ var RelatedTopicController = ['$scope', '$http', function($scope, $http) {
 
 	function vote(relationship, toTopic, dir) {
 		var voteUrl = '/topics/' + $scope.topic.id + '/' + relationship + '/' + toTopic.id + '/vote';
-		$http.post(voteUrl, {dir: dir}).error(function(message) {
+		$http.post(voteUrl, {dir: dir}).success(function(response) {
+			toTopic.score = response.score;
+		}).error(function(message) {
 			$scope.$emit('error', message);
 		});
 	}

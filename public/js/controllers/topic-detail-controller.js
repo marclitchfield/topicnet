@@ -19,8 +19,8 @@ var TopicDetailController = ['$scope', '$http', '$routeParams', '$location', fun
 
 	function vote(resource, dir) {
 		var voteUrl = '/topics/' + $scope.topic.id + '/resources/' + resource.id + '/vote';
-		$http.post(voteUrl, {dir: dir}).success(function() {
-			$location.path('topics/' + $scope.topic.id);
+		$http.post(voteUrl, {dir: dir}).success(function(response) {
+			resource.score = response.score;
 		}).error(function(message) {
 			$scope.$emit('error', message);
 		});

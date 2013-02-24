@@ -68,7 +68,7 @@ describe('TopicDetailController', function() {
 
 		describe('upvote a resource', function() {
 			beforeEach(inject(function($controller) {
-				httpBackend.expectPOST('/topics/1/resources/2/vote', { dir: 'up' }).respond(200, {});
+				httpBackend.expectPOST('/topics/1/resources/2/vote', { dir: 'up' }).respond(200, { score: 1 });
 				scope.upvote(resource);
 				httpBackend.flush();
 			}));
@@ -76,17 +76,25 @@ describe('TopicDetailController', function() {
 			it('should send vote to the server with direction "up"', function() {
 				httpBackend.verifyNoOutstandingExpectation();
 			});
+
+			it('should set the score returned from the service', function() {
+				expect(resource.score).toEqual(1);
+			});
 		});
 
 		describe('downvote a resource', function() {
 			beforeEach(inject(function($controller) {
-				httpBackend.expectPOST('/topics/1/resources/2/vote', { dir: 'down' }).respond(200, {});
+				httpBackend.expectPOST('/topics/1/resources/2/vote', { dir: 'down' }).respond(200, { score: -1 });
 				scope.downvote(resource);
 				httpBackend.flush();
 			}));
 
 			it('should send vote to the server with direction "down"', function() {
 				httpBackend.verifyNoOutstandingExpectation();
+			});
+
+			it('should set the score returned from the service', function() {
+				expect(resource.score).toEqual(-1);
 			});
 		});	
 	});
