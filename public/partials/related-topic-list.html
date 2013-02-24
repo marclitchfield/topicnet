@@ -1,5 +1,5 @@
 <ul class="unstyled">
-	<li ng-repeat="relTopic in topic[rel]">
+	<li ng-repeat="relTopic in topic[rel] | orderBy:'-score'">
 		<div class="vote-buttons">
 			<a ng-click="upvote(rel, relTopic)">▲</a>
 			<span class="score">{{ relTopic.score }}</span>
