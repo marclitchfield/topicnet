@@ -84,7 +84,6 @@ li:hover .close {
 	height: 1.2em;
 	display: inline-block;
 	text-align: center;
-	vertical-align: middle;
 	background-color: #4D6199;
 	border: 1px solid #4D5366;
 	border-radius: 2px;
@@ -118,7 +117,13 @@ li:hover .close {
 .vote-buttons {
 	display: inline-block;
 	margin: 0;
+	border: 1px solid #B2C2ED;
+	border-radius: 2px;	
+	line-height: 1.2em;
+	height: 1.2em;
+	vertical-align: top;
 }
+
 .vote-buttons a {
 	text-decoration: none;
 	color: #B2C2ED;
@@ -129,12 +134,8 @@ li:hover .close {
 
 .score {
 	display: inline-block;
-	margin: 1px -4px;
 	text-align: center;
-	padding: 1px;
+	vertical-align: top;
 	color: #4D6199;
-	min-width: 24px;
-	border: 1px solid #B2C2ED;
-	border-radius: 3px;
-	line-height: 1em;
+	line-height: 1.2em;
 }

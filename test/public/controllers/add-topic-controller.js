@@ -45,6 +45,10 @@ describe('AddTopicController', function() {
 			it('should clear the search query', function() {
 				expect(scope.searchQuery).toEqual('');
 			});
+
+			it('should start out with a score of 0', function() {
+				expect(createdTopic.score).toEqual(0);
+			});
 		});
 
 		describe('with topic that has an id property', function() {
@@ -61,6 +65,10 @@ describe('AddTopicController', function() {
 
 			it('should clear the search query', function() {
 				expect(scope.searchQuery).toEqual('');
+			});
+
+			it('should start out with a score of 0', function() {
+				expect(scope.selectedTopic.score).toEqual(0);
 			});
 		});
 	});
