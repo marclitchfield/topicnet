@@ -122,6 +122,8 @@ li:hover .close {
 	line-height: 1.2em;
 	height: 1.2em;
 	vertical-align: top;
+	text-align: center;
+	min-width: 64px;
 }
 
 .vote-buttons a {
