@@ -37,18 +37,42 @@ module.exports = function(grunt) {
 				]
 			}
 		},
+		exec: {
+			'start-test-server': {
+				command: function() {
+					process.env.NODE_ENV = 'test';
+					return 'node server.js';
+				},
+				async: true
+			}
+		},
+		mochaTest: {
+			backend: ['test/**/*.js', '!test/public/**/*.js']				
+		},
+		mochaTestConfig: {
+			backend: {
+				options: {
+					reporter: 'spec'
+				}			
+			}
+		},
 		watch: {
-			files: ['Gruntfile.js', 'public/js/**/*.js', 'test/public/**/*.js', '!public/js/dist/**/*.js'],
-			tasks: ['jshint', 'clean', 'uglify', 'jasmine']
+			frontend: {
+				files: ['Gruntfile.js', 'public/js/**/*.js', 'test/public/**/*.js', '!public/js/dist/**/*.js'],
+				tasks: ['jshint', 'clean', 'uglify', 'jasmine']
+			}
 		}
 	});
 
 	// Default task.
 	grunt.registerTask('default', ['jshint', 'clean', 'uglify', 'jasmine']);
+	grunt.registerTask('backend-tests', ['exec:start-test-server', 'mochaTest']);
 	
 	grunt.loadNpmTasks('grunt-contrib-jshint');
 	grunt.loadNpmTasks('grunt-contrib-clean');
 	grunt.loadNpmTasks('grunt-contrib-uglify');
 	grunt.loadNpmTasks('grunt-contrib-watch');
 	grunt.loadNpmTasks('grunt-contrib-jasmine');
+	grunt.loadNpmTasks('grunt-exec');
+	grunt.loadNpmTasks('grunt-mocha-test');
 };
