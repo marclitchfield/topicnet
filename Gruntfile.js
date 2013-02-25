@@ -44,6 +44,12 @@ module.exports = function(grunt) {
 					return 'node server.js';
 				},
 				async: true
+			},
+			'start-dev-server': {
+				command: function() {
+					process.env.NODE_ENV = 'dev';
+					return 'node server.js';
+				}
 			}
 		},
 		mochaTest: {

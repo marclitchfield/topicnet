@@ -4,6 +4,7 @@ var RelatedTopicController = ['$scope', '$http', function($scope, $http) {
 	
 	$scope.linkfn = function addRelatedTopic(toTopic) {
 		$http.post('/topics/' + $scope.topic.id + '/' + $scope.rel, { toid: toTopic.id }).success(function() {
+			toTopic.score = 0;
 			$scope.topic[$scope.rel].push(toTopic);
 		}).error(function(message) {
 			$scope.$emit('error', message);

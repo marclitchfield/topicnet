@@ -25,8 +25,12 @@ describe('RelatedTopicController', function() {
 			httpBackend.verifyNoOutstandingExpectation();
 		});
 
-		it("should add toTopic to scope.topic[rel]", function() {
+		it('should add toTopic to scope.topic[rel]', function() {
 			expect(scope.topic[scope.rel]).toEqual([toTopic]);
+		});
+
+		it('should initialize the score to 0', function() {
+			expect(toTopic.score).toEqual(0);
 		});
 	});
 
