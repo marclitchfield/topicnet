@@ -30,6 +30,10 @@ describe('Sub Topics', function() {
 			assert.equal(makeSubResponse.statusCode, 200);
 		});
 
+		it('returns the initial score', function() {
+			assert.ok(JSON.parse(makeSubResponse.body).score !== undefined);
+		});
+
 		describe('then GET /topics/:id/sub', function() {
 
 			var getSubResponse;
