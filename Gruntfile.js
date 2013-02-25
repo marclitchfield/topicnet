@@ -3,8 +3,8 @@ module.exports = function(grunt) {
 	// Project configuration.
 	grunt.initConfig({
 		jshint: {
-			all: ['Gruntfile.js', 'server.js', 'lib/**/*.js', 'public/*.js', 
-				'public/directives/**/*.js', 'public/controllers/**/*.js']
+			frontend: ['public/*.js', 'public/directives/**/*.js', 'public/controllers/**/*.js'],
+			backend: ['server.js', 'lib/**/*.js']
 		},
 		clean: {
 			folder: 'public/js/dist/*.*'
@@ -65,14 +65,18 @@ module.exports = function(grunt) {
 		watch: {
 			frontend: {
 				files: ['Gruntfile.js', 'public/js/**/*.js', 'test/public/**/*.js', '!public/js/dist/**/*.js'],
-				tasks: ['jshint', 'clean', 'uglify', 'jasmine']
+				tasks: ['jshint:frontend', 'clean', 'uglify', 'jasmine']
+			},
+			backend: {
+				files: ['Gruntfile.js', 'server.js', 'lib/**/*.js', 'test/**/*.js', '!test/public/**/*.js'],
+				tasks: ['jshint:backend', 'clean', 'uglify', 'backend-tests']
 			}
 		}
 	});
 
 	// Default task.
-	grunt.registerTask('default', ['jshint', 'clean', 'uglify', 'jasmine']);
 	grunt.registerTask('backend-tests', ['exec:start-test-server', 'mochaTest']);
+	grunt.registerTask('default', ['jshint', 'clean', 'uglify', 'jasmine', 'backend-tests']);
 	
 	grunt.loadNpmTasks('grunt-contrib-jshint');
 	grunt.loadNpmTasks('grunt-contrib-clean');
