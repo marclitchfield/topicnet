@@ -68,8 +68,9 @@ describe('Topic Resources', function() {
 
 		var topicPost = api.request();
 		var resPost = api.request();
+		var linkResourceResponse;
 
-		it('returns status 200', function(done) {
+		before(function(done) {
 			topicPost.postTopic()
 			.then(function() {
 				return resPost.postResource();
@@ -79,10 +80,18 @@ describe('Topic Resources', function() {
 					{ resid: resPost.returnedResource.id });
 			})
 			.then(function(res) {
-				assert.equal(res.statusCode, 200);
+				linkResourceResponse = res;
 				done();	
 			})
 			.done();
+		});
+
+		it('returns status 200', function() {
+			assert.equal(linkResourceResponse.statusCode, 200);
+		});
+
+		it('returns the initial score', function() {
+			assert.ok(JSON.parse(linkResourceResponse.body).score !== undefined);
 		});
 
 		describe('then GET /topics/:id', function() {
