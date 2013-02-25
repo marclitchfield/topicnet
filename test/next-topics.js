@@ -30,6 +30,10 @@ describe('Next Topics', function() {
 			assert.equal(makeNextResponse.statusCode, 200);
 		});
 
+		it('returns the initial score', function() {
+			assert.ok(JSON.parse(makeNextResponse.body).score !== undefined);
+		});
+
 		describe('then GET /topics/:id/next', function() {
 
 			var getNextResponse;		
