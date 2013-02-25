@@ -85,7 +85,6 @@ li:hover .close {
 	display: inline-block;
 	text-align: center;
 	background-color: #4D6199;
-	border: 1px solid #4D5366;
 	border-radius: 2px;
 }
 
@@ -117,27 +116,61 @@ li:hover .close {
 .vote-buttons {
 	display: inline-block;
 	margin: 0;
-	border: 1px solid #B2C2ED;
-	border-radius: 2px;	
-	line-height: 1.2em;
-	height: 1.2em;
-	vertical-align: top;
+	height: 2em;
 	text-align: center;
-	min-width: 64px;
+	min-width: 28px;
+	vertical-align: top;
+	word-spacing: -6px;
+	line-height: 1.2em;
 }
 
 .vote-buttons a {
 	text-decoration: none;
-	color: #B2C2ED;
+	color: #ccc;
 }
+
 .vote-buttons a:hover {
 	color: #4D6199;
 }
 
 .score {
-	display: inline-block;
+	display: block;
 	text-align: center;
-	vertical-align: top;
+	font-size: 0.8em;
+	line-height: 1.4em;
+	border-radius: 2px;	
+	border: 1px solid #B2C2ED;
 	color: #4D6199;
+}
+
+
+.topic-resource {
+	margin-bottom: 10px;
+}
+
+.topic-resource .resource-info {
+	display: inline-block;
+	vertical-align: top;
+}
+
+.topic-resource .title {
+	font-size: 1.2em;
+	line-height: 1em;
+	vertical-align: top;
+}
+
+.topic-resource .source {
+	display: block;
+	font-size: 0.8em;
+	line-height: 1em;		
+}
+
+
+.related-topic {
+	margin-bottom: 10px;
+}
+
+.related-topic .topic-name {
 	line-height: 1.2em;
+	vertical-align: top;
 }

@@ -28,7 +28,6 @@ describe('RelatedTopicController', function() {
 		it("should add toTopic to scope.topic[rel]", function() {
 			expect(scope.topic[scope.rel]).toEqual([toTopic]);
 		});
-
 	});
 
 	describe('calling removeLink with toTopic', function() {

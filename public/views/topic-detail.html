@@ -9,15 +9,17 @@
 			</form>
 		</h3>
 		<ul class="unstyled">
-			<li ng-repeat="resource in topic.resources | orderBy:'-score'">
+			<li class="topic-resource" ng-repeat="resource in topic.resources | orderBy:'-score'">
 				<div class="vote-buttons">
-					<a ng-click="upvote(resource)">▲</a>
 					<span class="score">{{ resource.score }}</span>
+					<a ng-click="upvote(resource)">▲</a>
 					<a ng-click="downvote(resource)">▼</a>
-				</div>				
-				<div class="verb-icon"><i data-verb="{{ resource.verb }}" class="icon-white"/></div>
-				<a href="#/resources/{{ resource.id }}">{{ resource.title }}</a>
-				<small>{{ resource.source }}</small>
+				</div>
+				<div class="resource-info">
+					<div class="verb-icon"><i data-verb="{{ resource.verb }}" class="icon-white"/></div>
+					<a class="title" href="#/resources/{{ resource.id }}">{{ resource.title }}</a>
+					<span class="source">{{ resource.source }}</span>
+				</div>
 			</li>
 		</ul>
         <a class="btn" href="#/topics/{{ topic.id }}/resources/add"><i class="icon-plus"></i> Resource</a>
