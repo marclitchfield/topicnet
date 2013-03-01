@@ -11,9 +11,9 @@
 		<ul class="unstyled">
 			<li class="topic-resource" ng-repeat="resource in topic.resources | orderBy:'-score'">
 				<div class="vote-buttons">
-					<span class="score">{{ resource.score }}</span>
 					<a ng-click="upvote(resource)">▲</a>
 					<a ng-click="downvote(resource)">▼</a>
+					<span class="score">{{ resource.score }}</span>
 				</div>
 				<div class="resource-info">
 					<div class="verb-icon"><i data-verb="{{ resource.verb }}" class="icon-white"/></div>
