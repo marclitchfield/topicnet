@@ -76,8 +76,11 @@ module.exports = function(grunt) {
 	});
 
 	// Default task.
+	grunt.registerTask('frontend-tests', ['jshint', 'clean', 'uglify', 'jasmine']);
 	grunt.registerTask('backend-tests', ['exec:start-test-server', 'mochaTest']);
-	grunt.registerTask('default', ['jshint', 'clean', 'uglify', 'jasmine', 'backend-tests']);
+	grunt.registerTask('default', ['frontend-tests', 'backend-tests']);
+	grunt.registerTask('ft', ['frontend-tests']);
+	grunt.registerTask('bt', ['backend-tests']);
 	
 	grunt.loadNpmTasks('grunt-contrib-jshint');
 	grunt.loadNpmTasks('grunt-contrib-clean');

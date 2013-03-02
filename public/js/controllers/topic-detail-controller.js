@@ -16,21 +16,4 @@ var TopicDetailController = ['$scope', '$http', '$routeParams', '$location', fun
 			$scope.$emit('error', message);
 		});
 	};
-
-	function vote(resource, dir) {
-		var voteUrl = '/topics/' + $scope.topic.id + '/resources/' + resource.id + '/vote';
-		$http.post(voteUrl, {dir: dir}).success(function(response) {
-			resource.score = response.score;
-		}).error(function(message) {
-			$scope.$emit('error', message);
-		});
-	}
-
-	$scope.upvote = function(resource) {
-		vote(resource, 'up');
-	};
-
-	$scope.downvote = function(resource) {
-		vote(resource, 'down');
-	};
 }];

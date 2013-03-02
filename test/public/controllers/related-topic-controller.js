@@ -38,7 +38,7 @@ describe('RelatedTopicController', function() {
 
 		beforeEach(inject(function($controller) {
 			scope.topic = { id: 1, next: [toTopic] };
-			scope.rel = 'next'
+			scope.rel = 'next';
 			httpBackend.expectDELETE(
 				'/topics/' + scope.topic.id + '/' + scope.rel + '/' + toTopic.id).respond(200,{});
 			$controller(RelatedTopicController, {$scope: scope});
@@ -54,45 +54,5 @@ describe('RelatedTopicController', function() {
 			expect(scope.topic[scope.rel]).toEqual([]);
 		});
 
-	});
-
-	describe('related topic voting', function() {
-		beforeEach(inject(function($controller) {
-			scope.topic = { id: 1, next: [toTopic] };
-			scope.rel = 'next'
-			$controller(RelatedTopicController, {$scope: scope});
-		}));
-
-		describe('upvote a related topic', function() {
-			beforeEach(inject(function($controller) {
-				httpBackend.expectPOST('/topics/1/next/' + toTopic.id + '/vote', { dir: 'up' }).respond(200, { score: 1 });
-				scope.upvote('next', toTopic);
-				httpBackend.flush();
-			}));
-
-			it('should send vote to the server with direction "up"', function() {
-				httpBackend.verifyNoOutstandingExpectation();
-			});
-
-			it('should set the score on the related topic', function() {
-				expect(toTopic.score).toEqual(1);
-			});
-		});
-
-		describe('downvote a related topic', function() {
-			beforeEach(inject(function($controller) {
-				httpBackend.expectPOST('/topics/1/next/' + toTopic.id + '/vote', { dir: 'down' }).respond(200, { score: -1 });
-				scope.downvote('next', toTopic);
-				httpBackend.flush();
-			}));
-
-			it('should send vote to the server with direction "down"', function() {
-				httpBackend.verifyNoOutstandingExpectation();
-			});
-
-			it('should set the score on the related topic', function() {
-				expect(toTopic.score).toEqual(-1);
-			});
-		});
 	});
 });

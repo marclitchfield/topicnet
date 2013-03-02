@@ -10,13 +10,9 @@
 		</h3>
 		<ul class="unstyled">
 			<li class="topic-resource" ng-repeat="resource in topic.resources | orderBy:'-score'">
-				<div class="vote-buttons">
-					<a ng-click="upvote(resource)">▲</a>
-					<a ng-click="downvote(resource)">▼</a>
-					<span class="score">{{ resource.score }}</span>
-				</div>
-				<div class="resource-info">
-					<div class="verb-icon"><i data-verb="{{ resource.verb }}" class="icon-white"/></div>
+				<span class="score">{{ resource.score }}</span>
+				<div class="verb-icon"><i data-verb="{{ resource.verb }}" class="icon-white"/></div>
+				<div class="resource-detail">
 					<a class="title" href="#/resources/{{ resource.id }}">{{ resource.title }}</a>
 					<span class="source">{{ resource.source }}</span>
 				</div>

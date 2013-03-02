@@ -79,17 +79,27 @@ li:hover .close {
 }
 
 
-.verb-icon {
-	width: 1.2em;
-	height: 1.2em;
+.score {
+	vertical-align: top;
 	display: inline-block;
 	text-align: center;
-	background-color: #4D6199;
 	border-radius: 2px;
+	width: 30px;
+	height: 20px;
+	background-color: #F0F4FF;
+	color: #0088cc;
 }
 
-.verb-icon i {
-	margin: 0;
+
+.verb-icon {
+	display: inline-block;
+	width: 20px;
+	height: 20px;
+	line-height: 20px;
+	text-align: center;
+	vertical-align: top;
+	background-color: #4D6199;
+	border-radius: 2px;
 }
 
 .verb-icon i[data-verb="read"] { 
@@ -113,67 +123,29 @@ li:hover .close {
 }
 
 
-.vote-buttons {
-	display: block;
-	float: left;
-	margin: 0 8px 0 0;
-	height: 2em;
-	text-align: center;
-	width: 28px;
-	vertical-align: top;
-	line-height: 1.2em;
-	border-radius: 2px;	
-	border: 1px solid #B2C2ED;
-	padding: 0 4px 4px 4px;
-}
-
-.vote-buttons a {
-	text-decoration: none;
-	color: #ccc;
-	margin: -4px;
-}
-
-.vote-buttons a:hover {
-	color: #4D6199;
-}
-
-.score {
-	display: block;
-	text-align: center;
-	font-size: 0.8em;
-	line-height: 1.4em;
-	color: #4D6199;
-}
-
-
 .topic-resource {
-	margin-bottom: 8px;
+	margin-bottom: 6px;
 }
 
-.topic-resource .resource-info {
-	display: inline;
+.resource-detail {
+	display: inline-block;
+	margin-bottom: 2px;
+	width: 300px;
+}
+
+.resource-detail .title {
+	display: inline-block;
+	font-size: 1.3em;
 	vertical-align: top;
 }
 
-.topic-resource .title {
-	font-size: 1.2em;
-	line-height: 1em;
-	vertical-align: top;
-}
-
-.topic-resource .source {
+.resource-detail .source {
+	font-size: 1em;
 	display: block;
-	font-size: 0.8em;
-	line-height: 1em;		
+	margin-top: 2px;
 }
-
 
 .related-topic {
-	margin-bottom: 4px;
-	min-height: 2.2em;
+	margin-bottom: 6px;
 }
 
-.related-topic .topic-name {
-	line-height: 1.2em;
-	vertical-align: top;
-}
