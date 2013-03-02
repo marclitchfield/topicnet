@@ -114,11 +114,12 @@ li:hover .close {
 
 
 .vote-buttons {
-	display: inline-block;
-	margin: 0;
+	display: block;
+	float: left;
+	margin: 0 8px 0 0;
 	height: 2em;
 	text-align: center;
-	min-width: 28px;
+	width: 28px;
 	vertical-align: top;
 	line-height: 1.2em;
 	border-radius: 2px;	
@@ -146,11 +147,11 @@ li:hover .close {
 
 
 .topic-resource {
-	margin-bottom: 6px;
+	margin-bottom: 8px;
 }
 
 .topic-resource .resource-info {
-	display: inline-block;
+	display: inline;
 	vertical-align: top;
 }
 
@@ -169,6 +170,7 @@ li:hover .close {
 
 .related-topic {
 	margin-bottom: 4px;
+	min-height: 2.2em;
 }
 
 .related-topic .topic-name {
