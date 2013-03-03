@@ -17,18 +17,22 @@
 	<script src="js/dist/app.min.js"></script>
 	<script src="js/vendor/modal-responsive-fix.js"></script>
 </head>
-<body ng-app="artoplasm" class="container">
+<body ng-app="artoplasm">
 	<header class="page-header">
-		<div class="row">
-			<h1 class="span12"><a href="#/">artoplasm</a></h1>
+		<div class="container">
+			<div class="row">
+				<h1 class="span12"><a href="#/">artoplasm</a></h1>
+			</div>
 		</div>
 	</header>
 
-	<div ng-controller="ErrorController">
-		<div ng-show="errorMessage" class="alert alert-error">
-			<button type="button" class="close" data-dismiss="alert">&times;</button>{{ errorMessage }}</div>
+	<div class="container">
+		<div ng-controller="ErrorController">
+			<div ng-show="errorMessage" class="alert alert-error">
+				<button type="button" class="close" data-dismiss="alert">&times;</button>{{ errorMessage }}</div>
 
-		<div ng-view>
+			<div ng-view>
+			</div>
 		</div>
 	</div>
 </body>
