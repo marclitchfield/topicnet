@@ -4,7 +4,7 @@ html {
 }
 
 header {
-	background: url('../img/grey-texture.png')
+	background: url('../img/grey-texture.png');
 }
 
 h1 a { color: black; }
@@ -34,11 +34,9 @@ li:hover .close {
 }
 	
 .page-header {
-	padding: 10px 0;
 	margin-top: 0;
 	margin-bottom: 10px;
 	border-bottom: 1px solid #DAE0F1;
-	border-radius: 4px;
 }
 
 .add-resource-form .input-append {
@@ -66,31 +64,11 @@ li:hover .close {
 }
 
 
-@media (max-width: 480px) {
-	.add-resource-form .controls {
-		margin-left: 0;
-	}
-}
-
-@media (max-width: 767px) {
-	.page-header {
-		text-align: center;
-	}
-
-	.add-resource-form .input-append {
-		width: 100%;
-	}
-
-	.add-resource-form .url-submit-text {
-		width: 70%;
-	}
-}
-
 .score {
 	display: inline-block;
 	vertical-align: top;
 	text-align: center;
-	width: 40px;
+	width: 33px;
 	height: 20px;
 	line-height: 20px;
 	color: #0088cc;
@@ -135,10 +113,16 @@ li:hover .close {
 	margin-bottom: 6px;
 }
 
+.resource-header {
+	vertical-align: top;
+	display: inline-block;
+	width: 62px;
+}
+
 .resource-detail {
-	width: 80%;
 	display: inline-block;
 	margin-bottom: 2px;
+	margin-left: 0;
 }
 
 .resource-detail .title {
@@ -156,3 +140,27 @@ li:hover .close {
 	margin-bottom: 6px;
 }
 
+
+@media (max-width: 480px) {
+	.add-resource-form .controls {
+		margin-left: 0;
+	}
+}
+
+@media (max-width: 767px) {
+	.resource-detail {
+		width: 70%;
+	}
+
+	.page-header {
+		text-align: center;
+	}
+
+	.add-resource-form .input-append {
+		width: 100%;
+	}
+
+	.add-resource-form .url-submit-text {
+		width: 70%;
+	}
+}
