@@ -1,5 +1,5 @@
 <div class="row ng-cloak" ng-cloak>
-	<div class="span5 offset1">
+	<div class="span6">
 		<h3 ng-hide="editingTitle" ng-dblclick="editingTitle=true">{{ topic.name }}</h3>
 		<h3 ng-show="editingTitle">
 			<form class="form-inline">
@@ -10,9 +10,9 @@
 		</h3>
 		<ul class="unstyled">
 			<li class="topic-resource" ng-repeat="resource in topic.resources | orderBy:'-score'">
-				<span class="score">{{ resource.score }}</span>
-				<div class="verb-icon"><i data-verb="{{ resource.verb }}" class="icon-white"/></div>
+				<div class="score">{{ resource.score }}</div>
 				<div class="resource-detail">
+					<div class="verb-icon"><i data-verb="{{ resource.verb }}" class="icon-white"/></div>
 					<a class="title" href="#/resources/{{ resource.id }}">{{ resource.title }}</a>
 					<span class="source">{{ resource.source }}</span>
 				</div>

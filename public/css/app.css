@@ -30,7 +30,7 @@ li:hover .close {
 .page-header {
 	padding: 10px 0;
 	margin-bottom: 10px;
-	background-color: #B2C2ED;
+	background-color: #DAE0F1;
 	border-radius: 4px;
 }
 
@@ -58,6 +58,7 @@ li:hover .close {
 	margin-bottom: 20px;
 }
 
+
 @media (max-width: 480px) {
 	.add-resource-form .controls {
 		margin-left: 0;
@@ -78,26 +79,26 @@ li:hover .close {
 	}
 }
 
-
 .score {
-	vertical-align: top;
 	display: inline-block;
+	vertical-align: top;
 	text-align: center;
-	border-radius: 2px;
-	width: 30px;
+	border-radius: 4px;
+	width: 40px;
 	height: 20px;
-	background-color: #F0F4FF;
+	line-height: 20px;
 	color: #0088cc;
+	background-color: #DAE0F1;
+	border-bottom: 1px solid #4D6199;
 }
-
 
 .verb-icon {
 	display: inline-block;
+	vertical-align: top;
+	text-align: center;
 	width: 20px;
 	height: 20px;
 	line-height: 20px;
-	text-align: center;
-	vertical-align: top;
 	background-color: #4D6199;
 	border-radius: 2px;
 }
@@ -127,22 +128,26 @@ li:hover .close {
 	margin-bottom: 6px;
 }
 
+.topic-resource .score {
+	height: 35px;
+	line-height: 35px;
+}
+
+
 .resource-detail {
+	width: 85%;
 	display: inline-block;
 	margin-bottom: 2px;
-	width: 300px;
 }
 
 .resource-detail .title {
-	display: inline-block;
-	font-size: 1.3em;
-	vertical-align: top;
+	font-size: 1.2em;
+	line-height: 20px;
 }
 
 .resource-detail .source {
 	font-size: 1em;
 	display: block;
-	margin-top: 2px;
 }
 
 .related-topic {
