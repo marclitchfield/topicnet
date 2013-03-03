@@ -3,6 +3,10 @@ html {
 	overflow-y: scroll;
 }
 
+body {
+	padding: 0;
+}
+
 header {
 	background: url('../img/grey-texture.png');
 }
@@ -148,6 +152,10 @@ li:hover .close {
 }
 
 @media (max-width: 767px) {
+	.container {
+		padding: 0 20px;
+	}
+
 	.resource-detail {
 		width: 70%;
 	}
