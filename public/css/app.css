@@ -3,6 +3,10 @@ html {
 	overflow-y: scroll;
 }
 
+body {
+	background: url('../img/grey-texture.png')
+}
+
 h1 a { color: black; }
 h1 a, h1 a:hover { text-decoration: none; }
 
@@ -30,7 +34,7 @@ li:hover .close {
 .page-header {
 	padding: 10px 0;
 	margin-bottom: 10px;
-	background-color: #DAE0F1;
+	border-bottom: 1px solid #DAE0F1;
 	border-radius: 4px;
 }
 
@@ -83,13 +87,13 @@ li:hover .close {
 	display: inline-block;
 	vertical-align: top;
 	text-align: center;
-	border-radius: 4px;
 	width: 40px;
 	height: 20px;
 	line-height: 20px;
 	color: #0088cc;
-	background-color: #DAE0F1;
+	background-color: #F6F6F6;
 	border-bottom: 1px solid #4D6199;
+	margin-bottom: 2px;
 }
 
 .verb-icon {
@@ -100,7 +104,6 @@ li:hover .close {
 	height: 20px;
 	line-height: 20px;
 	background-color: #4D6199;
-	border-radius: 2px;
 }
 
 .verb-icon i[data-verb="read"] { 
