@@ -1,5 +1,9 @@
 <div class="row ng-cloak" ng-cloak>
-	<div class="span6">
+	<div class="loadingProgress span6" ng-hide="topic">
+		<div class="loadingProgressBar"></div>
+	</div>
+
+	<div class="span6" ng-show="topic">
 		<h3 ng-hide="editingTitle" ng-dblclick="editingTitle=true">{{ topic.name }}</h3>
 		<h3 ng-show="editingTitle">
 			<form class="form-inline">
@@ -23,7 +27,7 @@
         <a class="btn" href="#/topics/{{ topic.id }}/resources/add"><i class="icon-plus"></i> Resource</a>
 	</div>
 
-	<div class="span5 nav-area tabbable">
+	<div class="span5 nav-area tabbable" ng-show="topic">
 		<ul class="nav nav-tabs">
 			<li class="active"><a href="#sub-topic-pane" data-toggle="tab">sub topics</a></li>
 			<li><a href="#next-topic-pane" data-toggle="tab">next topics</a></li>

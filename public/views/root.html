@@ -1,5 +1,9 @@
 <div class="row">
-	<div class="span12">
+	<div class="loadingProgress span12" ng-hide="rootTopics">
+		<div class="loadingProgressBar"></div>
+	</div>
+
+	<div class="span12" ng-show="rootTopics">
 		<ul class="unstyled">
 			<li ng-repeat="topic in rootTopics" gesture-swipe="showDelete=true">
 				<a href="#/topics/{{ topic.id }}">{{ topic.name }}</a>
@@ -8,6 +12,6 @@
 			</li>
 		</ul>
 
-		<div ng-include="'/partials/add-topic.html'" />
+		<div ng-include="'/partials/add-topic.html'"/>
 	</div>
 </div>

@@ -1,5 +1,9 @@
 <div class="row">
-	<div class="span12">
+	<div class="loadingProgress span12" ng-hide="resource">
+		<div class="loadingProgressBar"></div>
+	</div>
+
+	<div class="span12" ng-show="resource">
 		<h2>{{ resource.title }}</h2>
 		<h4>{{ resource.source }}</h4>
 
