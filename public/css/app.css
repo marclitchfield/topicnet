@@ -38,6 +38,7 @@ li:hover .close {
 .page-header {
 	margin-top: 0;
 	margin-bottom: 10px;
+	padding-bottom: 0;
 	border-bottom: 1px solid #DAE0F1;
 }
 
