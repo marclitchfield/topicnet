@@ -1,7 +1,5 @@
 var assert = require('assert');
-var _ = require('underscore');
 var api = require('./helper-api.js');
-var guid = require('guid');
 
 describe('Test Helper', function() {
 
