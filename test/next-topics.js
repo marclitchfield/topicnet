@@ -2,25 +2,38 @@ var assert = require('assert');
 var _ = require('underscore');
 var api = require('./helper-api.js');
 
+var postAndLinkTopics = function(relationshipType) {
+	var response = {};
+	return api.postTopic()
+	.then(function(res) {
+		response.postTopic = res;
+		return api.postTopic();
+	})
+	.then(function(res) {
+		response.postRelatedTopic = res;
+		return api.post('/topics/' + response.postTopic.returnedData.id + '/' + relationshipType,
+			{ toid: response.postRelatedTopic.returnedData.id });
+	})
+	.then(function(res) {
+		response.response = res;
+		return response;
+	});
+};
+
 describe('Next Topics', function() {
 
 	describe('POST to /topics/:id/next', function() {
 
-		var postPrev = api.request();
-		var postNext = api.request();
+		var postTopic;
+		var postNextTopic;
 		var makeNextResponse;
 
 		before(function(done) {
-			postPrev.postTopic()
-			.then(function() {
-				return postNext.postTopic();
-			})
-			.then(function() {
-				return api.post('/topics/' + postPrev.returnedTopic.id + '/next',
-					{ toid: postNext.returnedTopic.id });
-			})
+			postAndLinkTopics('next')
 			.then(function(res) {
-				makeNextResponse = res;
+				postTopic = res.postTopic;
+				postNextTopic = res.postRelatedTopic;
+				makeNextResponse = res.response;
 				done();
 			})
 			.done();
@@ -39,7 +52,7 @@ describe('Next Topics', function() {
 			var getNextResponse;		
 	
 			before(function(done) {
-				api.get('/topics/' + postPrev.returnedTopic.id + '/next')
+				api.get('/topics/' + postTopic.returnedData.id + '/next')
 				.then(function(res) {
 					getNextResponse = res;
 					done();
@@ -54,7 +67,7 @@ describe('Next Topics', function() {
 			it('returns the next topic', function() {
 				var returnedTopics = api.parseBody(getNextResponse.body);
 				assert.ok(_.any(returnedTopics, function(t) {
-					return t.id === postNext.returnedTopic.id;
+					return t.id === postNextTopic.returnedData.id;
 				}));
 			});
 
@@ -64,25 +77,21 @@ describe('Next Topics', function() {
 
 	describe('DELETE /topics/:id/next/:toid with valid data', function() {
 
-		var postPrev = api.request();
-		var postNext = api.request();
+		var postTopic;
+		var postNextTopic;
 
 		before(function(done) {
-			postPrev.postTopic()
-			.then(function() {
-				return postNext.postTopic();
-			})
-			.then(function() {
-				return api.post('/topics/' + postPrev.returnedTopic.id + '/next', { toid: postNext.returnedTopic.id });
-			})
-			.then(function(results) {
+			postAndLinkTopics('next')
+			.then(function(res) {
+				postTopic = res.postTopic;
+				postNextTopic = res.postRelatedTopic;
 				done();
 			})
 			.done();
 		});
 
 		it('returns status 200', function(done) {
-			api.del('/topics/' + postPrev.returnedTopic.id + '/next/' + postNext.returnedTopic.id)
+			api.del('/topics/' + postTopic.returnedData.id + '/next/' + postNextTopic.returnedData.id)
 			.then(function(results) {
 				assert.equal(results.statusCode, 200);
 				done();
@@ -93,11 +102,11 @@ describe('Next Topics', function() {
 		describe('then GET /topics/:id/next', function() {
 
 			it('does not include the topic whose next relationship was deleted', function(done) {
-				api.get('/topics/' + postPrev.returnedTopic.id + '/next')
+				api.get('/topics/' + postTopic.returnedData.id + '/next')
 				.then(function(results) {
 					var nextTopics = api.parseBody(results.body);
 					assert.ok(!_.any(nextTopics, function(t) {
-						return t.id === postNext.returnedTopic.id;
+						return t.id === postNextTopic.returnedData.id;
 					}));
 					done();
 				})
