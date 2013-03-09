@@ -66,6 +66,51 @@ exports.parseBody = function(body) {
 	}
 };
 
+exports.postTopic = function() {
+	var response = {};
+	response.postedData = { name: 'Topic ' + guid.raw() };
+	return exports.post('/topics', response.postedData)
+	.then(function(res) {
+		response.response = res;
+		response.returnedData = exports.parseBody(res.body);
+		return response;
+	});
+};
+
+exports.getTopic = function(id) {
+	var response = {};
+	return exports.get('/topics/' + id)
+	.then(function(res) {
+		response.response = res;
+		response.returnedData = exports.parseBody(res.body);
+		return response;
+	});
+};
+
+exports.postResource = function() {
+	var response = {};
+	response.postedData = { title: 'Resource ' + guid.raw(),
+		url: 'http://example.com/UpperCase/' + guid.raw(),
+		source: 'example.com',
+		verb: 'read'
+	};
+	return exports.post('/resources', response.postedData)
+	.then(function(res) {
+		response.response = res;
+		response.returnedData = exports.parseBody(res.body);
+		return response;
+	});
+};
+
+exports.getResource = function(id) {
+	var response = {};
+	return exports.get('/resources/' + id)
+	.then(function(res) {
+		response.response = res;
+		response.returnedData = exports.parseBody(res.body);
+		return response;
+	});
+};
 
 exports.request = function() {
 
