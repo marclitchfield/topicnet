@@ -2,24 +2,6 @@ var assert = require('assert');
 var _ = require('underscore');
 var api = require('./helper-api.js');
 
-var postAndLinkTopics = function(relationshipType) {
-	var response = {};
-	return api.postTopic()
-	.then(function(res) {
-		response.postTopic = res;
-		return api.postTopic();
-	})
-	.then(function(res) {
-		response.postRelatedTopic = res;
-		return api.post('/topics/' + response.postTopic.returnedData.id + '/' + relationshipType,
-			{ toid: response.postRelatedTopic.returnedData.id });
-	})
-	.then(function(res) {
-		response.response = res;
-		return response;
-	});
-};
-
 var testTopicRelationships = function(relationshipType) {
 
 	describe('POST to /topics/:id/' + relationshipType, function() {
@@ -29,7 +11,7 @@ var testTopicRelationships = function(relationshipType) {
 		var createRelationshipResponse;
 
 		before(function(done) {
-			postAndLinkTopics(relationshipType)
+			api.postAndLinkTopics(relationshipType)
 			.then(function(res) {
 				postTopic = res.postTopic;
 				postRelatedTopic = res.postRelatedTopic;
@@ -141,7 +123,7 @@ var testTopicRelationships = function(relationshipType) {
 		var postRelatedTopic; 
 
 		before(function(done) {
-			postAndLinkTopics(relationshipType)
+			api.postAndLinkTopics(relationshipType)
 			.then(function(res) {
 				postTopic = res.postTopic;
 				postRelatedTopic = res.postRelatedTopic;

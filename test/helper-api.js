@@ -112,6 +112,42 @@ exports.getResource = function(id) {
 	});
 };
 
+exports.postAndLinkTopics = function(relationshipType) {
+	var response = {};
+	return exports.postTopic()
+	.then(function(res) {
+		response.postTopic = res;
+		return exports.postTopic();
+	})
+	.then(function(res) {
+		response.postRelatedTopic = res;
+		return exports.post('/topics/' + response.postTopic.returnedData.id + '/' + relationshipType,
+			{ toid: response.postRelatedTopic.returnedData.id });
+	})
+	.then(function(res) {
+		response.response = res;
+		return response;
+	});
+};
+
+exports.postAndLinkTopicAndResource = function() {
+	var result = {};
+	return exports.postTopic()
+	.then(function(res) {
+		result.postTopic = res;
+		return exports.postResource();
+	})
+	.then(function(res) {
+		result.postResource = res;
+		return exports.post('/topics/' + result.postTopic.returnedData.id + '/resources',
+			{ resid: result.postResource.returnedData.id });
+	})
+	.then(function(res) {
+		result.response = res;
+		return result;
+	});
+};
+
 exports.request = function() {
 
 	return {

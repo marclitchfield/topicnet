@@ -3,24 +3,6 @@ var _ = require('underscore');
 var api = require('./helper-api.js');
 var guid = require('guid');
 
-var postAndLinkTopicAndResource = function() {
-	var result = {};
-	return api.postTopic()
-	.then(function(res) {
-		result.postTopic = res;
-		return api.postResource();
-	})
-	.then(function(res) {
-		result.postResource = res;
-		return api.post('/topics/' + result.postTopic.returnedData.id + '/resources',
-			{ resid: result.postResource.returnedData.id });
-	})
-	.then(function(res) {
-		result.response = res;
-		return result;
-	});
-};
-
 describe('Resource CRUD', function() {
 
 	describe('POST to /resources without title', function() {
@@ -521,7 +503,7 @@ describe('Resource CRUD', function() {
 		var delResponse;		
 
 		before(function(done) {
-			postAndLinkTopicAndResource()
+			api.postAndLinkTopicAndResource()
 			.then(function(res) {
 				postTopic = res.postTopic;
 				postResource = res.postResource;
