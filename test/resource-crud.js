@@ -226,7 +226,6 @@ describe('Resource CRUD', function() {
 
 	describe('PUT /resources/:id with valid data', function() {
 
-		var p = api.request();
 		var postResource;
 		var resourceUpdate = { title: 'updated ' + guid.raw(), 
 			url: 'http://updatedexample.com/' + guid.raw(),
