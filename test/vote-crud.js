@@ -3,40 +3,32 @@ var api = require('./helper-api.js');
 
 describe('Vote CRUD', function() {
 
-	var setupRelationship = function(postFrom, postTo, relationshipType) {
-		return postFrom.postTopic()
-		.then(function() {
-			return postTo.postTopic();
-		})
-		.then(function() {
-			return api.post('/topics/' + postFrom.returnedTopic.id +
-				'/' + relationshipType, { toid: postTo.returnedTopic.id });
-		});
-	};
+	var testVote = function(relationshipType, voteDirection) {
 
-	var setupResourceRelationship = function(postTopic, postResource) {
-		return postTopic.postTopic()
-		.then(function() {
-			return postResource.postResource();
-		})
-		.then(function() {
-			return api.post('/topics/' + postTopic.returnedTopic.id +
-				'/resources', { resid: postResource.returnedResource.id });
-		});
-	};
-
-	var testVoteOnTopicRelationship = function(relationshipType, voteDirection) {
-
-		var postFrom = api.request();
-		var postTo = api.request();
+		var postFrom; 
+		var postTo;
 		var votesKey = (voteDirection === 'up') ? 'upVotes' : 'downVotes';
 		var response;
 
 		before(function(done) {
-			setupRelationship(postFrom, postTo, relationshipType)
+			(function() {
+				if(relationshipType === 'resources') {
+					return api.postAndLinkTopicAndResource()
+					.then(function(res) {
+						postFrom = res.postTopic;
+						postTo = res.postResource;
+					});
+				} else {
+					return api.postAndLinkTopics(relationshipType)
+					.then(function(res) {
+						postFrom = res.postTopic;
+						postTo = res.postRelatedTopic;
+					});
+				}
+			})()
 			.then(function() {
-				return api.post('/topics/' + postFrom.returnedTopic.id +
-					'/' + relationshipType + '/' + postTo.returnedTopic.id + '/vote',
+				return api.post('/topics/' + postFrom.returnedData.id +
+					'/' + relationshipType + '/' + postTo.returnedData.id + '/vote',
 					{ dir: voteDirection });
 			})
 			.then(function(res) {
@@ -47,50 +39,8 @@ describe('Vote CRUD', function() {
 		});
 
 		it('increments the ' + votesKey + ' on the specified relationship by 1', function(done) {
-			api.get('/topics/' + postFrom.returnedTopic.id +
-				'/' + relationshipType + '/' + postTo.returnedTopic.id)
-			.then(function(res) {
-				var rel = JSON.parse(res.body);
-				assert.equal(rel[votesKey], 1);
-				done();
-			})
-			.done();
-		});
-
-		it('returns status 200', function() {
-			assert.equal(response.statusCode, 200);
-		});
-
-		it('returns the score', function() {
-			assert.ok(JSON.parse(response.body).score !== undefined);
-		});
-
-	};
-
-	var testVoteOnResourceRelationship = function(voteDirection) {
-
-		var postTopic = api.request();
-		var postResource = api.request();
-		var response;
-		var votesKey = (voteDirection === 'up') ? 'upVotes' : 'downVotes';
-
-		before(function(done) {
-			setupResourceRelationship(postTopic, postResource)
-			.then(function(done) {
-				return api.post('/topics/' + postTopic.returnedTopic.id +
-					'/resources/' + postResource.returnedResource.id + '/vote',
-					{ dir: voteDirection });
-			})
-			.then(function(res) {
-				response = res;
-				done();
-			})
-			.done();
-		});
-
-		it('increments the ' + votesKey + ' on the specified relationship by 1', function(done) {
-			api.get('/topics/' + postTopic.returnedTopic.id +
-				'/resources/' + postResource.returnedResource.id)
+			api.get('/topics/' + postFrom.returnedData.id +
+				'/' + relationshipType + '/' + postTo.returnedData.id)
 			.then(function(res) {
 				var rel = JSON.parse(res.body);
 				assert.equal(rel[votesKey], 1);
@@ -110,27 +60,27 @@ describe('Vote CRUD', function() {
 	};
 
 	describe("POST to /topics/:id/next/:toid/vote with dir: 'up'", function() {
-		testVoteOnTopicRelationship('next', 'up');
+		testVote('next', 'up');
 	});
 
 	describe("POST to /topics/:id/next/:toid/vote with dir: 'down'", function() {
-		testVoteOnTopicRelationship('next', 'down');
+		testVote('next', 'down');
 	});
 
 	describe("POST to /topics/:id/sub/:toid/vote with dir: 'up'", function() {
-		testVoteOnTopicRelationship('sub', 'up');
+		testVote('sub', 'up');
 	});
 
 	describe("POST to /topics/:id/sub/:toid/vote with dir: 'down'", function() {
-		testVoteOnTopicRelationship('sub', 'down');
+		testVote('sub', 'down');
 	});
-
+	
 	describe("POST to /topics/:id/resources/:resid/vote with 'up'", function() {
-		testVoteOnResourceRelationship('up');
+		testVote('resources', 'up');
 	});
 
 	describe("POST to /topics/:id/resources/:resid/vote with 'down'", function() {
-		testVoteOnResourceRelationship('down');
+		testVote('resources', 'down');
 	});
 
 });
