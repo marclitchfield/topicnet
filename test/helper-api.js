@@ -66,54 +66,84 @@ exports.parseBody = function(body) {
 	}
 };
 
-
-exports.request = function() {
-
-	return {
-
-		postTopic: function() {
-			var self = this;
-			self.postedTopic = { name: 'Topic ' + guid.raw() };
-			return exports.post('/topics', self.postedTopic)
-			.then(function(res) {
-				self.response = res;
-				self.returnedTopic = exports.parseBody(res.body);
-			});
-		},
-
-		getTopic: function(id) {
-			var self = this;
-			return exports.get('/topics/' + id)
-			.then(function(res) {
-				self.response = res;
-				self.returnedTopic = exports.parseBody(res.body);
-			});
-		},
-
-		postResource: function() {
-			var self = this;
-			self.postedResource = { title: 'Resource ' + guid.raw(),
-				url: 'http://example.com/UpperCase/' + guid.raw(),
-				source: 'example.com',
-				verb: 'read'
-			};
-			return exports.post('/resources', self.postedResource)
-			.then(function(res) {
-				self.response = res;
-				self.returnedResource = exports.parseBody(res.body);
-			});
-		},
-
-		getResource: function(id) {
-			var self = this;
-			return exports.get('/resources/' + id)
-			.then(function(res) {
-				self.response = res;
-				self.returnedResource = exports.parseBody(res.body);
-			});
-		}
-
-	};
-
+exports.postTopic = function() {
+	var response = {};
+	response.postedData = { name: 'Topic ' + guid.raw() };
+	return exports.post('/topics', response.postedData)
+	.then(function(res) {
+		response.response = res;
+		response.returnedData = exports.parseBody(res.body);
+		return response;
+	});
 };
 
+exports.getTopic = function(id) {
+	var response = {};
+	return exports.get('/topics/' + id)
+	.then(function(res) {
+		response.response = res;
+		response.returnedData = exports.parseBody(res.body);
+		return response;
+	});
+};
+
+exports.postResource = function() {
+	var response = {};
+	response.postedData = { title: 'Resource ' + guid.raw(),
+		url: 'http://example.com/UpperCase/' + guid.raw(),
+		source: 'example.com',
+		verb: 'read'
+	};
+	return exports.post('/resources', response.postedData)
+	.then(function(res) {
+		response.response = res;
+		response.returnedData = exports.parseBody(res.body);
+		return response;
+	});
+};
+
+exports.getResource = function(id) {
+	var response = {};
+	return exports.get('/resources/' + id)
+	.then(function(res) {
+		response.response = res;
+		response.returnedData = exports.parseBody(res.body);
+		return response;
+	});
+};
+
+exports.postAndLinkTopics = function(relationshipType) {
+	var response = {};
+	return exports.postTopic()
+	.then(function(res) {
+		response.postTopic = res;
+		return exports.postTopic();
+	})
+	.then(function(res) {
+		response.postRelatedTopic = res;
+		return exports.post('/topics/' + response.postTopic.returnedData.id + '/' + relationshipType,
+			{ toid: response.postRelatedTopic.returnedData.id });
+	})
+	.then(function(res) {
+		response.response = res;
+		return response;
+	});
+};
+
+exports.postAndLinkTopicAndResource = function() {
+	var result = {};
+	return exports.postTopic()
+	.then(function(res) {
+		result.postTopic = res;
+		return exports.postResource();
+	})
+	.then(function(res) {
+		result.postResource = res;
+		return exports.post('/topics/' + result.postTopic.returnedData.id + '/resources',
+			{ resid: result.postResource.returnedData.id });
+	})
+	.then(function(res) {
+		result.response = res;
+		return result;
+	});
+};

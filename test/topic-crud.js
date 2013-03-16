@@ -19,39 +19,41 @@ describe('Topic CRUD', function() {
 
 	describe('POST to /topics with valid data', function() {
 
-		var p = api.request();
+		var postTopic;
 
 		before(function(done) {
-			p.postTopic()
-			.then(function() {
+			api.postTopic()
+			.then(function(res) {
+				postTopic = res;
 				done();
 			})
 			.done();
 		});
 
 		it('returns status 200', function() {
-			assert.equal(p.response.statusCode, 200);
+			assert.equal(postTopic.response.statusCode, 200);
 		});
 
 		it('returns new topic with the name specified', function() {
-			assert.equal(p.returnedTopic.name, p.postedTopic.name);
+			assert.equal(postTopic.returnedData.name, postTopic.postedData.name);
 		});
 
 		it('returns new topic with a valid generated id', function() {
-			assert.ok(p.returnedTopic.id > 0);
+			assert.ok(postTopic.returnedData.id > 0);
 		});
 
 	});
 
 	describe('POST to /topics with duplicate topic name', function() {
 
-		var p = api.request();
+		var postTopic;
 		var duplicatePostResponse;		
 
 		before(function(done) {
-			p.postTopic()
-			.then(function() {
-				return api.post('/topics', p.postedTopic);
+			api.postTopic()
+			.then(function(res) {
+				postTopic = res;
+				return api.post('/topics', postTopic.postedData);
 			})
 			.then(function(res) {
 				duplicatePostResponse = res;
@@ -85,64 +87,60 @@ describe('Topic CRUD', function() {
 
 	describe('GET /topics/:id with valid id', function() {
 		
-		var p = api.request();
-		var g = api.request();
+		var postTopic;
+		var getTopic;
 	
 		before(function(done) {
-			p.postTopic()
-			.then(function() {
-				return g.getTopic(p.returnedTopic.id);
+			api.postTopic()
+			.then(function(res) {
+				postTopic = res;
+				return api.getTopic(postTopic.returnedData.id);
 			})
-			.then(function() {
+			.then(function(res) {
+				getTopic = res;
 				done();
 			})
 			.done();
 		});
 
 		it('returns status 200', function() {
-			assert.equal(g.response.statusCode, 200);
+			assert.equal(getTopic.response.statusCode, 200);
 		});
 
 		it('returns existing topic with the expected name', function() {
-			assert.equal(g.returnedTopic.name, p.postedTopic.name);
+			assert.equal(getTopic.returnedData.name, postTopic.postedData.name);
 		});
 
 		it('returns existing topic with the expected id', function() {
-			assert.equal(g.returnedTopic.id, p.returnedTopic.id);
+			assert.equal(getTopic.returnedData.id, postTopic.returnedData.id);
 		});
 
 	});
 
 	var testGetTopicWithRelationship = function(relationshipType) {
 
-		var postTopic = api.request();
-		var postRelated = api.request();
-		var toId;
-		var data;
+		var postTopic;
+		var postRelated;
 		var retreivedTopic;
 
 		before(function(done) {
-			postTopic.postTopic()
-			.then(function() {
+			(function() {
 				if(relationshipType === 'resources') {
-					return postRelated.postResource();
+					return api.postAndLinkTopicAndResource()
+					.then(function(res) {
+						postTopic = res.postTopic;
+						postRelated = res.postResource;
+					});
 				} else {
-					return postRelated.postTopic();
+					return api.postAndLinkTopics(relationshipType)
+					.then(function(res) {
+						postTopic = res.postTopic;
+						postRelated = res.postRelatedTopic;
+					});
 				}
-			})
+			})()
 			.then(function() {
-				if(relationshipType === 'resources') {
-					toId = postRelated.returnedResource.id;
-					data = { resid: toId };
-				} else {
-					toId = postRelated.returnedTopic.id;
-					data = { toid: toId };
-				}
-				return api.post('/topics/' + postTopic.returnedTopic.id +
-						'/' + relationshipType + '/', data);
-			})
-			.then(function() {
-				return api.get('/topics/' + postTopic.returnedTopic.id);
+				return api.get('/topics/' + postTopic.returnedData.id);
 			})
 			.then(function(res) {
 				retreivedTopic = JSON.parse(res.body);
@@ -166,7 +164,7 @@ describe('Topic CRUD', function() {
 			});
 
 			it('has an id property with the expected value', function() {
-				assert.equal(related.id, toId);
+				assert.equal(related.id, postRelated.returnedData.id);
 			});
 
 			it('has a score property', function() {
@@ -191,13 +189,14 @@ describe('Topic CRUD', function() {
 
 	describe('PUT /topics/:id', function() {
 
-		var p = api.request();
+		var postTopic;
 		var updatedTopic = { name: 'updated ' + guid.raw() };
 
 		before(function(done) {
-			p.postTopic()
-			.then(function() {
-				return api.put('/topics/' + p.returnedTopic.id, updatedTopic);
+			api.postTopic()
+			.then(function(res) {
+				postTopic = res;
+				return api.put('/topics/' + postTopic.returnedData.id, updatedTopic);
 			})
 			.then(function() {
 				done();
@@ -207,35 +206,38 @@ describe('Topic CRUD', function() {
 
 		describe('then GET /topics/:id', function() {
 
-			var g = api.request();
+			var getTopic;
 			
 			before(function(done) {
-				g.getTopic(p.returnedTopic.id)
-				.then(function() {
+				api.getTopic(postTopic.returnedData.id)
+				.then(function(res) {
+					getTopic = res;
 					done();
 				})
 				.done();
 			});
 
 			it('topic name has been updated', function() {
-				assert.equal(g.returnedTopic.name, updatedTopic.name);
+				assert.equal(getTopic.returnedData.name, updatedTopic.name);
 			});
 		});
 	});
 
 	describe('PUT /topics/:id with name that would be a duplicate', function() {
 
-		var p1 = api.request();
-		var p2 = api.request();
+		var postTopic;
+		var postOtherTopic;
 		var putResponse;
 
 		before(function(done) {
-			p1.postTopic()
-			.then(function() {
-				return p2.postTopic();
+			api.postTopic()
+			.then(function(res) {
+				postTopic = res;
+				return api.postTopic();
 			})
-			.then(function() {
-				return api.put('/topics/' + p2.returnedTopic.id, { name: p1.returnedTopic.name });
+			.then(function(res) {
+				postOtherTopic = res;
+				return api.put('/topics/' + postOtherTopic.returnedData.id, { name: postTopic.returnedData.name });
 			})
 			.then(function(res) {
 				putResponse = res;
@@ -269,21 +271,16 @@ describe('Topic CRUD', function() {
 
 	describe('DELETE /topics/:id when the topic has an associated resource', function() {
 
-		var pTopic = api.request();
-		var pResource = api.request();
+		var postTopic;
+		var postResource;
 		var delResponse;
 		
 		before(function(done) {
-			pTopic.postTopic()
-			.then(function() {
-				return pResource.postResource();
-			})
-			.then(function() {
-				return api.post('/topics/' + pTopic.returnedTopic.id + '/resources/',
-					{ resid: pResource.returnedResource.id });
-			})
-			.then(function() {
-				return api.del('/topics/' + pTopic.returnedTopic.id);
+			api.postAndLinkTopicAndResource()
+			.then(function(res) {
+				postTopic = res.postTopic;
+				postResource = res.postResource;
+				return api.del('/topics/' + postTopic.returnedData.id);
 			})
 			.then(function(res) {
 				delResponse = res;
@@ -299,13 +296,13 @@ describe('Topic CRUD', function() {
 		describe('then GET /topics/:id', function() {
 
 			it('returns the topic', function(done) {
-				api.get('/topics/' + pTopic.returnedTopic.id)
+				api.get('/topics/' + postTopic.returnedData.id)
 				.then(function(res) {
 					var topic = api.parseBody(res.body);
-					assert.equal(topic.id, pTopic.returnedTopic.id);
+					assert.equal(topic.id, postTopic.returnedData.id);
 					done();
 				})
-				.then();
+				.done();
 			});
 
 		});
@@ -314,18 +311,19 @@ describe('Topic CRUD', function() {
 
 	describe('DELETE /topics/:id with no relationships', function() {
 
-		var p = api.request();
+		var postTopic;
 
 		before(function(done) {
-			p.postTopic()
-			.then(function() {
+			api.postTopic()
+			.then(function(res) {
+				postTopic = res;
 				done();
 			})
 			.done();
 		});
 
 		it('returns status 200', function(done) {
-			api.del('/topics/' + p.returnedTopic.id)
+			api.del('/topics/' + postTopic.returnedData.id)
 			.then(function(res) {
 				assert.equal(res.statusCode, 200);
 				done();
@@ -336,7 +334,7 @@ describe('Topic CRUD', function() {
 		describe('then GET /topics/:id with the deleted id', function() {
 
 			it('returns status 404', function(done) {
-				api.get('/topics/' + p.returnedTopic.id)
+				api.get('/topics/' + postTopic.returnedData.id)
 				.then(function(res) {
 					assert.equal(res.statusCode, 404);
 					done();

@@ -6,13 +6,14 @@ describe('Root Topics', function() {
 
 	describe('POST to /topics/:id/root', function() {
 
-		var p = api.request();
+		var postTopic;
 		var rootResponse;
 
 		before(function(done) {
-			p.postTopic()
-			.then(function() {
-				return api.post('/topics/' + p.returnedTopic.id + '/root', {});
+			api.postTopic()
+			.then(function(res) {
+				postTopic = res;
+				return api.post('/topics/' + postTopic.returnedData.id + '/root', {});
 			})
 			.then(function(res) {
 				rootResponse = res;
@@ -45,7 +46,7 @@ describe('Root Topics', function() {
 			it('returns all root topics including our topic', function() {
 				var rootTopics = api.parseBody(rootTopicsResponse.body);
 				assert.ok(_.any(rootTopics, function(t) {
-					return t.id === p.returnedTopic.id;
+					return t.id === postTopic.returnedData.id;
 				}));
 			});
 
@@ -55,12 +56,13 @@ describe('Root Topics', function() {
 
 	describe('DELETE /topics/:id/root', function() {
 
-		var rootPost = api.request();
+		var postTopic;
 
 		before(function(done) {
-			rootPost.postTopic()
-			.then(function() {
-				return api.post('/topics/' + rootPost.returnedTopic.id + '/root', {});
+			api.postTopic()
+			.then(function(res) {
+				postTopic = res;
+				return api.post('/topics/' + postTopic.returnedData.id + '/root', {});
 			})
 			.then(function(results) {
 				done();
@@ -69,7 +71,7 @@ describe('Root Topics', function() {
 		});
 
 		it('returns status 200', function(done) {
-			api.del('/topics/' + rootPost.returnedTopic.id + '/root')
+			api.del('/topics/' + postTopic.returnedData.id + '/root')
 			.then(function(results) {
 				assert.equal(results.statusCode, 200);
 				done();
@@ -84,7 +86,7 @@ describe('Root Topics', function() {
 				.then(function(results) {
 					var rootTopics = api.parseBody(results.body);
 					assert.ok(!_.any(rootTopics, function(t) {
-						return t.id === rootPost.returnedTopic.id;
+						return t.id === postTopic.returnedData.id;
 					}));
 					done();
 				})

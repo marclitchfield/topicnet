@@ -6,36 +6,30 @@ describe('Topic Relationships', function() {
 
 	var testGetRelationship = function(relationshipType) {
 
-		var postFrom = api.request();
-		var postTo = api.request();
-		var toId;
-		var data;
+		var postFrom;
+		var postTo;
 		var response;
 		var rel;
 
 		before(function(done) {
-			postFrom.postTopic()
-			.then(function() {
+			(function() {
 				if(relationshipType === 'resources') {
-					return postTo.postResource();
+					return api.postAndLinkTopicAndResource()
+					.then(function(res) {
+						postFrom = res.postTopic;
+						postTo = res.postResource;
+					});
 				} else {
-					return postTo.postTopic();
+					return api.postAndLinkTopics(relationshipType)
+					.then(function(res) {
+						postFrom = res.postTopic;
+						postTo = res.postRelatedTopic;
+					});
 				}
-			})
+			})()
 			.then(function() {
-				if(relationshipType === 'resources') {
-					toId = postTo.returnedResource.id;
-					data = { resid: toId };
-				} else {
-					toId = postTo.returnedTopic.id;
-					data = { toid: toId };
-				}
-				return api.post('/topics/' + postFrom.returnedTopic.id +
-					'/' + relationshipType, data);
-			})
-			.then(function() {
-				return api.get('/topics/' + postFrom.returnedTopic.id +
-					'/' + relationshipType + '/' + toId);
+				return api.get('/topics/' + postFrom.returnedData.id +
+					'/' + relationshipType + '/' + postTo.returnedData.id);
 			})
 			.then(function(res) {
 				response = res;
@@ -43,7 +37,6 @@ describe('Topic Relationships', function() {
 				done();
 			})
 			.done();
-
 		});
 
 		it('returns status 200', function() {
@@ -55,11 +48,11 @@ describe('Topic Relationships', function() {
 		});
 
 		it('returns the relationship with the correct fromId', function() {
-			assert.equal(rel.fromId, postFrom.returnedTopic.id);
+			assert.equal(rel.fromId, postFrom.returnedData.id);
 		});
 
 		it('returns the relationship with the correct toId', function() {
-			assert.equal(rel.toId, toId);
+			assert.equal(rel.toId, postTo.returnedData.id);
 		});
 
 		it('returns the relationship with the correct relationshipType', function() {
@@ -107,69 +100,55 @@ describe('Topic Relationships', function() {
 
 	describe('GET /topics/:id/:rel/:toid with invalid rel', function() {
 
-		var post = api.request();
-		var r;
-
-		before(function(done) {
-			post.postTopic()
-			.then(function() {
-				return api.get('/topics/' + post.returnedTopic.id + '/invalidRel/-999999');
+		it('returns status 404', function(done) {
+			api.postTopic()
+			.then(function(postTopic) {
+				return api.get('/topics/' + postTopic.returnedData.id + '/invalidRel/-999999');
 			})
 			.then(function(res) {
-				r = res;
+				assert.equal(res.statusCode, 404);
 				done();
 			})
 			.done();
-		});
-
-		it('returns status 404', function() {
-			assert.equal(r.statusCode, 404);
 		});
 
 	});
 
 	describe('GET /topics/:id/:rel/:toid with invalid toid', function() {
 
-		var post = api.request();
-		var r;
-
-		before(function(done) {
-			post.postTopic()
-			.then(function() {
-				return api.get('/topics/' + post.returnedTopic.id + '/next/-999999');
+		it('returns status 404', function(done) {
+			api.postTopic()
+			.then(function(postTopic) {
+				return api.get('/topics/' + postTopic.returnedData.id + '/next/-999999');
 			})
 			.then(function(res) {
-				r = res;
+				assert.equal(res.statusCode, 404);
 				done();
 			})
 			.done();
-		});
-
-		it('returns status 404', function() {
-			assert.equal(r.statusCode, 404);
 		});
 
 	});
 
 	describe('POST to /topics/:id/:rel with an invalid relationship', function() {
 
-		var r;
+		var postResponse;
 
 		before(function(done) {
 			api.post('/topics/1/invalid', { toid: 2 })
 			.then(function(res) {
-				r = res;
+				postResponse = res;
 				done();
 			})
 			.done();
 		});
 
 		it('returns status 500', function() {
-			assert.equal(r.statusCode, 500);
+			assert.equal(postResponse.statusCode, 500);
 		});
 
 		it('returns error message', function() {
-			assert.notEqual(-1, r.body.indexOf('invalid relationship'));
+			assert.notEqual(-1, postResponse.body.indexOf('invalid relationship'));
 		});
 
 	});
@@ -189,18 +168,11 @@ describe('Topic Relationships', function() {
 
 	describe('DELETE /topics/:id/:rel with an invalid relationship type', function() {
 
-		var post = api.request();
-
-		before(function(done) {
-			post.postTopic()
-			.then(function() {
-				done();
-			})
-			.done();
-		});
-
 		it('returns status 500', function(done) {
-			api.del('/topics/' + post.returnedTopic.id + '/invalidrel/-9999999')
+			api.postTopic()
+			.then(function(res) {
+				return api.del('/topics/' + res.returnedData.id + '/invalidrel/-9999999');
+			})
 			.then(function(res) {
 				assert.equal(res.statusCode, 500);
 				done();
