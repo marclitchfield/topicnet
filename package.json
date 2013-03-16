@@ -27,6 +27,6 @@
     "grunt": "~0.4.0",
     "grunt-contrib-jasmine": "~0.3.2",
     "grunt-mocha-test": "~0.2.0",
-    "grunt-exec": "git://github.com/marclitchfield/grunt-exec.git"
+    "grunt-develop": "0.0.2"
   }
 }
