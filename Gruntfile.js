@@ -4,7 +4,7 @@ module.exports = function(grunt) {
 	grunt.initConfig({
 		jshint: {
 			frontend: ['public/*.js', 'public/directives/**/*.js', 'public/controllers/**/*.js'],
-			backend: ['server.js', 'lib/**/*.js']
+			backend: ['service/server.js', 'service/lib/**/*.js']
 		},
 		clean: {
 			folder: 'public/js/dist/*.*'
@@ -39,11 +39,11 @@ module.exports = function(grunt) {
 		},
 		develop: {
 			server: {
-				file: 'server.js'
+				file: 'service/server.js'
 			}
 		},
 		mochaTest: {
-			backend: ['test/**/*.js', '!test/public/**/*.js']				
+			backend: ['test/service/**/*.js']				
 		},
 		mochaTestConfig: {
 			backend: {
@@ -59,7 +59,7 @@ module.exports = function(grunt) {
 				tasks: ['jshint:frontend', 'clean', 'uglify', 'jasmine']
 			},
 			backend: {
-				files: ['Gruntfile.js', 'server.js', 'lib/**/*.js', 'test/**/*.js', '!test/public/**/*.js'],
+				files: ['Gruntfile.js', 'service/**/**.js', 'test/service/**/*.js'],
 				tasks: ['jshint:backend', 'clean', 'uglify', 'backend-tests']
 			}
 		}
