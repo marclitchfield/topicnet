@@ -26,8 +26,12 @@ module.exports = function(app) {
 		done(null, {username:'frammis', id:id});
 	});
 
-	app.post('/login', passport.authenticate('local', { session: false }), function(request, response) {
+	app.post('/login', passport.authenticate('local'), function(request, response) {
 		response.json(request.user);
+	});
+
+	app.get('/whoami', function(request, response) { 
+		response.json(request.user); 
 	});
 
 	app.get('/logout', function(request, response) { 
