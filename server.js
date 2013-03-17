@@ -1,130 +1,42 @@
 var express = require('express');
-var neo4j = require('neo4j');
-var config = require('./config.js');
-
 var app = express.createServer(express.logger());
-var neo4jUrl = process.env.NEO4J_URL || 'http://localhost:' + config.neo4j.port;
-var graphDatabase = new neo4j.GraphDatabase(neo4jUrl);
-var graph = new require('./lib/graph').create(graphDatabase);
-var topicService = require('./lib/topic-service').createService(graph);
-var resourceService = require('./lib/resource-service').createService(graph);
-var voteService = require('./lib/vote-service').createService(graph);
 
-console.log(config);
-
-app.use(express.bodyParser());
 app.use(express['static']('public'));
+app.use(express.bodyParser());
+app.use(express.cookieParser());
+app.use(express.session({ secret: 'Silly Sampton Likes Plant-Like Petunias' }));
 
-function successHandler(response, result) {
-	if (result === undefined) {
-		response.send(200);
-	} else {
-		response.json(result);
-	}
-}
+require('./authentication.js')(app);
 
-function errorHandler(response, error) {
-	var statusCodes = {
-		'notfound': 404,
-		'duplicate': 400
-	};
+var topics = require('./topics.js');
+var resources = require('./resources.js');
 
-	response.send(error.message || error, statusCodes[error.name] || 500);
-}
 
-function complete(response, promise) {
-	promise.then(function(result) { successHandler(response, result); })
-		.fail(function(error) { errorHandler(response, error); })
-		.done();
-}
+// topics
 
-app.get('/topics', function(request, response) {
-	if (request.query.q) {
-		complete(response, topicService.search(request.query));
-	} else {
-		complete(response, topicService.getRelated(0, 'root'));
-	}
-});
+app.get('/topics', topics.root);
+app.post('/topics', topics.create);
+app.put('/topics/:id', topics.update);
+app.get('/topics/:id', topics.get);
+app.get('/topics/:id/:rel', topics.getRelated);
+app.get('/topics/:id/:rel/:toid', topics.getRelatedById);
+app.post('/topics/:id/:rel/:toid/vote', topics.vote);
+app.post('/topics/:id/root', topics.linkRoot);
+app.post('/topics/:id/resources', topics.linkResource);
+app['delete']('/topics/:id/resources/:resid', topics.unlinkResource);
+app.post('/topics/:id/:rel', topics.linkRelated);
+app['delete']('/topics/:id/root', topics.unlinkRoot);
+app['delete']('/topics/:id/:rel/:toid', topics.unlinkRelated);
+app['delete']('/topics/:id', topics['delete']);
 
-app.post('/topics', function(request, response) {
-	complete(response, topicService.create(request.body));
-});
+// resources
 
-app.put('/topics/:id', function(request, response) {
-	complete(response, topicService.update(request.params.id, request.body));
-});
+app.post('/resources', resources.create);
+app.get('/resources/:id', resources.get);
+app.get('/resources', resources.search);
+app.put('/resources/:id', resources.update);
+app['delete']('/resources/:id', resources['delete']);
 
-app.get('/topics/:id', function(request, response) {
-	complete(response, topicService.get(request.params.id));
-});
-
-app.get('/topics/:id/:rel', function(request, response) {
-	complete(response, topicService.getRelated(request.params.id, request.params.rel));
-});
-
-app.get('/topics/:id/:rel/:toid', function(request, response) {
-	complete(response, topicService.getRelationship(request.params.id, request.params.toid, request.params.rel));
-});
-
-app.post('/topics/:id/:rel/:toid/vote', function(request, response) {
-	complete(response, voteService.addVote(request.params.id, request.params.toid, request.params.rel, request.body));
-});
-
-app.post('/topics/:id/root', function(request, response) {
-	complete(response, topicService.createRelationship(0, request.params.id, 'root'));
-});
-
-app.post('/topics/:id/resources', function(request, response) {
-	complete(response, topicService.linkResource(request.params.id, request.body.resid));
-});
-
-app['delete']('/topics/:id/resources/:resid', function(request, response, next) {
-	complete(response, topicService.unlinkResource(request.params.id, request.params.resid));
-});
-
-app.post('/topics/:id/:rel', function(request, response) {
-	complete(response, topicService.createRelationship(request.params.id, request.body.toid, request.params.rel));
-});
-
-app['delete']('/topics/:id/root', function(request, response) {
-	complete(response, topicService.deleteRelationship(0, request.params.id, 'root'));
-});
-
-app['delete']('/topics/:id/:rel/:toid', function(request, response) {
-	complete(response, topicService.deleteRelationship(request.params.id, request.params.toid, request.params.rel));
-});
-
-app['delete']('/topics/:id', function(request, response) {
-	complete(response, topicService.deleteTopic(request.params.id));
-});
-
-app.post('/resources', function(request, response) {
-	complete(response, resourceService.create(request.body));
-});
-
-app.get('/resources/:id', function(request, response) {
-	complete(response, resourceService.get(request.params.id));
-});
-
-app.get('/resources', function(request, response) {
-	if (request.query.title) {
-		complete(response, resourceService.searchByTitle(request.query.title));
-	} else if(request.query.url) {
-		complete(response, resourceService.searchByUrl(request.query.url));
-	} else if(request.query.q) {
-		complete(response, resourceService.search(request.query));
-	} else {
-		response.send(404);
-	}
-});
-
-app.put('/resources/:id', function(request, response) {
-	complete(response, resourceService.update(request.params.id, request.body));
-});
-
-app['delete']('/resources/:id', function(request, response) {
-	complete(response, resourceService.deleteResource(request.params.id));
-});
 
 var port = process.env.PORT || 5000;
 app.listen(port, function() {
