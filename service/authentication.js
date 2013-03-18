@@ -1,5 +1,9 @@
-var	passport = require('passport');
-var LocalStrategy = require('passport-local').Strategy;
+var	passport = require('passport'),
+	LocalStrategy = require('passport-local').Strategy,
+	graph = new require('./lib/graph'),
+	userService = require('./lib/user-service').createService(graph),
+	handler = require('./handler');
+
 
 module.exports = function(app) {
 
@@ -11,30 +15,31 @@ module.exports = function(app) {
 		if (password !== 'secret') {
 			done(null, false, { message: 'Incorrect' });
 		} else {
-			console.log('Logged in');
-			done(null, {username:'frammis', id: 11119992});
+			done(null, {username:username, id: 11119992});
 		}
 	}));
 
 	passport.serializeUser(function(user, done) {
-		console.log('serialized', user);
-		done(null, user.id);
+		done(null, user);
 	});
 
-	passport.deserializeUser(function(id, done) {
-		console.log('deserializing', id);
-		done(null, {username:'frammis', id:id});
+	passport.deserializeUser(function(user, done) {
+		done(null, user);			
+	});
+
+	app.get('/user', function(request, response) { 
+		response.json(request.user); 
+	});
+
+	app.post('/user', function(request, response) {
+		handler.complete(response, userService.create(request.username, request.password));
 	});
 
 	app.post('/login', passport.authenticate('local'), function(request, response) {
 		response.json(request.user);
 	});
 
-	app.get('/whoami', function(request, response) { 
-		response.json(request.user); 
-	});
-
-	app.get('/logout', function(request, response) { 
+	app.post('/logout', function(request, response) { 
 		request.logout(); 
 		response.send(200);
 	});
