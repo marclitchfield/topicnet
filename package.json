@@ -7,7 +7,7 @@
     "npm": "1.1.x",
     "mocha": "1.4.x",
     "request": "2.10.x",
-    "underscore": "1.3.x",
+    "underscore": "1.4.x",
     "guid": "0.0.x",
     "q": "0.8.x"
   },
