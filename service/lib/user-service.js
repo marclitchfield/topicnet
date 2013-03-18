@@ -15,14 +15,12 @@ exports.createService = function(graph) {
 		},
 
 		get: function(id) {
-			console.log('get', id)
 			return graph.getNodeById(id)
 			.then(function(user) {
-				console.log('got', user)
 				return helper.makeNode(user._data);
 			});
 		}
 
-	}
+	};
 
 };
