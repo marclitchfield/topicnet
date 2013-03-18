@@ -12,11 +12,13 @@ module.exports = function(app) {
 	app.use(app.router);
 
 	passport.use(new LocalStrategy(function(username, password, done) {
-		if (password !== 'secret') {
-			done(null, false, { message: 'Incorrect' });
-		} else {
-			done(null, {username:username, id: 11119992});
-		}
+		userService.verify(username, password)
+		.then(function(user) {
+			done(null, user);				
+		})
+		.fail(function() {
+			done(null, false);
+		})
 	}));
 
 	passport.serializeUser(function(user, done) {
@@ -32,7 +34,7 @@ module.exports = function(app) {
 	});
 
 	app.post('/user', function(request, response) {
-		handler.complete(response, userService.create(request.username, request.password));
+		handler.complete(response, userService.create(request.body.username, request.body.password));
 	});
 
 	app.post('/login', passport.authenticate('local'), function(request, response) {

@@ -28,7 +28,7 @@ describe('User Authentication', function() {
 	describe('POST to /login with valid credentials', function() {
 
 		var username = guid.raw();
-		var password = 'secret';
+		var password = guid.raw();
 		var loginResponse;
 
 		before(function(done) {
