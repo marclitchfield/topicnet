@@ -16,15 +16,22 @@ exports.createService = function(graph) {
 		});
 	}
 
-
 	return {
 
 		create: function(email, password) {
-			var node = graph.createNode({ email: email, password: password });
-			return graph.saveNode(node)
-			.then(function() { 
-				return updateUserEmailIndex(node, email);
-			}); 
+			return findUserByEmail(email)
+			.then(function(user) {
+				if (user) {
+					return Q.reject({ name: 'duplicate', message: 'Email address already taken' });
+				}
+
+				var node = graph.createNode({ email: email, password: password });
+
+				return graph.saveNode(node)
+				.then(function() { 
+					return updateUserEmailIndex(node, email);
+				});
+			});
 		},
 
 		get: function(id) {

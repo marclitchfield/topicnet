@@ -5,6 +5,27 @@ var guid = require('guid');
 
 describe('User Authentication', function() {
 
+	describe('POST to /user with duplicate email', function() {
+		var email = guid.raw();
+
+		before(function(done) {
+			api.post('/user', { email: email, password: guid.raw() })
+			.then(function() {
+				done();
+			})
+			.done();
+		});
+
+		it('returns status 400 duplicate', function(done) {
+			api.post('/user', { email: email, password: guid.raw() })
+			.then(function(res) {
+				assert.equal(400, res.statusCode);
+				done();
+			})
+			.done();
+		});
+	});
+
 	describe('POST to /login with invalid credentials', function() {
 		it('returns status 401 unauthorized', function(done) {
 			api.post('/login', { email: guid.raw(), password: 'incorrect' })
