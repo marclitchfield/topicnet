@@ -4,13 +4,13 @@ var helper = require('./service-helper');
 
 exports.createService = function(graph) {
 
-	function updateUsernameIndex(node, username) {
-		return graph.updateIndex(node, 'user_username', 'username', username);
+	function updateUserEmailIndex(node, email) {
+		return graph.updateIndex(node, 'user_email', 'email', email);
 	}
 
-	function findUserByUsername(username) {
-		var query = helper.escapeLuceneSpecialChars(username.toLowerCase());
-		return graph.queryNodeIndex('user_username', 'username:' + query)
+	function findUserByEmail(email) {
+		var query = helper.escapeLuceneSpecialChars(email.toLowerCase());
+		return graph.queryNodeIndex('user_email', 'email:' + query)
 		.then(function(results) {
 			return results[0];
 		});
@@ -19,12 +19,12 @@ exports.createService = function(graph) {
 
 	return {
 
-		create: function(username, password) {
-			var node = graph.createNode({ username: username, password: password });
+		create: function(email, password) {
+			var node = graph.createNode({ email: email, password: password });
 			return graph.saveNode(node)
 			.then(function() { 
-				return updateUsernameIndex(node, username);
-			});
+				return updateUserEmailIndex(node, email);
+			}); 
 		},
 
 		get: function(id) {
@@ -33,7 +33,7 @@ exports.createService = function(graph) {
 				return helper.makeNode(user._data);
 			})
 			.then(function(user) {
-				if (user.username) {
+				if (user.email) {
 					return user;
 				} else {
 					return Q.reject();
@@ -41,8 +41,8 @@ exports.createService = function(graph) {
 			});
 		},
 
-		verify: function(username, password) {
-			return findUserByUsername(username)
+		verify: function(email, password) {
+			return findUserByEmail(email)
 			.then(function(user) {
 				if (user.password === password) {
 					delete user.password;

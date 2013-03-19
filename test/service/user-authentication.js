@@ -27,14 +27,14 @@ describe('User Authentication', function() {
 
 	describe('POST to /login with valid credentials', function() {
 
-		var username = guid.raw();
+		var email = guid.raw();
 		var password = guid.raw();
 		var loginResponse;
 
 		before(function(done) {
-			api.post('/user', { username: username, password: password })
+			api.post('/user', { email: email, password: password })
 			.then(function(res) {
-				return api.post('/login', { username: username, password: password });
+				return api.post('/login', { email: email, password: password });
 			})
 			.then(function(res) {
 				loginResponse = res;
@@ -50,7 +50,7 @@ describe('User Authentication', function() {
 			api.get('/user').then(function(res) {
 				assert.equal(200, res.statusCode);
 				var user = api.parseBody(res.body);
-				assert.equal(username, user.username);
+				assert.equal(email, user.email);
 				done();
 			})
 			.done();				

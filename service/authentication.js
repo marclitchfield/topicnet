@@ -11,8 +11,11 @@ module.exports = function(app) {
 	app.use(passport.session());
 	app.use(app.router);
 
-	passport.use(new LocalStrategy(function(username, password, done) {
-		userService.verify(username, password)
+	passport.use(new LocalStrategy({
+			usernameField: 'email'
+		},
+		function(email, password, done) {
+		userService.verify(email, password)
 		.then(function(user) {
 			done(null, user);				
 		})
@@ -34,7 +37,7 @@ module.exports = function(app) {
 	});
 
 	app.post('/user', function(request, response) {
-		handler.complete(response, userService.create(request.body.username, request.body.password));
+		handler.complete(response, userService.create(request.body.email, request.body.password));
 	});
 
 	app.post('/login', passport.authenticate('local'), function(request, response) {
