@@ -1,4 +1,4 @@
-angular.module('artoplasm.directives', []).
+angular.module('topicnet.directives', []).
 	directive('typeaheadTopicSearch',function() {
 		return function(scope, el, attrs) {
 			el.typeahead({

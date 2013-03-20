@@ -1,4 +1,4 @@
-angular.module('artoplasm', ['artoplasm.directives']).
+angular.module('topicnet', ['topicnet.directives']).
 	config(['$routeProvider', function($routeProvider) {
 		$routeProvider.
 			when('/', {controller: RootController, templateUrl: 'views/root.html'}).

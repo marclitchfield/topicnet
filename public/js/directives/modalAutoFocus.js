@@ -1,4 +1,4 @@
-angular.module('artoplasm.directives', []).
+angular.module('topicnet.directives', []).
 	directive('modalAutofocus', function() {
 		return function(scope, element, attrs) {
 			$(element).on('shown', function() {

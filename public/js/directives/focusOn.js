@@ -1,4 +1,4 @@
-angular.module('artoplasm.directives', []).
+angular.module('topicnet.directives', []).
 	directive('focusOn', function() {
 		return function (scope, element, attrs) {
 			scope.$watch(attrs.focusOn, function(value) {
