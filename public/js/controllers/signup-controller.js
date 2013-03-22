@@ -1,8 +1,7 @@
-var SignupController = ['$scope', '$http', '$location', function($scope, $http, $location) {
+var SignupController = ['$scope', '$location', 'AuthenticationService', function($scope, $location, AuthenticationService) {
 
 	$scope.signUp = function() {
-		var cryptedPassword = CryptoJS.SHA256($scope.password).toString();
-		$http.post('/user', { email: $scope.email, password: cryptedPassword })
+		AuthenticationService.signup($scope.email, $scope.password)
 		.success(function(user) {
 			redirectToHome();
 			$scope.$emit('info', 'Thanks for signing up. Click login to login with your new credentials!');

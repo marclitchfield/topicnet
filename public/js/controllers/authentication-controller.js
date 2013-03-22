@@ -1,25 +1,21 @@
-var AuthenticationController = ['$scope', '$http', '$location', function($scope, $http, $location) {
+var AuthenticationController = ['$scope', '$location', 'AuthenticationService', function($scope, $location, AuthenticationService) {
 
-	$http.get('/user')
-	.success(function(user) {
-		$scope.currentUser = user;
-	})
+	var $currentUser;
+
+	AuthenticationService.readCurrentUser()
 	.error(function(message) {
 		$scope.$emit('error', message);
 	});
 
+	$scope.$watch(AuthenticationService.currentUser, function(currentUser) {
+		$scope.currentUser = currentUser;
+	});
+
 	$scope.logout = function() {
-		$http.post('/logout', {})
-		.success(function() {
-			$scope.currentUser = undefined;
-		})
+		AuthenticationService.logout()
 		.error(function(message) {
 			$scope.$emit('error', message);
 		});
 	};
-
-	$scope.$on('loggedIn', function(event, user) {
-		$scope.currentUser = user;
-	});
 
 }];

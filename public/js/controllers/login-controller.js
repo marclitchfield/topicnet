@@ -1,10 +1,8 @@
-var LoginController = ['$scope', '$rootScope', '$http', '$location', function($scope, $rootScope, $http, $location) {
+var LoginController = ['$scope', '$rootScope', '$location', 'AuthenticationService', function($scope, $rootScope, $location, AuthenticationService) {
 
 	$scope.login = function() {
-		var cryptedPassword = CryptoJS.SHA256($scope.password).toString();
-		$http.post('/login', { email: $scope.email, password: cryptedPassword })
+		AuthenticationService.login($scope.email, $scope.password)
 		.success(function(user) {
-			$rootScope.$broadcast('loggedIn', user);
 			$scope.$emit('success', 'Welcome ' + user.email + '!');
 			redirectToHome();
 		})
