@@ -3,7 +3,7 @@ module.exports = function(grunt) {
 	// Project configuration.
 	grunt.initConfig({
 		jshint: {
-			frontend: ['public/*.js', 'public/directives/**/*.js', 'public/controllers/**/*.js'],
+			frontend: ['public/*.js', 'public/directives/**/*.js', 'public/controllers/**/*.js', 'public/services/**/*.js'],
 			backend: ['service/server.js', 'service/lib/**/*.js']
 		},
 		clean: {
@@ -22,7 +22,8 @@ module.exports = function(grunt) {
 					'public/js/dist/app.min.js': [
 						'public/js/app.js', 
 						'public/js/controllers/*.js', 
-						'public/js/directives/*.js'
+						'public/js/directives/*.js',
+						'public/js/services/*.js'
 					]
 				}
 			}
@@ -71,7 +72,7 @@ module.exports = function(grunt) {
 	grunt.registerTask('default', ['frontend-tests', 'backend-tests']);
 	grunt.registerTask('ft', ['frontend-tests']);
 	grunt.registerTask('bt', ['backend-tests']);
-	grunt.registerTask('develop', ['develop'])
+	grunt.registerTask('develop', ['develop']);
 	
 	grunt.loadNpmTasks('grunt-contrib-jshint');
 	grunt.loadNpmTasks('grunt-contrib-clean');
