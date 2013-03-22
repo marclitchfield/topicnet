@@ -1,4 +1,5 @@
-var AuthenticationController = ['$scope', '$location', 'AuthenticationService', function($scope, $location, AuthenticationService) {
+var AuthenticationController = ['$scope', '$location', 'AuthenticationService',
+	function($scope, $location, AuthenticationService) {
 
 	var $currentUser;
 
