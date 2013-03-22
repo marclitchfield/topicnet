@@ -1,0 +1,14 @@
+<div ng-controller="SignupController">
+	<h2>Sign Up</h2>
+	<form novalidate>
+		<div class="control-group">
+			<input type="text" id="email" ng-model="email" placeholder="Email" required autofocus>
+		</div>
+		<div class="control-group">
+			<input type="password" id="password" ng-model="password" placeholder="Password" required>
+		</div>
+		<div class="control-group">
+			<button type="submit" class="btn" ng-click="signUp()">Sign Up</button>
+		</div>
+	</form>
+</div>

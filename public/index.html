@@ -17,20 +17,31 @@
 	<script src="js/vendor/underscore-min.js"></script>
 	<script src="js/dist/app.min.js"></script>
 	<script src="js/vendor/modal-responsive-fix.js"></script>
+	<script src="js/vendor/sha256.js"></script>
 </head>
 <body ng-app="topicnet">
 	<header class="page-header">
 		<div class="container">
 			<div class="row">
-				<h1 class="span12"><a href="#/">topicnet</a></h1>
+				<div class="span12">
+					<h1 class="site-title"><a href="#/">topicnet</a></h1>
+					<span class="authentication-status" ng-controller="AuthenticationController">
+						<span ng-hide="currentUser">
+							<a href="#/login">login</a> | <a href="#/signup">signup</a>
+						</span>
+						<span ng-show="currentUser">
+							{{ currentUser.email }} | <a ng-click="logout()">logout</a>
+						</span>
+					</span>
+				</div>
 			</div>
 		</div>
 	</header>
 
 	<div class="container">
-		<div ng-controller="ErrorController">
-			<div ng-show="errorMessage" class="alert alert-error">
-				<button type="button" class="close" data-dismiss="alert">&times;</button>{{ errorMessage }}</div>
+		<div ng-controller="AlertController">
+			<div ng-show="message" class="alert alert-{{ type }}">
+				<button type="button" class="close" data-dismiss="alert">&times;</button>{{ message }}</div>
 
 			<div ng-view>
 			</div>
