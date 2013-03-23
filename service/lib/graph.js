@@ -8,6 +8,10 @@ var graphDatabase = new neo4j.GraphDatabase(neo4jUrl);
 var _ = require('underscore');
 var Q = require('q');
 
+function parseNodeId(node) {
+	var url = node._data.self;
+	return parseInt(url.split('/').pop(), 10);
+}
 
 function makeNodeData(node) {
 	var nodeData = node.data;
@@ -16,11 +20,6 @@ function makeNodeData(node) {
 		nodeData.type = node.type;
 	}
 	return nodeData;
-}
-
-function parseNodeId(node) {
-	var url = node._data.self;
-	return parseInt(url.split('/').pop(), 10);
 }
 
 function processQueryResults(results) {

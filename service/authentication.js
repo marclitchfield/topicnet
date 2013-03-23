@@ -1,6 +1,6 @@
 var	passport = require('passport'),
 	LocalStrategy = require('passport-local').Strategy,
-	graph = new require('./lib/graph'),
+	graph = require('./lib/graph'),
 	userService = require('./lib/user-service').createService(graph),
 	handler = require('./handler');
 

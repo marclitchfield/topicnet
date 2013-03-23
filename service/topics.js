@@ -1,4 +1,4 @@
-var	graph = new require('./lib/graph'),
+var	graph = require('./lib/graph'),
 	topicService = require('./lib/topic-service').createService(graph),
 	voteService = require('./lib/vote-service').createService(graph),
 	handler = require('./handler');

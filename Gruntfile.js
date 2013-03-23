@@ -12,7 +12,9 @@ module.exports = function(grunt) {
 				trailing: true,
 				eqeqeq: true,
 				curly: true,
-				camelcase: true
+				camelcase: true,
+				latedef: true,
+				newcap: true
 			}
 		},
 		clean: {

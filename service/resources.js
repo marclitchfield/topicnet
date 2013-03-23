@@ -1,4 +1,4 @@
-var	graph = new require('./lib/graph'),
+var	graph = require('./lib/graph'),
 	resourceService = require('./lib/resource-service').createService(graph),
 	handler = require('./handler');
 
