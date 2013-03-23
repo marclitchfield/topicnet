@@ -2,11 +2,11 @@ var LoginController = ['$scope', '$rootScope', '$location', 'AuthenticationServi
 
 	$scope.login = function() {
 
-		if($scope.email === undefined || $scope.email.length < 6) {
-			$scope.$emit('error', 'Missing or invalid email address.');
+		if(!$scope.email) {
+			$scope.$emit('error', 'Please enter a valid email address.');
 			return;
 		}
-		if($scope.password === undefined || $scope.password.length < 1) {
+		if(!$scope.password) {
 			$scope.$emit('error', 'Please enter your password.');
 			return;
 		}

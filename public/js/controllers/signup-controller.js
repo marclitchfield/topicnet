@@ -1,12 +1,13 @@
 var SignupController = ['$scope', '$location', 'AuthenticationService', function($scope, $location, AuthenticationService) {
 
 	$scope.signUp = function() {
-		if($scope.email === undefined || $scope.email.length < 6) {
+
+		if(!$scope.email) {
 			$scope.$emit('error', 'Please enter a valid email address.');
 			return;
 		}
-		if($scope.password === undefined || $scope.password.length < 6) {
-			$scope.$emit('error', 'Please enter a password at least six characters long.');
+		if(!$scope.password || $scope.password.length < 6) {
+			$scope.$emit('error', 'Please enter a password that is at least 6 characters long.');
 			return;
 		}
 
