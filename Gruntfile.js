@@ -54,7 +54,8 @@ module.exports = function(grunt) {
 			backend: {
 				options: {
 					reporter: 'spec',
-					timeout: 3000
+					timeout: 3000,
+					grep: grunt.option('grep')
 				}			
 			}
 		},
