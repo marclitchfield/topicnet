@@ -56,7 +56,7 @@ describe('Topic Relationships', function() {
 		});
 
 		it('returns the relationship with the correct relationshipType', function() {
-			assert.equal(rel.relationshipType, relationshipType); 
+			assert.equal(rel.relationshipType, relationshipType);
 		});
 
 		it('returns the relationship with a valid number of upVotes', function() {

@@ -21,8 +21,9 @@ exports.createService = function(graph) {
 
 		return findTopicByName(updatedValues.name)
 		.then(function(results) {
-			if(results.length > 0)
+			if(results.length > 0) {
 				return Q.reject({ name: 'duplicate', message: 'A topic with the specified name already exists' });
+			}
 		});
 	}
 
@@ -34,8 +35,9 @@ exports.createService = function(graph) {
 				return t.id === topicId;
 			});
 
-			if(resultsOtherThanThis.length > 0)
+			if(resultsOtherThanThis.length > 0) {
 				return Q.reject({ name: 'duplicate', message: 'Another topic exists with the specified name' });
+			}
 		});
 	}
 
@@ -93,16 +95,16 @@ exports.createService = function(graph) {
 		search: function(params) {
 
 			var page = helper.parsePositiveInt(params.p) || 1;
-			var per_page = helper.parsePositiveInt(params.pp) || DEFAULT_RESULTS_PER_PAGE;
-			var search_string = params.q || '';
+			var perPage = helper.parsePositiveInt(params.pp) || DEFAULT_RESULTS_PER_PAGE;
+			var searchString = params.q || '';
 
 			var cypherQuery = 'START n=node:topics_name({query}) RETURN n ' +
 				'SKIP {s} LIMIT {l}';
 
 			var cypherQueryParams = {
-				query: 'name:*' + helper.escapeLuceneSpecialChars(search_string.toLowerCase()) + '*',
-				s: (page - 1) * per_page,
-				l: per_page
+				query: 'name:*' + helper.escapeLuceneSpecialChars(searchString.toLowerCase()) + '*',
+				s: (page - 1) * perPage,
+				l: perPage
 			};
 
 			return graph.queryGraph(cypherQuery, cypherQueryParams)

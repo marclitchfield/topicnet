@@ -69,7 +69,7 @@ describe('Topic Resources', function() {
 			})
 			.then(function(res) {
 				linkResourceResponse = res;
-				done();	
+				done();
 			})
 			.done();
 		});
@@ -121,7 +121,7 @@ describe('Topic Resources', function() {
 			.then(function(res) {
 				return api.del('/topics/' + res.returnedData.id + '/resources/-9999999');
 			})
-			.then(function(res) {	
+			.then(function(res) {
 				assert.equal(res.statusCode, 404);
 				done();
 			})
@@ -163,7 +163,7 @@ describe('Topic Resources', function() {
 						!_.any(returnedTopic.resources, function(r) {
 							return r.id === postResource.returnedData.id;
 						}));
-					done();		
+					done();
 				})
 				.done();
 			});

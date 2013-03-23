@@ -17,11 +17,11 @@ module.exports = function(app) {
 		function(email, password, done) {
 		userService.verify(email, password)
 		.then(function(user) {
-			done(null, user);			
+			done(null, user);
 		})
 		.fail(function() {
 			done(null, false);
-		})
+		});
 	}));
 
 	passport.serializeUser(function(user, done) {
@@ -29,11 +29,11 @@ module.exports = function(app) {
 	});
 
 	passport.deserializeUser(function(user, done) {
-		done(null, user);			
+		done(null, user);
 	});
 
-	app.get('/user', function(request, response) { 
-		response.json(request.user); 
+	app.get('/user', function(request, response) {
+		response.json(request.user);
 	});
 
 	app.post('/user', function(request, response) {
@@ -44,8 +44,8 @@ module.exports = function(app) {
 		response.json(request.user);
 	});
 
-	app.post('/logout', function(request, response) { 
-		request.logout(); 
+	app.post('/logout', function(request, response) {
+		request.logout();
 		response.send(200);
 	});
 

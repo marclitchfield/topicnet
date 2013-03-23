@@ -26,7 +26,7 @@ exports.createService = function(graph) {
 				}
 
 				return graph.createNode({ email: email, password: password })
-				.then(function(user) { 
+				.then(function(user) {
 					return updateUserEmailIndex(user.id, email);
 				});
 			});

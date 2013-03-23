@@ -30,7 +30,7 @@ topicnet.factory( 'AuthenticationService', ['$http', function($http) {
 			return $http.post('/logout', {})
 			.success(function() {
 				currentUser = undefined;
-			});	
+			});
 		},
 
 		currentUser: function() {

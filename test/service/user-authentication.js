@@ -42,7 +42,7 @@ describe('User Authentication', function() {
 				assert.equal(null, res.body);
 				done();
 			})
-			.done();				
+			.done();
 		});
 	});
 
@@ -74,7 +74,7 @@ describe('User Authentication', function() {
 				assert.equal(email, user.email);
 				done();
 			})
-			.done();				
+			.done();
 		});
 
 
@@ -82,7 +82,7 @@ describe('User Authentication', function() {
 			before(function(done) {
 				api.post('/logout').then(function(res) {
 					done();
-				})
+				});
 			});
 
 			it('user is not authenticated', function(done) {
@@ -91,8 +91,8 @@ describe('User Authentication', function() {
 					assert.equal(null, res.body);
 					done();
 				})
-				.done();	
-			})
+				.done();
+			});
 		});
 
 	});

@@ -14,11 +14,11 @@ describe('Test Helper', function() {
 				done();
 			})
 			.done();
-		});		
+		});
 
 		it('returns a promise whose value is an object', function() {
-			assert.ok(typeof response === 'object');		
-		});	
+			assert.ok(typeof response === 'object');
+		});
 		
 		describe('and the returned object', function() {
 
@@ -38,7 +38,7 @@ describe('Test Helper', function() {
 				assert.notEqual(response.returnedData.name, undefined);
 			});
 			
-		});	
+		});
 	
 	});
 
@@ -61,7 +61,7 @@ describe('Test Helper', function() {
 		});
 
 		it('returns a promise whose value is an object', function() {
-			assert.ok(typeof response == 'object');
+			assert.ok(typeof response === 'object');
 		});
 
 		describe('and the returned object', function() {
@@ -93,11 +93,11 @@ describe('Test Helper', function() {
 				done();
 			})
 			.done();
-		});		
+		});
 
 		it('returns a promise whose value is an object', function() {
-			assert.ok(typeof response === 'object');		
-		});	
+			assert.ok(typeof response === 'object');
+		});
 		
 		describe('and the returned object', function() {
 
@@ -117,7 +117,7 @@ describe('Test Helper', function() {
 				assert.notEqual(response.returnedData.title, undefined);
 			});
 			
-		});	
+		});
 		
 	});
 		
@@ -140,7 +140,7 @@ describe('Test Helper', function() {
 		});
 
 		it('returns a promise whose value is an object', function() {
-			assert.ok(typeof response == 'object');
+			assert.ok(typeof response === 'object');
 		});
 
 		describe('and the returned object', function() {

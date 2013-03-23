@@ -32,7 +32,7 @@ exports.post = function(path, body) {
 };
 
 exports.put = function(path, body) {
-	var deferred = Q.defer();	
+	var deferred = Q.defer();
 	request({
 		uri: 'http://localhost:5000' + path,
 		method: 'PUT',

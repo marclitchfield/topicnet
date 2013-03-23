@@ -120,7 +120,7 @@ var testTopicRelationships = function(relationshipType) {
 	describe('DELETE /topics/:id/' + relationshipType + '/:toid', function() {
 
 		var postTopic;
-		var postRelatedTopic; 
+		var postRelatedTopic;
 
 		before(function(done) {
 			api.postAndLinkTopics(relationshipType)
@@ -134,7 +134,7 @@ var testTopicRelationships = function(relationshipType) {
 
 		it('returns status 200', function(done) {
 			api.del('/topics/' + postTopic.returnedData.id + '/' + relationshipType + '/' + postRelatedTopic.returnedData.id)
-			.then(function(results) {	
+			.then(function(results) {
 				assert.equal(results.statusCode, 200);
 				done();
 			})
