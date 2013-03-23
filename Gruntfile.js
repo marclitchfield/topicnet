@@ -43,8 +43,8 @@ module.exports = function(grunt) {
 		develop: {
 			server: {
 				file: 'service/server.js',
-        disableOutput: true,
-        readyText: 'Listening on' 
+				disableOutput: true,
+				readyText: 'Listening on' 
 			}
 		},
 		mochaTest: {
@@ -77,10 +77,10 @@ module.exports = function(grunt) {
 	grunt.registerTask('ft', ['frontend-tests']);
 	grunt.registerTask('bt', ['backend-tests']);
 	grunt.registerTask('develop', ['develop']);
-  
-  grunt.registerTask('develop-kill', function() {
-    grunt.event.emit('develop.kill');
-  });
+
+	grunt.registerTask('develop-kill', function() {
+		grunt.event.emit('develop.kill');
+	});
 	
 	grunt.loadNpmTasks('grunt-contrib-jshint');
 	grunt.loadNpmTasks('grunt-contrib-clean');
