@@ -27,7 +27,11 @@ exports.createService = function(graph) {
 
 				return graph.createNode({ email: email, password: password })
 				.then(function(user) { 
-					return updateUserEmailIndex(user.id, email);
+					return updateUserEmailIndex(user.id, email)
+					.then(function() {
+						delete user.password;
+						return user;
+					});
 				});
 			});
 		},
@@ -36,6 +40,7 @@ exports.createService = function(graph) {
 			return graph.readNode(id)
 			.then(function(user) {
 				if (user.email) {
+					delete user.password;
 					return user;
 				} else {
 					return Q.reject();

@@ -2,8 +2,33 @@ var assert = require('assert');
 var _ = require('underscore');
 var api = require('./helper-api.js');
 var guid = require('guid');
+var sha256 = require('crypto').createHash('sha256');
 
 describe('User Authentication', function() {
+
+	describe('POST to /user with valid email and hashed password', function() {
+		var email = guid.raw();
+		var hashedPassword = sha256.digest('secret');
+		var postResult;
+
+		before(function(done) {
+			api.post('/user', { email: email, password: hashedPassword })
+			.then(function(res) {
+				postResult = res;
+				done();
+			});
+		});
+
+		it('returns status 200', function() {
+			assert.equal(200, postResult.statusCode);
+		});
+
+		it('returns the user data, minus the password', function() {
+			var user = JSON.parse(postResult.body);
+			assert.ok(user.id && user.id > 0);
+			assert.ok(user.email && user.email.length > 0);
+		});
+	});
 
 	describe('POST to /user with duplicate email', function() {
 		var email = guid.raw();
@@ -42,7 +67,7 @@ describe('User Authentication', function() {
 				assert.equal(null, res.body);
 				done();
 			})
-			.done();				
+			.done();
 		});
 	});
 
