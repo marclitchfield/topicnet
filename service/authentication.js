@@ -17,7 +17,7 @@ module.exports = function(app) {
 		function(email, password, done) {
 		userService.verify(email, password)
 		.then(function(user) {
-			done(null, user);				
+			done(null, user);			
 		})
 		.fail(function() {
 			done(null, false);

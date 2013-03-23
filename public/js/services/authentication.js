@@ -1,8 +1,8 @@
 topicnet.factory( 'AuthenticationService', ['$http', function($http) {
 
-  var currentUser;
+	var currentUser;
 
-  return {
+	return {
 
 		readCurrentUser: function() {
 			return $http.get('/user')
@@ -17,7 +17,7 @@ topicnet.factory( 'AuthenticationService', ['$http', function($http) {
 			return $http.post('/user', { email: email, password: cryptedPassword });
 		},
 
-    login: function(email, password) {
+		login: function(email, password) {
 			var cryptedPassword = CryptoJS.SHA256(password).toString();
 			return $http.post('/login', { email: email, password: cryptedPassword })
 			.success(function(user) {
@@ -26,17 +26,17 @@ topicnet.factory( 'AuthenticationService', ['$http', function($http) {
 			});
 		},
 
-    logout: function() {
+		logout: function() {
 			return $http.post('/logout', {})
 			.success(function() {
 				currentUser = undefined;
 			});	
 		},
 
-    currentUser: function() {
+		currentUser: function() {
 			return currentUser;
 		}
 
-  };
+	};
 	
 }]);
