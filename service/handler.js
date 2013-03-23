@@ -4,16 +4,17 @@ function successHandler(response, result) {
 	} else {
 		response.json(result);
 	}
-};
+}
 
 function errorHandler(response, error) {
 	var statusCodes = {
 		'notfound': 404,
-		'duplicate': 400
+		'duplicate': 400,
+		'badrequest': 400
 	};
 
 	response.send(error.message || error, statusCodes[error.name] || 500);
-};
+}
 
 exports.complete = function(response, promise) {
 	promise.then(function(result) { successHandler(response, result); })

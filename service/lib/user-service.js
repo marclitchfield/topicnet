@@ -16,9 +16,19 @@ exports.createService = function(graph) {
 		});
 	}
 
+	function passwordIsHashed(password) {
+		var sha256 = /[a-f0-9]{64}/;
+		return sha256.test(password);
+	}
+
 	return {
 
 		create: function(email, password) {
+
+			if(!passwordIsHashed(password)) {
+				return Q.reject({ name: 'badrequest', message: 'Invalid password' });
+			}
+
 			return findUserByEmail(email)
 			.then(function(user) {
 				if (user) {
@@ -26,7 +36,7 @@ exports.createService = function(graph) {
 				}
 
 				return graph.createNode({ email: email, password: password })
-				.then(function(user) { 
+				.then(function(user) {
 					return updateUserEmailIndex(user.id, email)
 					.then(function() {
 						delete user.password;
