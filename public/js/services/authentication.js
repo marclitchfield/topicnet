@@ -2,6 +2,15 @@ topicnet.factory( 'AuthenticationService', ['$http', function($http) {
 
   var currentUser;
 
+	function login(email, password) {
+		var cryptedPassword = CryptoJS.SHA256(password).toString();
+		return $http.post('/login', { email: email, password: cryptedPassword })
+		.success(function(user) {
+			currentUser = user;
+			return user;
+		});
+	}
+
   return {
 
 		readCurrentUser: function() {
@@ -14,17 +23,13 @@ topicnet.factory( 'AuthenticationService', ['$http', function($http) {
 
 		signup: function(email, password) {
 			var cryptedPassword = CryptoJS.SHA256(password).toString();
-			return $http.post('/user', { email: email, password: cryptedPassword });
-		},
-
-    login: function(email, password) {
-			var cryptedPassword = CryptoJS.SHA256(password).toString();
-			return $http.post('/login', { email: email, password: cryptedPassword })
-			.success(function(user) {
-				currentUser = user;
-				return user;
+			return $http.post('/user', { email: email, password: cryptedPassword })
+			.success(function() {
+				return login(email, password);
 			});
 		},
+
+    login: login,
 
     logout: function() {
 			return $http.post('/logout', {})

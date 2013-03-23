@@ -14,7 +14,7 @@ var SignupController = ['$scope', '$location', 'AuthenticationService', function
 		AuthenticationService.signup($scope.email, $scope.password)
 		.success(function(user) {
 			redirectToHome();
-			$scope.$emit('info', 'Thanks for signing up. Click login to login with your new credentials!');
+			$scope.$emit('success', 'Welcome ' + user.email + '! Thanks for signing up!');
 		})
 		.error(function(message) {
 			$scope.$emit('error', message);
