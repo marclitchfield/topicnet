@@ -1,5 +1,7 @@
 module.exports = function(grunt) {
 
+  process.env['NODE_ENV'] = 'test';
+
 	// Project configuration.
 	grunt.initConfig({
 		jshint: {
@@ -40,7 +42,9 @@ module.exports = function(grunt) {
 		},
 		develop: {
 			server: {
-				file: 'service/server.js'
+				file: 'service/server.js',
+        disableOutput: true,
+        readyText: 'Listening on' 
 			}
 		},
 		mochaTest: {
@@ -68,11 +72,15 @@ module.exports = function(grunt) {
 
 	// Default task.
 	grunt.registerTask('frontend-tests', ['jshint', 'clean', 'uglify', 'jasmine']);
-	grunt.registerTask('backend-tests', ['develop', 'mochaTest']);
+	grunt.registerTask('backend-tests', ['develop', 'mochaTest', 'develop-kill']);
 	grunt.registerTask('default', ['frontend-tests', 'backend-tests']);
 	grunt.registerTask('ft', ['frontend-tests']);
 	grunt.registerTask('bt', ['backend-tests']);
 	grunt.registerTask('develop', ['develop']);
+  
+  grunt.registerTask('develop-kill', function() {
+    grunt.event.emit('develop.kill');
+  });
 	
 	grunt.loadNpmTasks('grunt-contrib-jshint');
 	grunt.loadNpmTasks('grunt-contrib-clean');
