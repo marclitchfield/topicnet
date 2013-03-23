@@ -5,7 +5,7 @@ describe('Vote CRUD', function() {
 
 	var testVote = function(relationshipType, voteDirection) {
 
-		var postFrom; 
+		var postFrom;
 		var postTo;
 		var votesKey = (voteDirection === 'up') ? 'upVotes' : 'downVotes';
 		var response;

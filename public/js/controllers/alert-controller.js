@@ -9,7 +9,7 @@ var AlertController = ['$scope', function($scope) {
 	});
 
 	$scope.$on('info', function(e, message) {
-		showAlert(message, 'info');	
+		showAlert(message, 'info');
 	});
 
 	function showAlert(message, type) {

@@ -1,10 +1,21 @@
 module.exports = function(grunt) {
 
+	process.env.NODE_ENV = 'test';
+
+	var lintFiles = ['**/*.js', '!node_modules/**', '!public/js/vendor/**', '!public/js/dist/**'];
+
 	// Project configuration.
 	grunt.initConfig({
 		jshint: {
-			frontend: ['public/*.js', 'public/directives/**/*.js', 'public/controllers/**/*.js', 'public/services/**/*.js'],
-			backend: ['service/server.js', 'service/lib/**/*.js']
+			all: lintFiles,
+			options: {
+				trailing: true,
+				eqeqeq: true,
+				curly: true,
+				camelcase: true,
+				latedef: true,
+				newcap: true
+			}
 		},
 		clean: {
 			folder: 'public/js/dist/*.*'
@@ -20,8 +31,8 @@ module.exports = function(grunt) {
 				},
 				files:  {
 					'public/js/dist/app.min.js': [
-						'public/js/app.js', 
-						'public/js/controllers/*.js', 
+						'public/js/app.js',
+						'public/js/controllers/*.js',
 						'public/js/directives/*.js',
 						'public/js/services/*.js'
 					]
@@ -40,39 +51,50 @@ module.exports = function(grunt) {
 		},
 		develop: {
 			server: {
-				file: 'service/server.js'
+				file: 'service/server.js',
+				disableOutput: true,
+				readyText: 'Listening on'
 			}
 		},
 		mochaTest: {
-			backend: ['test/service/**/*.js']				
+			backend: ['test/service/**/*.js']
 		},
 		mochaTestConfig: {
 			backend: {
 				options: {
 					reporter: 'spec',
-					timeout: 3000
-				}			
+					timeout: 3000,
+					grep: grunt.option('grep')
+				}
 			}
 		},
 		watch: {
 			frontend: {
-				files: ['Gruntfile.js', 'public/js/**/*.js', 'test/public/**/*.js', '!public/js/dist/**/*.js'],
+				files: ['Gruntfile.js', 'public/js/**/*.js', 'test/public/**/*.js', '!public/js/dist/**'],
 				tasks: ['jshint:frontend', 'clean', 'uglify', 'jasmine']
 			},
 			backend: {
 				files: ['Gruntfile.js', 'service/**/**.js', 'test/service/**/*.js'],
 				tasks: ['jshint:backend', 'clean', 'uglify', 'backend-tests']
+			},
+			lint: {
+				files: lintFiles,
+				tasks: ['jshint']
 			}
 		}
 	});
 
 	// Default task.
 	grunt.registerTask('frontend-tests', ['jshint', 'clean', 'uglify', 'jasmine']);
-	grunt.registerTask('backend-tests', ['develop', 'mochaTest']);
+	grunt.registerTask('backend-tests', ['develop', 'mochaTest', 'develop-kill']);
 	grunt.registerTask('default', ['frontend-tests', 'backend-tests']);
 	grunt.registerTask('ft', ['frontend-tests']);
 	grunt.registerTask('bt', ['backend-tests']);
 	grunt.registerTask('develop', ['develop']);
+
+	grunt.registerTask('develop-kill', function() {
+		grunt.event.emit('develop.kill');
+	});
 	
 	grunt.loadNpmTasks('grunt-contrib-jshint');
 	grunt.loadNpmTasks('grunt-contrib-clean');

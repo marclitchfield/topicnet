@@ -47,7 +47,7 @@ describe('Topic CRUD', function() {
 	describe('POST to /topics with duplicate topic name', function() {
 
 		var postTopic;
-		var duplicatePostResponse;		
+		var duplicatePostResponse;
 
 		before(function(done) {
 			api.postTopic()
@@ -149,7 +149,7 @@ describe('Topic CRUD', function() {
 			.done();
 		});
 
-		it('returns the topic with a ' + relationshipType + 
+		it('returns the topic with a ' + relationshipType +
 				' property that is an array of related objects', function() {
 			assert.ok(retreivedTopic[relationshipType] !== undefined);
 			assert.equal(retreivedTopic[relationshipType].length, 1);

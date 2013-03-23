@@ -166,17 +166,17 @@ exports.createService = function(graph) {
 		},
 
 		search: function(params) {
-			var search_string = params.q.toLowerCase() || '';
+			var searchString = params.q.toLowerCase() || '';
 			var page = helper.parsePositiveInt(params.p) || 1;
-			var per_page = helper.parsePositiveInt(params.pp) || DEFAULT_RESULTS_PER_PAGE;
+			var perPage = helper.parsePositiveInt(params.pp) || DEFAULT_RESULTS_PER_PAGE;
 
 			var cypherQuery = 'START n=node:resources_title({query}) RETURN n ' +
 				'SKIP {s} LIMIT {l}';
 
 			var cypherQueryParams = {
-				query: 'title:*' + helper.escapeLuceneSpecialChars(search_string) + '*',
-				s: (page - 1) * per_page,
-				l: per_page
+				query: 'title:*' + helper.escapeLuceneSpecialChars(searchString) + '*',
+				s: (page - 1) * perPage,
+				l: perPage
 			};
 
 			return graph.queryGraph(cypherQuery, cypherQueryParams)

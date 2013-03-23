@@ -126,8 +126,9 @@ describe('Resource Search', function() {
 			var count = 0;
 			function postCallback() {
 				count++;
-				if(count === 11)
+				if(count === 11) {
 					done();
+				}
 			}
 			for(var i = 0; i < 11; i++) {
 				api.post('/resources', getResource()).then(postCallback).done();

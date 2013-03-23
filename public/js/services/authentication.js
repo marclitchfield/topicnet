@@ -1,6 +1,6 @@
 topicnet.factory( 'AuthenticationService', ['$http', function($http) {
 
-  var currentUser;
+	var currentUser;
 
 	function login(email, password) {
 		var cryptedPassword = CryptoJS.SHA256(password).toString();
@@ -35,13 +35,13 @@ topicnet.factory( 'AuthenticationService', ['$http', function($http) {
 			return $http.post('/logout', {})
 			.success(function() {
 				currentUser = undefined;
-			});	
+			});
 		},
 
-    currentUser: function() {
+		currentUser: function() {
 			return currentUser;
 		}
 
-  };
+	};
 	
 }]);

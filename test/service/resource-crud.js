@@ -32,7 +32,7 @@ describe('Resource CRUD', function() {
 	describe('POST to /resources without source', function() {
 		it('returns status 500 and error message', function(done) {
 			api.post('/resources', { title: 'test resource ' + guid.raw() , url: 'http://example.com/' + guid.raw() })
-			.then(function(res) {	
+			.then(function(res) {
 				assert.equal(res.statusCode, 500);
 				assert.notEqual(-1, res.body.indexOf('source is required'));
 				done();
@@ -56,7 +56,7 @@ describe('Resource CRUD', function() {
 	describe('POST to /resources with invalid verb', function() {
 		it('returns status 500 and error message', function(done) {
 			api.post('/resources', { title: 'test resource ' + guid.raw(),
-				url: 'http://example.com/' + guid.raw(), 
+				url: 'http://example.com/' + guid.raw(),
 				source: 'example.com',
 				verb: 'invalid' })
 			.then(function(res) {
@@ -76,7 +76,7 @@ describe('Resource CRUD', function() {
 			api.postResource()
 			.then(function(res) {
 				postResource = res;
-				done();	
+				done();
 			})
 			.done();
 		});
@@ -227,7 +227,7 @@ describe('Resource CRUD', function() {
 	describe('PUT /resources/:id with valid data', function() {
 
 		var postResource;
-		var resourceUpdate = { title: 'updated ' + guid.raw(), 
+		var resourceUpdate = { title: 'updated ' + guid.raw(),
 			url: 'http://updatedexample.com/' + guid.raw(),
 			source: 'updatedexample.com',
 			verb: 'engage' };
@@ -353,7 +353,7 @@ describe('Resource CRUD', function() {
 
 		describe('without source', function() {
 			it('returns status 500 and error message', function(done) {
-				api.put('/resources/' + postResource.returnedData.id, 
+				api.put('/resources/' + postResource.returnedData.id,
 					{ title: 'updated resource ' + guid.raw(), url: 'http://updatedexample.com/' + guid.raw() })
 				.then(function(res) {
 					assert.equal(res.statusCode, 500);
@@ -366,10 +366,10 @@ describe('Resource CRUD', function() {
 		
 		describe('without verb', function() {
 			it('returns status 500 and error message', function(done) {
-				api.put('/resources/' + postResource.returnedData.id, 
-					{ title: 'updated resource ' + guid.raw(), 
+				api.put('/resources/' + postResource.returnedData.id,
+					{ title: 'updated resource ' + guid.raw(),
 						url: 'http://updatedexample.com/' + guid.raw(),
-						source: 'updatedsource.com' }) 
+						source: 'updatedsource.com' })
 				.then(function(res) {
 					assert.equal(res.statusCode, 500);
 					assert.notEqual(-1, res.body.indexOf('verb is required'));
@@ -389,14 +389,14 @@ describe('Resource CRUD', function() {
 			api.postResource()
 			.then(function(res) {
 				postResource = res;
-				done();	
+				done();
 			})
 			.done();
 		});
 
 		it('returns status 500 and an appropriate error message', function(done) {
 			api.put('/resources/' + postResource.returnedData.id,
-				{ title: postResource.postedData.title, 
+				{ title: postResource.postedData.title,
 					url: postResource.postedData.url,
 					source: postResource.postedData.source,
 					verb: 'invalid' })
@@ -425,7 +425,7 @@ describe('Resource CRUD', function() {
 			.then(function(res) {
 				postOtherResource = res;
 				return api.put('/resources/' + postOtherResource.returnedData.id,
-					{ title: postResource.postedData.title, 
+					{ title: postResource.postedData.title,
 						url: 'http://uniqueurl/' + guid.raw(),
 						source: 'example.com', verb: 'read' });
 			})
@@ -461,7 +461,7 @@ describe('Resource CRUD', function() {
 			.then(function(res) {
 				postOtherResource = res;
 				return api.put('/resources/' + postOtherResource.returnedData.id,
-					{ title: 'unique title ' + guid.raw(), 
+					{ title: 'unique title ' + guid.raw(),
 						url: postResource.postedData.url,
 						source: 'example.com', verb: 'read' });
 			})
@@ -488,7 +488,7 @@ describe('Resource CRUD', function() {
 			api.del('/resources/-9999999')
 			.then(function(res) {
 				assert.equal(res.statusCode, 404);
-				done();	
+				done();
 			})
 			.done();
 		});
@@ -499,7 +499,7 @@ describe('Resource CRUD', function() {
 		
 		var postTopic;
 		var postResource;
-		var delResponse;		
+		var delResponse;
 
 		before(function(done) {
 			api.postAndLinkTopicAndResource()
@@ -541,7 +541,7 @@ describe('Resource CRUD', function() {
 					assert.ok(_.any(getTopic.returnedData.resources, function(r) {
 							return r.id === postResource.returnedData.id;
 						}));
-					done();		
+					done();
 				})
 				.done();
 			});
@@ -558,7 +558,7 @@ describe('Resource CRUD', function() {
 			api.postResource()
 			.then(function(res) {
 				postResource = res;
-				done();	
+				done();
 			})
 			.done();
 		});
