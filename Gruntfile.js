@@ -1,7 +1,5 @@
 module.exports = function(grunt) {
 
-	process.env.NODE_ENV = 'test';
-
 	var lintFiles = ['**/*.js', '!node_modules/**', '!public/js/vendor/**', '!public/js/dist/**'];
 
 	// Project configuration.
