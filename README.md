@@ -1,6 +1,8 @@
 Topicnet
 =========
 
+[![Build Status](https://travis-ci.org/marclitchfield/topicnet.png?branch=master)](https://travis-ci.org/marclitchfield/topicnet)
+
 Topic CRUD
 ----------
 - GET  /topics/:id  - Get the details of the specified topic and all related topics and resources
