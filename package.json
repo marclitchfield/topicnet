@@ -14,7 +14,7 @@
     "passport-local": "~0.1.6"
   },
   "scripts": {
-    "test": "mocha --timeout 3000 -R spec"
+    "test": "grunt"
   },
   "engines": {
     "node": "0.8.x",
