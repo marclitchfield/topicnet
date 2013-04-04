@@ -2,6 +2,7 @@ var assert = require('assert');
 var _ = require('underscore');
 var api = require('./helper-api.js');
 var guid = require('guid');
+var Q = require('q');
 require('./test-utils');
 
 describe('Topic Search', function() {
@@ -81,18 +82,15 @@ describe('Topic Search', function() {
 		var last5Results;
 
 		before(function(done) {
-			var count = 0;
-			function postCallback() {
-				count++;
-				if(count === 11) {
-					done();
-				}
-			}
+			var posts = [];
+			
 			for(var i = 0; i < 11; i++) {
-				api.post('/topics', { name: 'similar topic ' + guid.raw() })
-				.then(postCallback())
-				.done();
+				posts.push(api.post('/topics', { name: 'similar topic ' + guid.raw() }));
 			}
+
+			Q.all(posts).then(function() {
+				done();
+			});
 		});
 
 		it('returns 10 matching results', function(done) {
