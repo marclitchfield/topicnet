@@ -46,8 +46,6 @@ describe('Root Topics', function() {
 			it('returns all root topics including our topic', function() {
 				var rootTopics = api.parseBody(rootTopicsResponse.body);
 
-				console.log('RootTopics:' + rootTopics.length);
-
 				assert.ok(_.any(rootTopics, function(t) {
 					return t.id === postTopic.returnedData.id;
 				}));
