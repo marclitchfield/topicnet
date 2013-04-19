@@ -69,11 +69,11 @@ module.exports = function(grunt) {
 		watch: {
 			frontend: {
 				files: ['Gruntfile.js', 'public/js/**/*.js', 'test/public/**/*.js', '!public/js/dist/**'],
-				tasks: ['jshint:frontend', 'clean', 'uglify', 'jasmine']
+				tasks: ['jshint', 'clean', 'uglify', 'jasmine']
 			},
 			backend: {
 				files: ['Gruntfile.js', 'service/**/**.js', 'test/service/**/*.js'],
-				tasks: ['jshint:backend', 'clean', 'uglify', 'backend-tests']
+				tasks: ['jshint', 'clean', 'uglify', 'backend-tests']
 			},
 			lint: {
 				files: lintFiles,

@@ -14,7 +14,7 @@
 		</h3>
 		<ul class="unstyled">
 			<li class="topic-resource row" ng-repeat="resource in topic.resources | orderBy:'-score'">
-				<div class="resource-header span2">
+				<div class="resource-header span2" data-drag="true" data-jqyoui-options="{revert: 'invalid'}" jqyoui-draggable="{animate:true}">
 					<div class="score">{{ resource.score }}</div>
 					<div class="verb-icon"><i data-verb="{{ resource.verb }}" class="icon-white"/></div>
 				</div>

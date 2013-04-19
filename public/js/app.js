@@ -1,5 +1,6 @@
-var topicnet = angular.module('topicnet', ['topicnet.directives']).
+var topicnet = angular.module('topicnet', ['topicnet.directives', 'ngDragDrop']).
 	config(['$routeProvider', function($routeProvider) {
+		
 		$routeProvider.
 			when('/', {controller: RootController, templateUrl: 'views/root.html'}).
 			when('/signup', {controller: SignupController, templateUrl: 'views/signup.html'}).
