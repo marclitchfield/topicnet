@@ -1,6 +1,6 @@
 <ul class="unstyled">
 	<li class="related-topic" ng-repeat="relTopic in topic[rel] | orderBy:'-score'">
-		<div data-drop="true" data-jqyoui-options jqyoui-droppable>
+		<div data-drop="true" data-drag="true" data-jqyoui-options="{revert: 'invalid'}" jqyoui-draggable="{animate:true}" data-jqyoui-options jqyoui-droppable>
 			<span class="score">{{ relTopic.score }}</span>
 			<a class="topic-name" href="#/topics/{{ relTopic.id }}">{{ relTopic.name }}</a>
 			<button class="close" ng-click="removeLink(relTopic)">&times;</button>

@@ -1,6 +1,7 @@
 html {
 	overflow-y: -moz-scrollbars-vertical;
 	overflow-y: scroll;
+	overflow-x: hidden;
 }
 
 body {
@@ -74,6 +75,10 @@ li:hover .close {
 
 .add-resource-details-section {
 	margin-bottom: 20px;
+}
+
+.tab-content {
+	overflow: visible;
 }
 
 
