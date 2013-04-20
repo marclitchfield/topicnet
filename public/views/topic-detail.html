@@ -16,7 +16,6 @@
 			<li class="topic-resource row" ng-repeat="resource in topic.resources | orderBy:'-score'">
 				<div data-drag="true" data-jqyoui-options="{revert: 'invalid'}" data-resource-id="{{resource.id}}" jqyoui-draggable="{animate:true, onStart:'dragstart', onStop:'dragstop'}">
 					<div class="resource-header span2">
-						<div class="score">{{ resource.score }}</div>
 						<div class="verb-icon"><i data-verb="{{ resource.verb }}" class="icon-white"/></div>
 					</div>
 					<div class="resource-detail span5">

@@ -134,7 +134,7 @@ li:hover .close {
 .resource-header {
 	vertical-align: top;
 	display: inline-block;
-	width: 62px;
+	width: 28px;
 }
 
 .resource-detail {
@@ -158,6 +158,9 @@ li:hover .close {
 	margin-bottom: 6px;
 }
 
+.related-topic a {
+	margin-left: 6px;
+}
 
 @media (max-width: 480px) {
 	.add-resource-form .controls {
@@ -188,15 +191,15 @@ li:hover .close {
 }
 
 .droppable:not(.dragging) {
-	box-shadow: 0 0 5px rgba(0,0,80,0.1);
+	box-shadow: 0 0 5px rgba(0,0,80,0.3);
 }
 
 .droptarget:not(.dragging) {
-	box-shadow: 0 0 8px 3px green;
+	box-shadow: 0 0 8px 3px #4D6199;
 }
 
 .dragging {
 	box-shadow: 0 8px 12px #c0c0c0;
 	background-color: rgba(255,255,255,0.5);
-	z-index: 2;
+	z-index: 1;
 }

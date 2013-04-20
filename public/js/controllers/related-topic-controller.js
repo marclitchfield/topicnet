@@ -57,6 +57,9 @@ var RelatedTopicController = ['$scope', '$http', function($scope, $http) {
 		$(event.target).removeClass('droptarget');
 	};
 
+	$scope.isDroppable = function() {
+		return  $scope.target
+	};
 
 	function removeTopic(rel, topicId) {
 		$scope.topic[rel] = $scope.topic[rel].filter(function(t) {
