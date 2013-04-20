@@ -21,7 +21,8 @@ var RelatedTopicController = ['$scope', '$http', function($scope, $http) {
 		});
 	};
 
-	$scope.dropped = function(event, ui, item) {
+	$scope.dropped = function(event, ui) {
+		$(event.target).removeClass('droptarget');
 		var resid = ui.draggable.data('resource-id');
 		if (resid) {
 			console.log('dropped resource ' + resid);
@@ -31,5 +32,13 @@ var RelatedTopicController = ['$scope', '$http', function($scope, $http) {
 			console.log('dropped topic ' + topicid);
 		}
 		ui.draggable.remove();
+	};
+
+	$scope.dragover = function(event, ui) {
+		$(event.target).addClass('droptarget');
+	};
+
+	$scope.dragout = function(event, ui) {
+		$(event.target).removeClass('droptarget');
 	};
 }];

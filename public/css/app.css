@@ -186,3 +186,7 @@ li:hover .close {
 		width: 70%;
 	}
 }
+
+.droptarget {
+	box-shadow: 0 0 20px 2px #c0c0c0;
+}
