@@ -22,14 +22,16 @@ var RelatedTopicController = ['$scope', '$http', function($scope, $http) {
 	};
 
 	$scope.dropped = function(event, ui) {
-		$(event.target).removeClass('droptarget');
+		var dropTarget = $(event.target);
+		dropTarget.removeClass('droptarget');
+
 		var resid = ui.draggable.data('resource-id');
 		if (resid) {
-			console.log('dropped resource ' + resid);
+			console.log('dropped resource ' + resid + ' on topic ' + dropTarget.data('topic-id'));
 		}
 		var topicid = ui.draggable.data('topic-id');
 		if (topicid) {
-			console.log('dropped topic ' + topicid);
+			console.log('dropped topic ' + topicid + ' on topic ' + dropTarget.data('topic-id'));
 		}
 		ui.draggable.remove();
 	};
