@@ -127,8 +127,8 @@ li:hover .close {
 }
 
 
-.topic-resource {
-	margin-bottom: 6px;
+.topic-resource > div {
+	min-height: 3.5em;
 }
 
 .resource-header {
@@ -187,6 +187,16 @@ li:hover .close {
 	}
 }
 
-.droptarget {
-	box-shadow: 0 0 15px #c0c0c0;
+.droppable:not(.dragging) {
+	box-shadow: 0 0 5px rgba(0,0,80,0.1);
+}
+
+.droptarget:not(.dragging) {
+	box-shadow: 0 0 8px 3px green;
+}
+
+.dragging {
+	box-shadow: 0 8px 12px #c0c0c0;
+	background-color: rgba(255,255,255,0.5);
+	z-index: 2;
 }

@@ -16,4 +16,16 @@ var TopicDetailController = ['$scope', '$http', '$routeParams', '$location', fun
 			$scope.$emit('error', message);
 		});
 	};
+
+	$scope.dragstart = function(event, ui) {
+		$(event.target).addClass('dragging');
+		$scope.topic.isDragging = true;
+		$scope.$apply();
+	};
+
+	$scope.dragstop = function(event, ui) {
+		$(event.target).removeClass('dragging');
+		$scope.topic.isDragging = false;
+		$scope.$apply();
+	};
 }];

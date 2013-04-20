@@ -21,19 +21,32 @@ var RelatedTopicController = ['$scope', '$http', function($scope, $http) {
 		});
 	};
 
+
 	$scope.dropped = function(event, ui) {
 		var dropTarget = $(event.target);
 		dropTarget.removeClass('droptarget');
 
 		var resid = ui.draggable.data('resource-id');
 		if (resid) {
-			console.log('dropped resource ' + resid + ' on topic ' + dropTarget.data('topic-id'));
+			removeResource(resid);
 		}
+
 		var topicid = ui.draggable.data('topic-id');
 		if (topicid) {
-			console.log('dropped topic ' + topicid + ' on topic ' + dropTarget.data('topic-id'));
+			removeTopic(ui.draggable.data('rel'), topicid);
 		}
-		ui.draggable.remove();
+	};
+
+	$scope.dragstart = function(event, ui) {
+		$(event.target).addClass('dragging');
+		$scope.topic.isDragging = true;
+		$scope.$apply();
+	};
+
+	$scope.dragstop = function(event, ui) {
+		$(event.target).removeClass('dragging');
+		$scope.topic.isDragging = false;
+		$scope.$apply();
 	};
 
 	$scope.dragover = function(event, ui) {
@@ -43,4 +56,17 @@ var RelatedTopicController = ['$scope', '$http', function($scope, $http) {
 	$scope.dragout = function(event, ui) {
 		$(event.target).removeClass('droptarget');
 	};
+
+
+	function removeTopic(rel, topicId) {
+		$scope.topic[rel] = $scope.topic[rel].filter(function(t) {
+			return t.id !== topicId;
+		});
+	}
+
+	function removeResource(resourceId) {
+		$scope.topic.resources = $scope.topic.resources.filter(function(r) {
+			return r.id !== resourceId;
+		});
+	}
 }];
