@@ -9,7 +9,7 @@
 		<div class="span12">
 			<div class="input-append">
 				<input type="text" class="url-submit-text input-xxlarge" ng-model="url" placeholder="URL" autofocus required></input>
-				<button class="btn" ng-click="submitUrl()">Submit</button>
+				<button class="btn btn-custom" ng-click="submitUrl()">Submit</button>
 			</div>
 
 			<div ng-show="statusMessage" class="alert">{{ statusMessage }}</div>
@@ -59,8 +59,8 @@
 	</div>
 	<div class="row">
 		<div class="span12">
-			<button class="btn" ng-click="cancel()">Cancel</button>
-			<button class="btn btn-primary" ng-hide="resourceForm.$invalid" ng-click="add()">Save</button>
+			<button class="btn btn" ng-click="cancel()">Cancel</button>
+			<button class="btn btn-custom" ng-hide="resourceForm.$invalid" ng-click="add()">Save</button>
 		</div>
 	</div>
 </form>
