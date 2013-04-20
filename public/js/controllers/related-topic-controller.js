@@ -20,4 +20,16 @@ var RelatedTopicController = ['$scope', '$http', function($scope, $http) {
 			$scope.$emit('error', message);
 		});
 	};
+
+	$scope.dropped = function(event, ui, item) {
+		var resid = ui.draggable.data('resource-id');
+		if (resid) {
+			console.log('dropped resource ' + resid);
+		}
+		var topicid = ui.draggable.data('topic-id');
+		if (topicid) {
+			console.log('dropped topic ' + topicid);
+		}
+		ui.draggable.remove();
+	};
 }];
