@@ -8,6 +8,12 @@ body {
 	padding: 0;
 }
 
+/*
+
+  Site header area 
+
+*/
+
 header {
 	background: url('../img/grey-texture.png');
 }
@@ -24,6 +30,38 @@ h1.site-title {
 	float: right;
 	margin-top: 26px;
 }
+
+.nav-area {
+	margin-top: 32px;
+}
+	
+.page-header {
+	margin-top: 0;
+	margin-bottom: 10px;
+	padding-bottom: 0;
+	border-bottom: 1px solid #DAE0F1;
+}
+
+
+
+/*
+
+  Tabs 
+
+*/
+
+
+.tab-content {
+	overflow: visible;
+}
+
+
+
+/*
+
+  Close Buttons
+
+*/
 
 .close {
 	float:none;
@@ -42,16 +80,47 @@ li:hover .close {
 	visibility: visible;
 }
 
-.nav-area {
-	margin-top: 32px;
+
+
+/*
+
+  Resource Details
+
+*/
+
+.topic-resource > div {
+	min-height: 3.5em;
 }
-	
-.page-header {
-	margin-top: 0;
-	margin-bottom: 10px;
-	padding-bottom: 0;
-	border-bottom: 1px solid #DAE0F1;
+
+.resource-header {
+	vertical-align: top;
+	display: inline-block;
+	width: 26px;
 }
+
+.resource-detail {
+	display: inline-block;
+	margin-bottom: 2px;
+	margin-left: 0;
+}
+
+.resource-detail .title {
+	font-size: 1.2em;
+	line-height: 1.0em;
+	vertical-align: top;
+}
+
+.resource-detail .source {
+	font-size: 1em;
+	display: block;
+}
+
+
+/*
+
+  Add Resource Form 
+
+*/
 
 .add-resource-form .input-append {
 	margin-bottom:20px;
@@ -77,23 +146,39 @@ li:hover .close {
 	margin-bottom: 20px;
 }
 
-.tab-content {
-	overflow: visible;
+@media (max-width: 480px) {
+	.add-resource-form .controls {
+		margin-left: 0;
+	}
 }
 
+@media (max-width: 767px) {
+	.container {
+		padding: 0 20px;
+	}
 
-.score {
-	display: inline-block;
-	vertical-align: top;
-	text-align: center;
-	width: 33px;
-	height: 20px;
-	line-height: 20px;
-	color: #0088cc;
-	background-color: #F6F6F6;
-	border-radius: 2px;
-	margin-bottom: 2px;
+	.resource-detail {
+		width: 70%;
+	}
+
+	/*.page-header {*/
+		/*text-align: center;*/
+	/*}*/
+
+	.add-resource-form .input-append {
+		width: 100%;
+	}
+
+	.add-resource-form .url-submit-text {
+		width: 70%;
+	}
 }
+
+/*
+
+  Resource Verb icon 
+
+*/
 
 .verb-icon {
 	display: inline-block;
@@ -127,75 +212,34 @@ li:hover .close {
 }
 
 
-.topic-resource > div {
-	min-height: 3.5em;
-}
 
-.resource-header {
-	vertical-align: top;
-	display: inline-block;
-	width: 26px;
-}
+/*
 
-.resource-detail {
-	display: inline-block;
-	margin-bottom: 2px;
-	margin-left: 0;
-}
+  Related Topics 
 
-.resource-detail .title {
-	font-size: 1.2em;
-	line-height: 1.0em;
-	vertical-align: top;
-}
-
-.resource-detail .source {
-	font-size: 1em;
-	display: block;
-}
+*/
 
 .related-topic {
 	margin-bottom: 6px;
 }
 
 .related-topic a {
-	margin-left: 4px;
+	margin: 4px 6px;
 }
 
-@media (max-width: 480px) {
-	.add-resource-form .controls {
-		margin-left: 0;
-	}
-}
 
-@media (max-width: 767px) {
-	.container {
-		padding: 0 20px;
-	}
+/*
 
-	.resource-detail {
-		width: 70%;
-	}
+  Drag and Drop 
 
-	/*.page-header {*/
-		/*text-align: center;*/
-	/*}*/
-
-	.add-resource-form .input-append {
-		width: 100%;
-	}
-
-	.add-resource-form .url-submit-text {
-		width: 70%;
-	}
-}
+*/
 
 .droppable:not(.dragging) {
-	box-shadow: 0 0 5px rgba(0,0,80,0.3);
+	box-shadow: inset 1px 1px 4px 1px rgba(0,0,80,0.3);
 }
 
 .droptarget:not(.dragging) {
-	box-shadow: 0 0 8px 3px #4D6199;
+	box-shadow: inset 1px 1px 4px 2px #4D6199;
 }
 
 .dragging {
@@ -203,6 +247,14 @@ li:hover .close {
 	background-color: rgba(255,255,255,0.5);
 	z-index: 1;
 }
+
+
+
+/*
+
+  Buttons
+
+*/
 
 .btn-custom-light {
 	background-color: hsl(224, 11%, 85%) !important;
