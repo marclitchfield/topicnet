@@ -1,0 +1,8 @@
+<h3 ng-hide="editingTitle" ng-dblclick="editingTitle=true">{{ topic.name }}</h3>
+<h3 ng-show="editingTitle">
+	<form class="form-inline">
+		<input type="text" class="input-large" ng-model="editedTopicName"></input>
+		<button class="btn btn-custom" ng-click="update(); editingTitle=false">Save</button>
+		<button class="close" ng-click="editingTitle=false">&times;</button>
+	</form>
+</h3>		
