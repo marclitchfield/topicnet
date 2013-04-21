@@ -235,17 +235,18 @@ li:hover .close {
 */
 
 .droppable:not(.dragging) {
-	box-shadow: inset 1px 1px 4px 1px rgba(0,0,80,0.3);
+	box-shadow: inset 1px 1px 4px rgba(0,0,80,0.3);
 }
 
 .droptarget:not(.dragging) {
-	box-shadow: inset 1px 1px 4px 2px #4D6199;
+	box-shadow: inset 1px 1px 4px 1px #4D6199;
 }
 
 .dragging {
 	box-shadow: 0 8px 12px #c0c0c0;
 	background-color: rgba(255,255,255,0.5);
 	z-index: 1;
+	transition: box-shadow 1s;
 }
 
 
