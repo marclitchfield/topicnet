@@ -35,6 +35,17 @@ module.exports = function(grunt) {
 						'public/js/services/*.js'
 					]
 				}
+			},
+			vendor: {
+				files: {
+					'public/js/dist/vendor.min.js': [
+						'public/js/vendor/angular-dragdrop.js',
+						'public/js/vendor/bootstrap.js',
+						'public/js/vendor/underscore-min.js',
+						'public/js/vendor/modal-responsive-fix.js',
+						'public/js/vendor/sha256.js'
+					]
+				}
 			}
 		},
 		jasmine: {
