@@ -1,4 +1,5 @@
-var RootController = ['$scope', '$http', function($scope, $http) {
+topicnet.controllers.controller('RootController', function($scope, $http) {
+	
 	$http.get('/topics').success(function(topics) {
 		$scope.rootTopics = topics;
 	});
@@ -20,4 +21,4 @@ var RootController = ['$scope', '$http', function($scope, $http) {
 			$scope.$emit('error', message);
 		});
 	};
-}];
+});

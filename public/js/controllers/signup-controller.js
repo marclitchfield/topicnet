@@ -1,4 +1,4 @@
-var SignupController = ['$scope', '$location', 'AuthenticationService', function($scope, $location, AuthenticationService) {
+topicnet.controllers.controller('SignupController', function($scope, $location, AuthenticationService) {
 
 	$scope.signUp = function() {
 
@@ -25,4 +25,4 @@ var SignupController = ['$scope', '$location', 'AuthenticationService', function
 		$location.path('/');
 	}
 
-}];
+});

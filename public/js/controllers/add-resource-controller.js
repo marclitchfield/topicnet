@@ -1,4 +1,4 @@
-var AddResourceController = ['$scope', '$http', '$routeParams', '$location', function($scope, $http, $routeParams, $location) {
+topicnet.controllers.controller('AddResourceController', function($scope, $http, $routeParams, $location) {
 
 	$http.get('/topics/' + $routeParams.topicId).success(function(topic) {
 		$scope.topic = topic;
@@ -59,4 +59,4 @@ var AddResourceController = ['$scope', '$http', '$routeParams', '$location', fun
 	$scope.cancel = function() {
 		redirectToTopic();
 	};
-}];
+});

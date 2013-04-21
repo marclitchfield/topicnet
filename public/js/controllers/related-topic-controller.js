@@ -1,4 +1,4 @@
-var RelatedTopicController = ['$scope', '$http', function($scope, $http) {
+topicnet.controllers.controller('RelatedTopicController', function($scope, $http) {
 
 	// $scope.rel must be defined
 	
@@ -68,4 +68,4 @@ var RelatedTopicController = ['$scope', '$http', function($scope, $http) {
 			return r.id !== resourceId;
 		});
 	}
-}];
+});

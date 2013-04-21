@@ -1,4 +1,5 @@
-var TopicDetailController = ['$scope', '$http', '$routeParams', '$location', function($scope, $http, $routeParams, $location) {
+topicnet.controllers.controller('TopicDetailController', function($scope, $http, $routeParams, $location) {
+
 	$http.get('/topics/' + $routeParams.topicId).success(function(topic) {
 		$scope.topic = topic;
 		$scope.topic.resources = $scope.topic.resources || [];
@@ -28,4 +29,4 @@ var TopicDetailController = ['$scope', '$http', '$routeParams', '$location', fun
 		$scope.topic.isDragging = false;
 		$scope.$apply();
 	};
-}];
+});

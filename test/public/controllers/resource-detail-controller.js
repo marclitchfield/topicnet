@@ -1,26 +1,30 @@
 describe('ResourceDetailController', function() {
-	var scope, httpBackend;
-	var resource = { id: 1, title: 'title', url: 'url', source: 'source' };
+	beforeEach(module('topicnet.controllers'));
 
-	beforeEach(inject(function($rootScope, $httpBackend) {
-		scope = $rootScope.$new();
-		httpBackend = $httpBackend;
-	}));
+	describe('is a controller', function() {
+		var scope, httpBackend;
+		var resource = { id: 1, title: 'title', url: 'url', source: 'source' };
 
-	describe('when constructed with resourceId parameter', function() {
-		beforeEach(inject(function($controller) {
-			var params = { resourceId: resource.id };
-			httpBackend.expectGET('/resources/1').respond(resource);
-			$controller(ResourceDetailController, { $scope: scope, $routeParams: params });
-			httpBackend.flush();
+		beforeEach(inject(function($rootScope, $httpBackend) {
+			scope = $rootScope.$new();
+			httpBackend = $httpBackend;
 		}));
 
-		it('should request the resource from the server',  function() {
-			httpBackend.verifyNoOutstandingExpectation();
-		});
+		describe('when constructed with resourceId parameter', function() {
+			beforeEach(inject(function($controller) {
+				var params = { resourceId: resource.id };
+				httpBackend.expectGET('/resources/1').respond(resource);
+				$controller('ResourceDetailController', { $scope: scope, $routeParams: params });
+				httpBackend.flush();
+			}));
 
-		it('should store the resources in scope', function() {
-			expect(scope.resource).toEqual(resource);
+			it('should request the resource from the server',  function() {
+				httpBackend.verifyNoOutstandingExpectation();
+			});
+
+			it('should store the resources in scope', function() {
+				expect(scope.resource).toEqual(resource);
+			});
 		});
 	});
 });

@@ -1,5 +1,4 @@
-var AuthenticationController = ['$scope', '$location', 'AuthenticationService',
-	function($scope, $location, AuthenticationService) {
+topicnet.controllers.controller('AuthenticationController', function($scope, $location, AuthenticationService) {
 
 	var $currentUser;
 
@@ -19,4 +18,4 @@ var AuthenticationController = ['$scope', '$location', 'AuthenticationService',
 		});
 	};
 
-}];
+});

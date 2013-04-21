@@ -53,6 +53,7 @@ module.exports = function(grunt) {
 				src: [
 					'public/js/vendor/angular.js',
 					'public/js/vendor/angular-mocks.js',
+					'public/js/vendor/angular-dragdrop.js',
 					'public/js/dist/app.min.js',
 					'test/public/**/*.js'
 				]

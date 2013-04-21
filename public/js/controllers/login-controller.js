@@ -1,4 +1,4 @@
-var LoginController = ['$scope', '$rootScope', '$location', 'AuthenticationService', function($scope, $rootScope, $location, AuthenticationService) {
+topicnet.controllers.controller('LoginController', function($scope, $rootScope, $location, AuthenticationService) {
 
 	$scope.login = function() {
 
@@ -25,4 +25,4 @@ var LoginController = ['$scope', '$rootScope', '$location', 'AuthenticationServi
 		$location.path('/');
 	}
 
-}];
+});

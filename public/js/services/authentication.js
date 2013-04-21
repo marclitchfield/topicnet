@@ -1,4 +1,4 @@
-topicnet.factory( 'AuthenticationService', ['$http', function($http) {
+topicnet.factory('AuthenticationService', function($http) {
 
 	var currentUser;
 
@@ -44,4 +44,4 @@ topicnet.factory( 'AuthenticationService', ['$http', function($http) {
 
 	};
 	
-}]);
+});

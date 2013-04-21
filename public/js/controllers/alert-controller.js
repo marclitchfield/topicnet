@@ -1,4 +1,4 @@
-var AlertController = ['$scope', function($scope) {
+topicnet.controllers.controller('AlertController', function($scope) {
 
 	$scope.$on('error', function(e, message) {
 		showAlert(message, 'error');
@@ -23,4 +23,4 @@ var AlertController = ['$scope', function($scope) {
 		}, 3000);
 	}
 
-}];
+});
