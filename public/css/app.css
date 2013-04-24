@@ -55,6 +55,10 @@ h1.site-title {
 	overflow: visible;
 }
 
+.tabbable {
+	margin-top: 24px;
+}
+
 
 
 /*
@@ -63,16 +67,12 @@ h1.site-title {
 
 */
 
-.close {
-	float:none;
-}
-
 .alert .close {
 	float:right;
 }
 
 li .close {
-	margin-left: .25em;
+	margin-right: .25em;
 	visibility: hidden;
 }
 
@@ -88,11 +88,17 @@ li:hover .close {
 
 */
 
+.topic-resource {
+	margin: 0 0 4px 0;
+}
+
 .topic-resource > div {
-	min-height: 3.5em;
+	min-height: 3em;
+	padding-top: 8px;
 }
 
 .resource-header {
+	margin-left: 10px;
 	vertical-align: top;
 	display: inline-block;
 	width: 26px;
@@ -220,11 +226,26 @@ li:hover .close {
 */
 
 .related-topic {
-	margin-bottom: 6px;
+	margin-bottom: 4px;
 }
 
 .related-topic a {
 	margin: 4px 6px;
+}
+
+
+
+/*
+
+ Draggable Panels
+
+*/
+
+.ui-draggable {
+	padding: 3px 0;
+	border: 1px solid #ccd0db;
+	border-radius: 3px;
+	background-color: #FAFAFF;
 }
 
 
@@ -235,13 +256,11 @@ li:hover .close {
 */
 
 .droppable:not(.dragging) {
-	border-radius: 1px;
 	box-shadow: inset 1px 1px 4px rgba(0,0,80,0.3);
 }
 
 .droptarget:not(.dragging) {
-	border-radius: 1px;
-	box-shadow: inset 1px 1px 4px #4D6199;
+	box-shadow: inset 1px 1px 4px 2px #4D6199;
 }
 
 .dragging {

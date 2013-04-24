@@ -10,7 +10,7 @@ describe('RelatedTopicController', function() {
 			scope = $rootScope.$new();
 		}));
 
-		describe('calling linkfn with toTopic', function() {
+		describe('links topics to other topics', function() {
 
 			beforeEach(inject(function($controller) {
 				scope.rel = 'next';
@@ -36,7 +36,7 @@ describe('RelatedTopicController', function() {
 			});
 		});
 
-		describe('calling removeLink with toTopic', function() {
+		describe('removes link between related topics', function() {
 
 			beforeEach(inject(function($controller) {
 				scope.topic = { id: 1, next: [toTopic] };
@@ -48,11 +48,16 @@ describe('RelatedTopicController', function() {
 				httpBackend.flush();
 			}));
 
-			it('should delete the relationship between scope.topic and toTopic', function() {
+			it('should make an HTTP DELETE call to the web api', function() {
 				httpBackend.verifyNoOutstandingExpectation();
 			});
 
-			it('should remove toTopic from scope.topic[rel]', function() {
+			it('should vote down the removed topic', function() {
+
+			});
+
+
+			it('should remove the topic from the ui', function() {
 				expect(scope.topic[scope.rel]).toEqual([]);
 			});
 
