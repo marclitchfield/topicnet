@@ -21,19 +21,38 @@ topicnet.controllers.controller('RelatedTopicController', function($scope, $http
 		});
 	};
 
+	$scope.hideTopic = function(topic, rel) {
+		$http.post('/topics/' + $scope.topic.id + '/' + rel + '/' + topic.id + '/hide').success(function() {
+			$scope.topic[rel] = $scope.topic[rel].filter(function(t) {
+				return t.id !== topic.id;
+			});
+		});
+	};
+
+	$scope.moveTopic = function(topic, rel, toTopic) {
+		$http.post('/topics/' + $scope.topic.id + '/' + rel + '/' + topic.id + '/hide').success(function() {
+			return $http.post('/topics/' + topic.id + '/' + rel + '/' + toTopic.id + '/affirm');
+		}).success(function() {
+			$scope.topic[rel] = $scope.topic[rel].filter(function(t) {
+				return t.id !== topic.id;
+			});
+		});
+	};
 
 	$scope.dropped = function(event, ui) {
 		var dropTarget = $(event.target);
 		dropTarget.removeClass('droptarget');
+		var targetTopic = {id: dropTarget.data('topic-id')};
+		var rel = dropTarget.data('rel');
 
 		var resid = ui.draggable.data('resource-id');
 		if (resid) {
-			removeResource(resid);
+			$scope.moveResource({id:resid}, rel, targetTopic);
 		}
 
 		var topicid = ui.draggable.data('topic-id');
 		if (topicid) {
-			removeTopic(ui.draggable.data('rel'), topicid);
+			$scope.moveTopic({id:topicid}, rel, targetTopic);
 		}
 	};
 
@@ -57,15 +76,4 @@ topicnet.controllers.controller('RelatedTopicController', function($scope, $http
 		$(event.target).removeClass('droptarget');
 	};
 
-	function removeTopic(rel, topicId) {
-		$scope.topic[rel] = $scope.topic[rel].filter(function(t) {
-			return t.id !== topicId;
-		});
-	}
-
-	function removeResource(resourceId) {
-		$scope.topic.resources = $scope.topic.resources.filter(function(r) {
-			return r.id !== resourceId;
-		});
-	}
 });

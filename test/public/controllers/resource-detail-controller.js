@@ -1,4 +1,4 @@
-describe('ResourceDetailController', function() {
+	describe('ResourceDetailController', function() {
 	beforeEach(module('topicnet.controllers'));
 
 	describe('is a controller', function() {

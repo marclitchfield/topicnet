@@ -52,7 +52,7 @@ describe('TopicDetailController', function() {
 			beforeEach(inject(function($controller) {
 				topic.resources = [ {id: 8}, {id: 9} ];
 				httpBackend.expectPOST('/topics/1/resources/8/hide').respond(200, {});
-				scope.hideResource(8);
+				scope.hideResource({id:8});
 				httpBackend.flush();
 			}));
 
@@ -70,7 +70,7 @@ describe('TopicDetailController', function() {
 				topic.resources = [ {id: 8}, {id: 9} ];
 				httpBackend.expectPOST('/topics/1/resources/8/hide').respond(200, {});
 				httpBackend.expectPOST('/topics/1/sub/999/affirm').respond(200, {});
-				scope.moveResource(8, 'sub', 999);
+				scope.moveResource({id:8}, 'sub', {id:999});
 				httpBackend.flush();
 			}));
 

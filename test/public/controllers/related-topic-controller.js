@@ -3,9 +3,9 @@ describe('RelatedTopicController', function() {
 
 	describe('is a controller', function() {
 		var scope, httpBackend;
-		var toTopic = { id: 2 };
+		var relTopic = { id: 2 };
 
-		beforeEach(inject(function($rootScope, $httpBackend) {
+		beforeEach(inject(function($rootScope, $httpBackend, $controller) {
 			httpBackend = $httpBackend;
 			scope = $rootScope.$new();
 		}));
@@ -17,49 +17,68 @@ describe('RelatedTopicController', function() {
 				scope.topic = { id: 1, next: [] };
 				httpBackend.expectPOST(
 					'/topics/' + scope.topic.id + '/' + scope.rel,
-					{ toid: toTopic.id }).respond(200,{});
+					{ toid: relTopic.id }).respond(200,{});
 				$controller('RelatedTopicController', {$scope: scope});
-				scope.linkfn(toTopic);
+				scope.linkfn(relTopic);
 				httpBackend.flush();
 			}));
 
-			it('should create relationship between scope.topic and toTopic', function() {
+			it('should create relationship between scope.topic and relTopic', function() {
 				httpBackend.verifyNoOutstandingExpectation();
 			});
 
-			it('should add toTopic to scope.topic[rel]', function() {
-				expect(scope.topic[scope.rel]).toEqual([toTopic]);
+			it('should add relTopic to scope.topic[rel]', function() {
+				expect(scope.topic[scope.rel]).toEqual([relTopic]);
 			});
 
 			it('should initialize the score to 0', function() {
-				expect(toTopic.score).toEqual(0);
+				expect(relTopic.score).toEqual(0);
 			});
 		});
 
-		describe('removes link between topics', function() {
+		describe('when a related topic is removed', function() {
 
 			beforeEach(inject(function($controller) {
-				scope.topic = { id: 1, next: [toTopic] };
+				scope.topic = { id: 1, next: [relTopic] };
 				scope.rel = 'next';
-				httpBackend.expectDELETE(
-					'/topics/' + scope.topic.id + '/' + scope.rel + '/' + toTopic.id).respond(200,{});
+				httpBackend.expectPOST(
+					'/topics/' + scope.topic.id + '/' + scope.rel + '/' + relTopic.id + '/hide').respond(200,{});
 				$controller('RelatedTopicController', {$scope: scope});
-				scope.removeLink(toTopic);
+				scope.hideTopic(relTopic, scope.rel);
 				httpBackend.flush();
 			}));
 
-			it('should make an http DELETE call to the backend', function() {
+			it('should tell the server to hide the topic', function() {
 				httpBackend.verifyNoOutstandingExpectation();
 			});
 
-			it('should vote down the removed topic', function() {
-				
-			});
-
-			it('should remove the topic from the ui', function() {
+			it('should remove the topic from the related topic list', function() {
 				expect(scope.topic[scope.rel]).toEqual([]);
 			});
+		});
 
+		describe('when a topic is dragged onto another related topic', function() {
+			var toTopic = {id: 999};
+
+			beforeEach(inject(function($controller) {
+				scope.topic = { id: 1, next: [relTopic] };
+				scope.rel = 'next';
+				httpBackend.expectPOST(
+					'/topics/' + scope.topic.id + '/' + scope.rel + '/' + relTopic.id + '/hide').respond(200,{});
+				httpBackend.expectPOST(
+					'/topics/' + relTopic.id + '/' + scope.rel + '/' + toTopic.id + '/affirm').respond(200,{});
+				$controller('RelatedTopicController', {$scope: scope});
+				scope.moveTopic(relTopic, scope.rel, toTopic);
+				httpBackend.flush();
+			}));
+
+			it('should tell the server to hide the topic and affirm the related topic', function() {
+				httpBackend.verifyNoOutstandingExpectation();
+			});
+
+			it('should remove the topic from the related topic list' ,function() {
+				expect(scope.topic[scope.rel]).toEqual([]);
+			});
 		});
 	});
 });

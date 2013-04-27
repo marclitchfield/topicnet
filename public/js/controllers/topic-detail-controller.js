@@ -30,20 +30,20 @@ topicnet.controllers.controller('TopicDetailController', function($scope, $http,
 		$scope.$apply();
 	};
 
-	$scope.hideResource = function(resourceId) {
-		$http.post('/topics/' + $scope.topic.id + '/resources/' + resourceId + '/hide').success(function() {
+	$scope.hideResource = function(resource) {
+		$http.post('/topics/' + $scope.topic.id + '/resources/' + resource.id + '/hide').success(function() {
 			$scope.topic.resources = $scope.topic.resources.filter(function(r) {
-				return r.id !== resourceId;
+				return r.id !== resource.id;
 			});
 		});
 	};
 
-	$scope.moveResource = function(resourceId, relationshipType, topicId) {
-		$http.post('/topics/' + $scope.topic.id + '/resources/' + resourceId + '/hide').success(function() {
-			return $http.post('/topics/' + $scope.topic.id + '/' + relationshipType + '/' + topicId + '/affirm');
+	$scope.moveResource = function(resource, relationshipType, toTopic) {
+		$http.post('/topics/' + $scope.topic.id + '/resources/' + resource.id + '/hide').success(function() {
+			return $http.post('/topics/' + $scope.topic.id + '/' + relationshipType + '/' + toTopic.id + '/affirm');
 		}).success(function() {
 			$scope.topic.resources = $scope.topic.resources.filter(function(r) {
-				return r.id !== resourceId;
+				return r.id !== resource.id;
 			});
 		});
 	};
