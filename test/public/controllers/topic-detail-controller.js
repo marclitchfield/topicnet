@@ -55,16 +55,50 @@ describe('TopicDetailController', function() {
 			});
 		});
 
-		describe('when a resource is dragged onto a related topic', function() {
+		describe('when a resource is removed from a topic', function() {
+			beforeEach(inject(function($controller) {
+				topic.resources = [ {id: 8}, {id: 9} ];
+				var params = { topicId: topic.id };
+				httpBackend.expectGET('/topics/1').respond(topic);
+				$controller('TopicDetailController', { $scope: scope, $routeParams: params });
+				httpBackend.flush();
+
+				httpBackend.expectPOST('/topics/1/resources/8/hide').respond(200, {});
+				scope.hideResource(8);
+				httpBackend.flush();
+			}));
+
 			it('should remove the resource from the list', function() {
-
+				expect(topic.resources).toEqual([{ id: 9 }]);
 			});
 
-			it('should tell the service to hide the resource', function() {
+			it('should tell the service to hide the resource on the current topic', function() {
+				httpBackend.verifyNoOutstandingExpectation();
+			});
+		});
 
+		describe('when a resource is dragged onto a related topic', function() {
+			beforeEach(inject(function($controller) {
+				topic.resources = [ {id: 8}, {id: 9} ];
+				var params = { topicId: topic.id };
+				httpBackend.expectGET('/topics/1').respond(topic);
+				$controller('TopicDetailController', { $scope: scope, $routeParams: params });
+				httpBackend.flush();
+
+				httpBackend.expectPOST('/topics/1/resources/8/hide').respond(200, {});
+				httpBackend.expectPOST('/topics/1/sub/999/affirm').respond(200, {});
+				scope.moveResource(8, 'sub', 999);
+				httpBackend.flush();
+			}));
+
+			it('should remove the resource from the list', function() {
+				expect(topic.resources).toEqual([{ id: 9 }]);
 			});
 
-			//it('should ')
+			it('should tell the service to hide the resource on the current topic and affirm it on the target topic', function() {
+				httpBackend.verifyNoOutstandingExpectation();
+			});
+
 		});
 	});
 });

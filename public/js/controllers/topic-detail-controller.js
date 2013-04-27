@@ -29,4 +29,22 @@ topicnet.controllers.controller('TopicDetailController', function($scope, $http,
 		$scope.topic.isDragging = false;
 		$scope.$apply();
 	};
+
+	$scope.hideResource = function(resourceId) {
+		$http.post('/topics/' + $scope.topic.id + '/resources/' + resourceId + '/hide').success(function() {
+			$scope.topic.resources = $scope.topic.resources.filter(function(r) {
+				return r.id !== resourceId;
+			});
+		});
+	};
+
+	$scope.moveResource = function(resourceId, relationshipType, topicId) {
+		$http.post('/topics/' + $scope.topic.id + '/resources/' + resourceId + '/hide').success(function() {
+			return $http.post('/topics/' + $scope.topic.id + '/' + relationshipType + '/' + topicId + '/affirm');
+		}).success(function() {
+			$scope.topic.resources = $scope.topic.resources.filter(function(r) {
+				return r.id !== resourceId;
+			});
+		});
+	};
 });
