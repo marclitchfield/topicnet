@@ -36,7 +36,7 @@ describe('RelatedTopicController', function() {
 			});
 		});
 
-		describe('removes link between related topics', function() {
+		describe('removes link between topics', function() {
 
 			beforeEach(inject(function($controller) {
 				scope.topic = { id: 1, next: [toTopic] };
@@ -48,14 +48,13 @@ describe('RelatedTopicController', function() {
 				httpBackend.flush();
 			}));
 
-			it('should make an HTTP DELETE call to the web api', function() {
+			it('should make an http DELETE call to the backend', function() {
 				httpBackend.verifyNoOutstandingExpectation();
 			});
 
 			it('should vote down the removed topic', function() {
-
+				
 			});
-
 
 			it('should remove the topic from the ui', function() {
 				expect(scope.topic[scope.rel]).toEqual([]);

@@ -54,5 +54,17 @@ describe('TopicDetailController', function() {
 				expect(scope.topic.name).toEqual(scope.editedTopicName);
 			});
 		});
+
+		describe('when a resource is dragged onto a related topic', function() {
+			it('should remove the resource from the list', function() {
+
+			});
+
+			it('should tell the service to hide the resource', function() {
+
+			});
+
+			//it('should ')
+		});
 	});
 });

@@ -12,6 +12,9 @@ topicnet.controllers.controller('SignupController', function($scope, $location, 
 		}
 
 		AuthenticationService.signup($scope.email, $scope.password)
+		.then(function() {
+			return AuthenticationService.login($scope.email, $scope.password);
+		})
 		.success(function(user) {
 			redirectToHome();
 			$scope.$emit('success', 'Welcome ' + user.email + '! Thanks for signing up!');
