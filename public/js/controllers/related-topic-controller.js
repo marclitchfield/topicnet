@@ -11,16 +11,6 @@ topicnet.controllers.controller('RelatedTopicController', function($scope, $http
 		});
 	};
 
-	$scope.removeLink = function(toTopic) {
-		$http['delete']('/topics/' + $scope.topic.id + '/' + $scope.rel + '/' + toTopic.id).success(function() {
-			$scope.topic[$scope.rel] = $scope.topic[$scope.rel].filter(function(t) {
-				return t.id !== toTopic.id;
-			});
-		}).error(function(message) {
-			$scope.$emit('error', message);
-		});
-	};
-
 	$scope.hideTopic = function(topic, rel) {
 		$http.post('/topics/' + $scope.topic.id + '/' + rel + '/' + topic.id + '/hide').success(function() {
 			$scope.topic[rel] = $scope.topic[rel].filter(function(t) {
