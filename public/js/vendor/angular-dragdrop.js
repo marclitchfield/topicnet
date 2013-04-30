@@ -40,7 +40,6 @@ var jqyoui = angular.module('ngDragDrop', []).directive('jqyouiDraggable', funct
             .draggable(scope.$eval(attrs.jqyouiOptions) || {})
             .draggable({
               start: function(event, ui) {
-                $(this).css('z-index', 99999);
                 jqyoui.startXY = $(this).offset();
 
                 if (dragSettings.onStart) {
