@@ -231,7 +231,7 @@ li:hover .close {
 }
 
 .related-topic a {
-	width: 90%;
+	width: 86%;
 	margin: 2px 8px;
 }
 
@@ -261,18 +261,29 @@ li:hover .close {
 */
 
 .droppable:not(.dragging) {
+	transition: all .3s;
 	box-shadow: inset 1px 1px 4px rgba(0,0,80,0.3);
 }
 
 .droptarget:not(.dragging) {
-	box-shadow: inset 1px 1px 4px 2px #4D6199;
+	transition: all .3s;
+	-webkit-transform: scale(1.02, 1.2);
+	box-shadow: 0px 0px 0px 2px #4D6199;
+	background: #fff;
+	z-index: 5;
 }
 
+.droptarget:not(.dragging) a {
+	transition: all .3s;
+	-webkit-transform: scale(0.98, 0.833);
+}
+
+
 .dragging {
-	box-shadow: 0 8px 12px #c0c0c0;
 	background-color: rgba(255,255,255,0.5);
-	z-index: 999;
+	box-shadow: 0 8px 12px #c0c0c0;
 	transition: box-shadow 1s;
+	z-index: 10;
 }
 
 
