@@ -124,15 +124,13 @@ Vote CRUD
   { dir: 'up' }
 ```
 
-Testing
+Local Setup
 -------
 
-To run the back end tests, start the neo4j test database (neo4j-test) running on port 7476 and start node with:
-<pre>NODE_ENV=test node server.js</pre>
-Then run
-<pre>npm test</pre>
-to run the test suite.
+- Install neo4j. Use  the default port of 7474
 
-To run the front end tests, run
-<pre>testem</pre>
-Pass the -h switch for help
+- Install dependencies
+<pre>npm install</pre>
+
+- Build
+<pre>grunt</pre>
