@@ -10,19 +10,23 @@ describe('Topic Service', function() {
 
 	describe('linkResource', function() {
 
+		var mockGraph, service;
+
+		beforeEach(function() {
+			mockGraph = sinon.mock(topicnetGraph);
+			service = topicService.createService(graph, mockGraph.object);
+		});
+
 		describe('when the link does not already exist', function() {
-
-			var mockGraph, service;
-
-			before(function() {
-				mockGraph = sinon.mock(topicnetGraph);
-				service = topicService.createService(graph, mockGraph.object);
+		
+			beforeEach(function() {
 				mockGraph.expects('getResourceRelationship').withArgs(1,2)
 					.returns(Q.resolve(undefined));
 				mockGraph.expects('linkResource').withArgs(1,2);
 			});
-			
+
 			it('should link a resource to a topic', function(done) {
+
 				service.linkResource(1,2)
 				.then(function(relationship) {
 					assert.ok(relationship);
@@ -36,11 +40,7 @@ describe('Topic Service', function() {
 
 		describe('when the link already exists', function() {
 
-			var mockGraph, service;
-
-			before(function() {
-				mockGraph = sinon.mock(topicnetGraph);
-				service = topicService.createService(graph, mockGraph.object);
+			beforeEach(function() {
 				mockGraph.expects('getResourceRelationship').withArgs(1,2)
 					.returns(Q.resolve({id:123}));
 			});
