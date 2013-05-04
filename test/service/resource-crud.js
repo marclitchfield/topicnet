@@ -496,7 +496,7 @@ describe('Resource CRUD', function() {
 	});
 
 	describe('DELETE /resources/:id where resource is associated with topic', function() {
-		
+
 		var postTopic;
 		var postResource;
 		var delResponse;

@@ -78,7 +78,7 @@ function isMissingIndexError(err) {
 exports.queryRelationship = function(fromId, toId, relationshipType) {
 	var cypherQuery = 'START from=node(' + fromId +	'), to=node(' + toId + ') ' +
 		'MATCH from-[r:' + relationshipType + ']->to RETURN r';
-	return graph.queryGraph(cypherQuery);
+	return exports.queryGraph(cypherQuery);
 };
 
 exports.createNode = function(nodeData) {
