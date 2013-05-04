@@ -1,5 +1,6 @@
 var	graph = require('./lib/graph'),
-	topicService = require('./lib/topic-service').createService(graph),
+	topicnetGraph = require('./lib/topicnet-graph').create(graph),
+	topicService = require('./lib/topic-service').createService(graph, topicnetGraph),
 	voteService = require('./lib/vote-service').createService(graph),
 	handler = require('./handler');
 

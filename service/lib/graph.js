@@ -75,6 +75,11 @@ function isMissingIndexError(err) {
 		err.message.match(/^Index.*does not exist$/) !== null);
 }
 
+exports.queryRelationship = function(fromId, toId, relationshipType) {
+	var cypherQuery = 'START from=node(' + fromId +	'), to=node(' + toId + ') ' +
+		'MATCH from-[r:' + relationshipType + ']->to RETURN r';
+	return graph.queryGraph(cypherQuery);
+};
 
 exports.createNode = function(nodeData) {
 	var deferred = Q.defer();

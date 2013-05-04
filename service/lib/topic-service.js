@@ -2,7 +2,7 @@ var _ = require('underscore');
 var Q = require('q');
 var helper = require('./service-helper');
 
-exports.createService = function(graph) {
+exports.createService = function(graph, topicnetGraph) {
 
 	var validRelationships = ['sub', 'next', 'root'];
 	var DEFAULT_RESULTS_PER_PAGE = 10;
@@ -220,12 +220,12 @@ exports.createService = function(graph) {
 		},
 
 		linkResource: function(id, resId) {
-			return queryRelationship(id, resId, 'resources')
-			.then(function(results) {
-				if (results.length > 0) {
+			return topicnetGraph.getRelationship(id, resId, 'resources')
+			.then(function(result) {
+				if (result === undefined) {
 					return Q.reject({name: 'duplicate', message: 'Link to resource already exists'});
 				}
-				return graph.createRelationshipBetween(id, resId, 'resources', {});
+				return topicnetGraph.linkResource(id, resId);
 			})
 			.then(function() {
 				return { score: 0 };
