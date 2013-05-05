@@ -16,7 +16,7 @@ exports.create = function(graph) {
 		},
 
 		unlinkResource: function(topicId, resourceId) {
-			return graph.queryRelationship(topic, resourceId, 'resources')
+			return graph.queryRelationship(topicId, resourceId, 'resources')
 			.then(function(results) {
 				if (results.length < 1) {
 					return Q.reject({name: 'notfound'});
