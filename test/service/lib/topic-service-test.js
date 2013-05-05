@@ -36,7 +36,7 @@ describe('Topic Service', function() {
 		describe('when the link already exists', function() {
 
 			beforeEach(function(done) {
-				service.linkResource(1,2)
+				stubGraph.linkResource(1,2)
 				.then(function() {
 					done();
 				})
