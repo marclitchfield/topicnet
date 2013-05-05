@@ -233,14 +233,12 @@ exports.createService = function(graph, topicnetGraph) {
 		},
 
 		unlinkResource: function(id, resId) {
-			return queryRelationship(id, resId, 'resources')
-			.then(function(results) {
-				if (results.length < 1) {
+			return topicnetGraph.getLinkedResource(id, resId)
+			.then(function(link) {
+				if (link === undefined) {
 					return Q.reject({name: 'notfound'});
-				} else {
-					var rel = results[0].r;
-					return graph.deleteRelationship(rel.id);
 				}
+				return topicnetGraph.unlinkResource(id, resId);
 			});
 		},
 

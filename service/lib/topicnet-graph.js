@@ -13,6 +13,18 @@ exports.create = function(graph) {
 
 		linkResource: function(topicId, resourceId) {
 			return graph.createRelationshipBetween(topicId, resourceId, 'resources', {});
+		},
+
+		unlinkResource: function(topicId, resourceId) {
+			return graph.queryRelationship(topic, resourceId, 'resources')
+			.then(function(results) {
+				if (results.length < 1) {
+					return Q.reject({name: 'notfound'});
+				} else {
+					var rel = results[0].r;
+					return graph.deleteRelationship(rel.id);
+				}
+			});
 		}
 
 	};

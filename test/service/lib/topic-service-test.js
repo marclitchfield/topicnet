@@ -7,14 +7,14 @@ var StubGraph = require('../stub-graph');
 
 describe('Topic Service', function() {
 
+	var stubGraph, service;
+
+	beforeEach(function() {
+		stubGraph = StubGraph.create();
+		service = topicService.createService(graph, stubGraph);
+	});
+
 	describe('linkResource', function() {
-
-		var stubGraph, service;
-
-		beforeEach(function() {
-			stubGraph = StubGraph.create();
-			service = topicService.createService(graph, stubGraph);
-		});
 
 		describe('when the link does not already exist', function() {
 		
@@ -50,6 +50,49 @@ describe('Topic Service', function() {
 					done();
 				})
 				.done();
+			});
+
+		});
+	});
+
+	describe('unlinkResource', function() {
+
+		describe('when the link does not already exist', function() {
+		
+			it('should return an error', function(done) {
+
+				service.unlinkResource(1,2)
+				.fail(function(error) {
+					assert.equal('notfound', error.name);
+					done();
+				})
+				.done();
+			});
+
+		});
+
+		describe('when the link already exists', function() {
+
+			beforeEach(function(done) {
+				stubGraph.linkResource(1,2)
+				.then(function() {
+					done();
+				})
+				.done();
+			});
+
+			it('should unlink the resource', function(done) {
+
+				service.unlinkResource(1,2)
+				.then(function() {
+					return stubGraph.getLinkedResource(1,2);
+				})
+				.then(function(link) {
+					assert.equal(undefined, link);
+					done();
+				})
+				.done();
+
 			});
 
 		});

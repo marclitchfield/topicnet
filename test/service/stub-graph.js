@@ -16,6 +16,10 @@ exports.create = function() {
 		linkResource: function(topicId, resourceId) {
 			links[topicId + '->' + resourceId] = { id: id++ };
 			return Q.resolve();
+		},
+
+		unlinkResource: function(topicId, resourceId) {
+			delete links[topicId + '->' + resourceId];
 		}
 
 	};
