@@ -220,9 +220,9 @@ exports.createService = function(graph, topicnetGraph) {
 		},
 
 		linkResource: function(id, resId) {
-			return topicnetGraph.getResourceRelationship(id, resId)
-			.then(function(relationship) {
-				if (relationship !== undefined) {
+			return topicnetGraph.getLinkedResource(id, resId)
+			.then(function(link) {
+				if (link !== undefined) {
 					return Q.reject({name: 'duplicate', message: 'Link to resource already exists'});
 				}
 				return topicnetGraph.linkResource(id, resId);
