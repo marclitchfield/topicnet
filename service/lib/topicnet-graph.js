@@ -18,12 +18,8 @@ exports.create = function(graph) {
 		unlinkResource: function(topicId, resourceId) {
 			return graph.queryRelationship(topicId, resourceId, 'resources')
 			.then(function(results) {
-				if (results.length < 1) {
-					return Q.reject({name: 'notfound'});
-				} else {
-					var rel = results[0].r;
-					return graph.deleteRelationship(rel.id);
-				}
+				var rel = results[0].r;
+				return graph.deleteRelationship(rel.id);
 			});
 		}
 
