@@ -3,23 +3,25 @@ var _ = require('underscore');
 
 exports.create = function() {
 
-	var links = {};
-	var id = 0;
+	var relationships = {};
+	var id = 1;
 
 	return {
 
-		getLinkedResource: function(topicId, resourceId) {
-			var link = links[topicId + '->' + resourceId];
-			return Q.resolve(link);
+		createRelationship: function(fromId, toId, relationshipType) {
+			var relationship = { id: id++ };
+			relationships[relationshipType + ':' + fromId + '->' + toId] = relationship;
+			return Q.resolve(relationship);
 		},
 
-		linkResource: function(topicId, resourceId) {
-			links[topicId + '->' + resourceId] = { id: id++ };
+		getRelationship: function(fromId, toId, relationshipType) {
+			return Q.resolve(relationships[relationshipType + ':' + fromId + '->' + toId]);
+		},
+
+		deleteRelationship: function(relationshipId) {
+			var k = _.find(_.keys(relationships), function(r) { return relationships[r].id === relationshipId; });
+			delete relationships[k];
 			return Q.resolve();
-		},
-
-		unlinkResource: function(topicId, resourceId) {
-			delete links[topicId + '->' + resourceId];
 		}
 
 	};

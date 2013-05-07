@@ -1,28 +1,26 @@
 var assert = require('assert');
 var Q = require('q');
-var graph = require('../../../service/lib/graph');
-var topicnetGraph = require('../../../service/lib/topicnet-graph').create(graph);
 var topicService = require('../../../service/lib/topic-service');
 var StubGraph = require('../stub-graph');
 
 describe('Topic Service', function() {
 
-	var stubGraph, service;
+	var graph, service;
 
 	beforeEach(function() {
-		stubGraph = StubGraph.create();
-		service = topicService.createService(graph, stubGraph);
+		graph = StubGraph.create();
+		service = topicService.createService(undefined, graph);
 	});
 
 	describe('linkResource', function() {
 
-		describe('when the link does not already exist', function() {
+		describe('when the resource is not already linked to the topic', function() {
 		
-			it('should link a resource to a topic', function(done) {
+			it('should link the resource to the topic', function(done) {
 
 				service.linkResource(1,2)
 				.then(function() {
-					return stubGraph.getLinkedResource(1,2);
+					return graph.getRelationship(1,2,'resources');
 				})
 				.then(function(link) {
 					assert.ok(link);
@@ -33,17 +31,17 @@ describe('Topic Service', function() {
 
 		});
 
-		describe('when the link already exists', function() {
+		describe('when the resource is already linked to the topic', function() {
 
 			beforeEach(function(done) {
-				stubGraph.linkResource(1,2)
+				graph.createRelationship(1,2,'resources')
 				.then(function() {
 					done();
 				})
 				.done();
 			});
 
-			it('should return an error', function(done) {
+			it('should return a duplicate error', function(done) {
 				service.linkResource(1,2)
 				.fail(function(error) {
 					assert.equal('duplicate', error.name);
@@ -57,9 +55,9 @@ describe('Topic Service', function() {
 
 	describe('unlinkResource', function() {
 
-		describe('when the link does not already exist', function() {
+		describe('when the resource is not already linked to the topic', function() {
 		
-			it('should return an error', function(done) {
+			it('should return a notfound error', function(done) {
 
 				service.unlinkResource(1,2)
 				.fail(function(error) {
@@ -71,10 +69,10 @@ describe('Topic Service', function() {
 
 		});
 
-		describe('when the link already exists', function() {
+		describe('when the resource is linked to the topic', function() {
 
 			beforeEach(function(done) {
-				stubGraph.linkResource(1,2)
+				graph.createRelationship(1,2,'resources')
 				.then(function() {
 					done();
 				})
@@ -85,14 +83,13 @@ describe('Topic Service', function() {
 
 				service.unlinkResource(1,2)
 				.then(function() {
-					return stubGraph.getLinkedResource(1,2);
+					return graph.getRelationship(1,2,'resources');
 				})
-				.then(function(link) {
-					assert.equal(undefined, link);
+				.then(function(relationship) {
+					assert.equal(undefined, relationship);
 					done();
 				})
 				.done();
-
 			});
 
 		});

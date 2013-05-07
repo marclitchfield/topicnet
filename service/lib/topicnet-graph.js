@@ -4,23 +4,19 @@ exports.create = function(graph) {
 
 	return {
 
-		getLinkedResource: function(topicId, resourceId) {
-			return graph.queryRelationship(topicId, resourceId, 'resources')
+		createRelationship: function(fromId, toId, relationshipType) {
+			return graph.createRelationshipBetween(fromId, toId, relationshipType, {});
+		},
+
+		getRelationship: function(fromId, toId, relationshipType) {
+			return graph.queryRelationship(fromId, toId, relationshipType)
 			.then(function(results) {
-				return results.length === 0 ? undefined : results[0];
+				return results.length === 0 ? undefined : results[0].r;
 			});
 		},
 
-		linkResource: function(topicId, resourceId) {
-			return graph.createRelationshipBetween(topicId, resourceId, 'resources', {});
-		},
-
-		unlinkResource: function(topicId, resourceId) {
-			return graph.queryRelationship(topicId, resourceId, 'resources')
-			.then(function(results) {
-				var rel = results[0].r;
-				return graph.deleteRelationship(rel.id);
-			});
+		deleteRelationship: function(relationshipId) {
+			return graph.deleteRelationship(relationshipId);
 		}
 
 	};

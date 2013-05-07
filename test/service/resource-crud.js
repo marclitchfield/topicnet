@@ -520,7 +520,6 @@ describe('Resource CRUD', function() {
 		});
 
 		describe('then GET /resources/:id', function() {
-
 			it('returns the resource', function(done) {
 				api.get('/resources/' + postResource.returnedData.id)
 				.then(function(res) {
@@ -536,6 +535,7 @@ describe('Resource CRUD', function() {
 		describe('then GET /topic/:id that the resource was attatched to', function() {
 
 			it('returns the topic including the not deleted resource', function(done) {
+				console.log('postTopic', postTopic.returnedData);
 				api.getTopic(postTopic.returnedData.id)
 				.then(function(getTopic) {
 					assert.ok(_.any(getTopic.returnedData.resources, function(r) {

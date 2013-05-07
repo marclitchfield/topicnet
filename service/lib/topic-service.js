@@ -172,14 +172,14 @@ exports.createService = function(graph, topicnetGraph) {
 				return Q.reject('invalid relationship. must be one of: ' + validRelationships.join(', '));
 			}
 
-			return queryRelationship(fromId, toId, relationshipType)
-			.then(function(results) {
-				if(results && results.length > 0) {
+			return topicnetGraph.getRelationship(fromId, toId, relationshipType)
+			.then(function(rel) {
+				if(rel !== undefined) {
 					return Q.reject({name: 'duplicate', message: 'Relationship \'' + relationshipType + '\' already exists between ' + fromId + ' and ' + toId});
 				}
 			})
 			.then(function() {
-				return graph.createRelationshipBetween(fromId, toId, relationshipType, {});
+				return topicnetGraph.createRelationship(fromId, toId, relationshipType, {});
 			})
 			.then(function() {
 				return { score: 0 };
@@ -187,12 +187,11 @@ exports.createService = function(graph, topicnetGraph) {
 		},
 
 		getRelationship: function(fromId, toId, relationshipType) {
-			return queryRelationship(fromId, toId, relationshipType)
-			.then(function(results) {
-				if(results.length < 1) {
+			return topicnetGraph.getRelationship(fromId, toId, relationshipType)
+			.then(function(rel) {
+				if(rel === undefined) {
 					return Q.reject({name: 'notfound', message: 'Relationship \'' + relationshipType + '\' was not found between ' + fromId + ' and ' + toId});
 				} else {
-					var rel = results[0].r;
 					rel.fromId = parseInt(fromId, 10);
 					rel.toId = parseInt(toId, 10);
 					rel.relationshipType = relationshipType;
@@ -208,7 +207,7 @@ exports.createService = function(graph, topicnetGraph) {
 			if(!_.include(validRelationships, relationshipType)) {
 				return Q.reject('invalid relationship. must be one of: ' + validRelationships.join(', '));
 			}
-			return queryRelationship(fromId, toId, relationshipType)
+			return graph.queryRelationship(fromId, toId, relationshipType)
 			.then(function(results) {
 				if (results.length < 1) {
 					return Q.reject({name: 'notfound'});
@@ -219,26 +218,32 @@ exports.createService = function(graph, topicnetGraph) {
 			});
 		},
 
-		linkResource: function(id, resId) {
-			return topicnetGraph.getLinkedResource(id, resId)
-			.then(function(link) {
-				if (link !== undefined) {
-					return Q.reject({name: 'duplicate', message: 'Link to resource already exists'});
+		linkResource: function(topicId, resId) {
+			return topicnetGraph.getRelationship(topicId, resId, 'resources')
+			.then(function(rel) {
+				if(rel !== undefined) {
+					return Q.reject({name: 'duplicate', message: 'Relationship to resource already exists between ' + topicId + ' and ' + resId});
 				}
-				return topicnetGraph.linkResource(id, resId);
+			})
+			.then(function() {
+				return topicnetGraph.createRelationship(topicId, resId, 'resources', {});
 			})
 			.then(function() {
 				return { score: 0 };
 			});
 		},
 
-		unlinkResource: function(id, resId) {
-			return topicnetGraph.getLinkedResource(id, resId)
-			.then(function(link) {
-				if (link === undefined) {
+		unlinkResource: function(topicId, resId) {
+			console.log('unlinking', topicId, resId);
+			return topicnetGraph.getRelationship(topicId, resId, 'resources')
+			.then(function(rel) {
+				console.log('getRelationship returned', rel);
+				if (rel === undefined) {
 					return Q.reject({name: 'notfound'});
+				} else {
+					console.log('deleteRelationship: ', rel.id);
+					return topicnetGraph.deleteRelationship(rel.id);
 				}
-				return topicnetGraph.unlinkResource(id, resId);
 			});
 		},
 
