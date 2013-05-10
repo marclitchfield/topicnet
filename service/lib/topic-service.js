@@ -135,7 +135,7 @@ exports.createService = function(graph, topicnetGraph) {
 	
 			return checkForDuplicateNew(topicData)
 			.then(function() {
-				return topicnetGraph.createTopic(topicData)
+				return topicnetGraph.createTopic(topicData);
 			});
 		},
 

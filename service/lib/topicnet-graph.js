@@ -1,4 +1,5 @@
 var Q = require('q');
+var helper = require('./service-helper');
 
 exports.create = function(graph) {
 
@@ -7,10 +8,10 @@ exports.create = function(graph) {
 		createTopic: function(topicData) {
 			return graph.createNode(topicData)
 			.then(function(createdTopic) {
-				return graph.updateIndex(createdTopic.id, 'topics_name', 'name', topicData.name);
-			})
-			.then(function() {
-				return createdTopic;
+				return graph.updateIndex(createdTopic.id, 'topics_name', 'name', topicData.name)
+				.then(function() {
+					return createdTopic;
+				});
 			});
 		},
 
