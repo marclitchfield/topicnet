@@ -1,9 +1,0 @@
-{
-	"framework": "jasmine",
-	"src_files": [
-		"public/js/vendor/angular.js",
-		"public/js/vendor/angular-mocks.js",
-		"public/js/dist/app.min.js",
-		"test/public/**/*.js"
-	]
-}
