@@ -20,6 +20,14 @@ exports.create = function() {
 			return Q.resolve(topics[id]);
 		},
 
+		deleteTopic: function(id) {
+			if (!(id in topics)) {
+				return Q.reject({ name: 'notfound' });
+			}
+			delete topics[id];
+			return Q.resolve();
+		},
+
 		topicExistsWithName: function(name) {
 			var found = _.find(topics, function(t) { return t.name === name.toLowerCase(); });
 			return Q.resolve(found);

@@ -90,6 +90,49 @@ describe('Topic Service', function() {
 			});
 
 		});
+	});
+
+	describe('delete topic', function() {
+
+		describe('when the topic already exists', function() {
+
+			var topic;
+
+			beforeEach(function(done) {
+				graph.createTopic({ name: 'topic' })
+				.then(function(createdTopic) {
+					topic = createdTopic;
+					done();
+				})
+				.done();
+			});
+
+			it('should delete the topic', function(done) {
+				service.deleteTopic(topic.id)
+				.then(function() {
+					return graph.getTopic(topic.id);
+				})
+				.then(function(retrievedTopic) {
+					assert.equal(undefined, retrievedTopic);
+					done();
+				})
+				.done();
+			});
+
+		});
+
+		describe('when the topic does not exist', function() {
+
+			it('should return a notfound error', function(done) {
+				service.deleteTopic(9999)
+				.fail(function(err) {
+					assert.equal('notfound', err.name);
+					done();
+				})
+				.done();
+			});
+
+		});
 
 	});
 

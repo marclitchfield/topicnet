@@ -59,6 +59,10 @@ exports.create = function(graph) {
 			});
 		},
 
+		deleteTopic: function(id) {
+			return graph.deleteNode(id);
+		},
+
 		topicExistsWithName: function(name) {
 			var query = helper.escapeLuceneSpecialChars(name.toLowerCase());
 			return graph.queryNodeIndex('topics_name', 'name:' + query)

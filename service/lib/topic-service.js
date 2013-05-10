@@ -152,7 +152,7 @@ exports.createService = function(graph, topicnetGraph) {
 		},
 
 		deleteTopic: function(id) {
-			return graph.deleteNode(id);
+			return topicnetGraph.deleteTopic(id);
 		},
 
 		getRelationship: function(fromId, toId, relationshipType) {
