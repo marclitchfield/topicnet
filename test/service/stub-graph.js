@@ -20,6 +20,12 @@ exports.create = function() {
 			return Q.resolve(topics[id]);
 		},
 
+		searchTopicsByName: function(searchString, page, perPage) {
+			return Q.resolve(_.filter(topics, function(t) {
+				return t.name.indexOf(searchString) > -1;
+			}));
+		},
+
 		deleteTopic: function(id) {
 			if (!(id in topics)) {
 				return Q.reject({ name: 'notfound' });

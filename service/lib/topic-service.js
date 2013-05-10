@@ -80,24 +80,11 @@ exports.createService = function(graph, topicnetGraph) {
 		},
 
 		search: function(params) {
-
+			var searchString = params.q || '';
 			var page = helper.parsePositiveInt(params.p) || 1;
 			var perPage = helper.parsePositiveInt(params.pp) || DEFAULT_RESULTS_PER_PAGE;
-			var searchString = params.q || '';
 
-			var cypherQuery = 'START n=node:topics_name({query}) RETURN n ' +
-				'SKIP {s} LIMIT {l}';
-
-			var cypherQueryParams = {
-				query: 'name:*' + helper.escapeLuceneSpecialChars(searchString.toLowerCase()) + '*',
-				s: (page - 1) * perPage,
-				l: perPage
-			};
-
-			return graph.queryGraph(cypherQuery, cypherQueryParams)
-			.then(function(results) {
-				return makeTopics(results);
-			});
+			return topicnetGraph.searchTopicsByName(searchString, page, perPage);
 		},
 
 		getRelated: function(fromId, relationshipType) {

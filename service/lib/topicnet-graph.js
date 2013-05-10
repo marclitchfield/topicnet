@@ -59,6 +59,22 @@ exports.create = function(graph) {
 			});
 		},
 
+		searchTopicsByName: function(searchString, page, perPage) {
+			var cypherQuery = 'START n=node:topics_name({query}) RETURN n ' +
+				'SKIP {s} LIMIT {l}';
+
+			var cypherQueryParams = {
+				query: 'name:*' + helper.escapeLuceneSpecialChars(searchString.toLowerCase()) + '*',
+				s: (page - 1) * perPage,
+				l: perPage
+			};
+
+			return graph.queryGraph(cypherQuery, cypherQueryParams)
+			.then(function(results) {
+				return makeTopics(results);
+			});
+		},
+
 		deleteTopic: function(id) {
 			return graph.deleteNode(id);
 		},
@@ -85,7 +101,6 @@ exports.create = function(graph) {
 		deleteRelationship: function(relationshipId) {
 			return graph.deleteRelationship(relationshipId);
 		}
-
 	};
 
 };
