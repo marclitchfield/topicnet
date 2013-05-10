@@ -17,7 +17,7 @@ exports.create = function() {
 		},
 
 		getTopic: function(id) {
-			return topics[id];
+			return Q.resolve(topics[id]);
 		},
 
 		topicExistsWithName: function(name) {

@@ -16,17 +16,6 @@ exports.createService = function(graph, topicnetGraph) {
 		return graph.queryNodeIndex('topics_name', 'name:' + query);
 	}
 
-	function checkForDuplicateNew(updatedValues) {
-		var deferred = Q.defer();
-
-		return topicnetGraph.topicExistsWithName(updatedValues.name)
-		.then(function(exists) {
-			if(exists) {
-				return Q.reject({ name: 'duplicate', message: 'A topic with the specified name already exists' });
-			}
-		});
-	}
-
 	function checkForDuplicateUpdate(updatedValues, topicId) {
 		
 		return findTopicByName(updatedValues.name)
@@ -80,14 +69,12 @@ exports.createService = function(graph, topicnetGraph) {
 	return {
 
 		get: function(id) {
-			var cypherQuery = 'START n=node(' + parseInt(id, 10) + ') MATCH n-[r?]->c RETURN n,r,c';
-
-			return graph.queryGraph(cypherQuery)
-			.then(function(results) {
-				if (results.length < 1) {
+			return topicnetGraph.getTopic(id)
+			.then(function(topic) {
+				if (topic === undefined) {
 					return Q.reject({name: 'notfound', message: 'topic with id ' + id + ' not found'});
 				} else {
-					return makeTopics(results)[0];
+					return topic;
 				}
 			});
 		},
@@ -133,7 +120,12 @@ exports.createService = function(graph, topicnetGraph) {
 				return Q.reject('name is required');
 			}
 	
-			return checkForDuplicateNew(topicData)
+			return topicnetGraph.topicExistsWithName(topicData.name)
+			.then(function(exists) {
+				if(exists) {
+					return Q.reject({ name: 'duplicate', message: 'A topic with the specified name already exists' });
+				}
+			})
 			.then(function() {
 				return topicnetGraph.createTopic(topicData);
 			});

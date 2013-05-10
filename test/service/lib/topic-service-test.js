@@ -46,6 +46,50 @@ describe('Topic Service', function() {
 			});
 
 		});
+	});
+
+	describe('get topic', function() {
+
+		describe('when topic exists', function() {
+
+			var topic;
+
+			beforeEach(function(done) {
+				graph.createTopic({ name: 'topic' })
+				.then(function(createdTopic) {
+					topic = createdTopic;
+					done();
+				})
+				.done();
+			});
+
+			it('should retrieve the topic', function(done) {
+
+				service.get(topic.id)
+				.then(function(retrievedTopic) {
+					assert.equal(topic.name, retrievedTopic.name);
+					done();
+				})
+				.done();
+
+			});
+
+		});
+
+		describe('when topic does not exist', function() {
+
+			it('should return notfound error', function(done) {
+
+				service.get(99999)
+				.fail(function(err) {
+					assert.equal('notfound', err.name);
+					done();
+				})
+				.done();
+
+			});
+
+		});
 
 	});
 
