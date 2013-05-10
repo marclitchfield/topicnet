@@ -8,8 +8,9 @@ exports.create = function() {
 
 	return {
 
-		createRelationship: function(fromId, toId, relationshipType) {
+		createRelationship: function(fromId, toId, relationshipType, data) {
 			var relationship = { id: id++ };
+			_.extend(relationship, data || {});
 			relationships[relationshipType + ':' + fromId + '->' + toId] = relationship;
 			return Q.resolve(relationship);
 		},

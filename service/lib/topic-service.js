@@ -234,14 +234,11 @@ exports.createService = function(graph, topicnetGraph) {
 		},
 
 		unlinkResource: function(topicId, resId) {
-			console.log('unlinking', topicId, resId);
 			return topicnetGraph.getRelationship(topicId, resId, 'resources')
 			.then(function(rel) {
-				console.log('getRelationship returned', rel);
 				if (rel === undefined) {
 					return Q.reject({name: 'notfound'});
 				} else {
-					console.log('deleteRelationship: ', rel.id);
 					return topicnetGraph.deleteRelationship(rel.id);
 				}
 			});
