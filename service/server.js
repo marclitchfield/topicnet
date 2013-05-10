@@ -24,7 +24,7 @@ app.post('/topics/:id/:rel/:toid/vote', topics.vote);
 app.post('/topics/:id/root', topics.linkRoot);
 app.post('/topics/:id/resources', topics.linkResource);
 app['delete']('/topics/:id/resources/:resid', topics.unlinkResource);
-app.post('/topics/:id/:rel', topics.linkRelated);
+app.post('/topics/:id/:rel', topics.linkTopic);
 app['delete']('/topics/:id/root', topics.unlinkRoot);
 app['delete']('/topics/:id/:rel/:toid', topics.unlinkRelated);
 app['delete']('/topics/:id', topics['delete']);

@@ -66,16 +66,14 @@ module.exports = function(grunt) {
 				readyText: 'Listening on'
 			}
 		},
-		mochaTest: {
-			backend: ['test/service/**/*.js']
-		},
-		mochaTestConfig: {
+		'mocha-hack': {
 			backend: {
-				options: {
-					reporter: 'spec',
-					timeout: 3000,
-					grep: grunt.option('grep')
-				}
+				src: ['test/service/**/*.js']
+			},
+			options: {
+				reporter: 'spec',
+				timeout: 3000,
+				grep: grunt.option('grep')
 			}
 		},
 		watch: {
@@ -96,7 +94,7 @@ module.exports = function(grunt) {
 
 	// Default task.
 	grunt.registerTask('frontend-tests', ['jshint', 'clean', 'uglify', 'jasmine']);
-	grunt.registerTask('backend-tests', ['develop', 'mochaTest', 'develop-kill']);
+	grunt.registerTask('backend-tests', ['develop', 'mocha-hack', 'develop-kill']);
 	grunt.registerTask('default', ['frontend-tests', 'backend-tests']);
 	grunt.registerTask('ft', ['frontend-tests']);
 	grunt.registerTask('bt', ['backend-tests']);
@@ -112,5 +110,5 @@ module.exports = function(grunt) {
 	grunt.loadNpmTasks('grunt-contrib-watch');
 	grunt.loadNpmTasks('grunt-contrib-jasmine');
 	grunt.loadNpmTasks('grunt-develop');
-	grunt.loadNpmTasks('grunt-mocha-test');
+	grunt.loadNpmTasks('grunt-mocha-hack');
 };

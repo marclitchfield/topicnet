@@ -37,7 +37,7 @@ exports.vote = function(request, response) {
 };
 
 exports.linkRoot = function(request, response) {
-	handler.complete(response, topicService.createRelationship(0, request.params.id, 'root'));
+	handler.complete(response, topicService.linkTopic(0, request.params.id, 'root'));
 };
 
 exports.linkResource = function(request, response) {
@@ -48,16 +48,16 @@ exports.unlinkResource = function(request, response, next) {
 	handler.complete(response, topicService.unlinkResource(request.params.id, request.params.resid));
 };
 
-exports.linkRelated = function(request, response) {
-	handler.complete(response, topicService.createRelationship(request.params.id, request.body.toid, request.params.rel));
+exports.linkTopic = function(request, response) {
+	handler.complete(response, topicService.linkTopic(request.params.id, request.body.toid, request.params.rel));
 };
 
 exports.unlinkRoot = function(request, response) {
-	handler.complete(response, topicService.deleteRelationship(0, request.params.id, 'root'));
+	handler.complete(response, topicService.unlinkTopic(0, request.params.id, 'root'));
 };
 
 exports.unlinkRelated = function(request, response) {
-	handler.complete(response, topicService.deleteRelationship(request.params.id, request.params.toid, request.params.rel));
+	handler.complete(response, topicService.unlinkTopic(request.params.id, request.params.toid, request.params.rel));
 };
 
 exports['delete'] = function(request, response) {

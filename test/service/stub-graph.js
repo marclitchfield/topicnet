@@ -3,10 +3,27 @@ var _ = require('underscore');
 
 exports.create = function() {
 
+	var topics = {};
 	var relationships = {};
 	var id = 1;
 
 	return {
+
+		createTopic: function(topicData) {
+			var topic = { id: id++ };
+			_.extend(topic, topicData);
+			topics[topic.id] = topic;
+			return Q.resolve(topic);
+		},
+
+		getTopic: function(id) {
+			return topics[id];
+		},
+
+		topicExistsWithName: function(name) {
+			var found = _.find(topics, function(t) { return t.name === name.toLowerCase(); });
+			return Q.resolve(found);
+		},
 
 		createRelationship: function(fromId, toId, relationshipType, data) {
 			var relationship = { id: id++ };

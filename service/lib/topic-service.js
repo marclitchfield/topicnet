@@ -19,9 +19,9 @@ exports.createService = function(graph, topicnetGraph) {
 	function checkForDuplicateNew(updatedValues) {
 		var deferred = Q.defer();
 
-		return findTopicByName(updatedValues.name)
-		.then(function(results) {
-			if(results.length > 0) {
+		return topicnetGraph.topicExistsWithName(updatedValues.name)
+		.then(function(exists) {
+			if(exists) {
 				return Q.reject({ name: 'duplicate', message: 'A topic with the specified name already exists' });
 			}
 		});
@@ -135,15 +135,7 @@ exports.createService = function(graph, topicnetGraph) {
 	
 			return checkForDuplicateNew(topicData)
 			.then(function() {
-				var result;
-				return graph.createNode(topicData)
-				.then(function(nodeData) {
-					result = nodeData;
-					return updateTopicIndex(nodeData.id, topicData);
-				})
-				.then(function() {
-					return result;
-				});
+				return topicnetGraph.createTopic(topicData)
 			});
 		},
 
@@ -167,23 +159,8 @@ exports.createService = function(graph, topicnetGraph) {
 
 		},
 
-		createRelationship: function(fromId, toId, relationshipType) {
-			if (!_.include(validRelationships, relationshipType)) {
-				return Q.reject('invalid relationship. must be one of: ' + validRelationships.join(', '));
-			}
-
-			return topicnetGraph.getRelationship(fromId, toId, relationshipType)
-			.then(function(rel) {
-				if(rel !== undefined) {
-					return Q.reject({name: 'duplicate', message: 'Relationship \'' + relationshipType + '\' already exists between ' + fromId + ' and ' + toId});
-				}
-			})
-			.then(function() {
-				return topicnetGraph.createRelationship(fromId, toId, relationshipType, {});
-			})
-			.then(function() {
-				return { score: 0 };
-			});
+		deleteTopic: function(id) {
+			return graph.deleteNode(id);
 		},
 
 		getRelationship: function(fromId, toId, relationshipType) {
@@ -203,17 +180,35 @@ exports.createService = function(graph, topicnetGraph) {
 			});
 		},
 
-		deleteRelationship: function(fromId, toId, relationshipType) {
+		linkTopic: function(fromId, toId, relationshipType) {
+			if (!_.include(validRelationships, relationshipType)) {
+				return Q.reject('invalid relationship. must be one of: ' + validRelationships.join(', '));
+			}
+
+			return topicnetGraph.getRelationship(fromId, toId, relationshipType)
+			.then(function(rel) {
+				if(rel !== undefined) {
+					return Q.reject({name: 'duplicate', message: 'Relationship \'' + relationshipType + '\' already exists between ' + fromId + ' and ' + toId});
+				}
+			})
+			.then(function() {
+				return topicnetGraph.createRelationship(fromId, toId, relationshipType, {});
+			})
+			.then(function() {
+				return { score: 0 };
+			});
+		},
+
+		unlinkTopic: function(fromId, toId, relationshipType) {
 			if(!_.include(validRelationships, relationshipType)) {
 				return Q.reject('invalid relationship. must be one of: ' + validRelationships.join(', '));
 			}
-			return graph.queryRelationship(fromId, toId, relationshipType)
-			.then(function(results) {
-				if (results.length < 1) {
+			return topicnetGraph.getRelationship(fromId, toId, relationshipType)
+			.then(function(rel) {
+				if (rel === undefined) {
 					return Q.reject({name: 'notfound'});
 				} else {
-					var rel = results[0].r;
-					return graph.deleteRelationship(rel.id);
+					return topicnetGraph.deleteRelationship(rel.id);
 				}
 			});
 		},
@@ -242,11 +237,6 @@ exports.createService = function(graph, topicnetGraph) {
 					return topicnetGraph.deleteRelationship(rel.id);
 				}
 			});
-		},
-
-		deleteTopic: function(id) {
-			return graph.deleteNode(id);
 		}
-
 	};
 };

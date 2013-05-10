@@ -12,6 +12,153 @@ describe('Topic Service', function() {
 		service = topicService.createService(undefined, graph);
 	});
 
+	describe('create topic', function() {
+
+		describe('with valid data', function() {
+
+			it('should create the topic', function(done) {
+
+				service.create({ name: 'topic'})
+				.then(function(createdTopic) {
+					return graph.getTopic(createdTopic.id);
+				})
+				.then(function(retrievedTopic) {
+					assert.equal('topic', retrievedTopic.name);
+					assert.notEqual(undefined, retrievedTopic.id);
+					done();
+				})
+				.done();
+
+			});
+
+		});
+
+		describe('with no name', function() {
+
+			it('should return an error', function(done) {
+
+				service.create({})
+				.fail(function(err) {
+					assert.equal('name is required', err);
+					done();
+				});
+
+			});
+
+		});
+
+	});
+
+	describe('linkTopic', function() {
+
+		describe('when related topic does not already exist', function() {
+
+			it('should link the related topic', function(done) {
+
+				service.linkTopic(1, 2, 'sub')
+				.then(function() {
+					return graph.getRelationship(1, 2, 'sub');
+				})
+				.then(function(link) {
+					assert.ok(link);
+					done();
+				})
+				.done();
+
+			});
+
+		});
+
+		describe('when related topic already exists', function() {
+
+			beforeEach(function(done) {
+				graph.createRelationship(1, 2, 'sub')
+				.then(function() {
+					done();
+				})
+				.done();
+			});
+
+			it('should return a duplicate error', function(done) {
+				service.linkTopic(1, 2, 'sub')
+				.fail(function(err) {
+					assert.equal('duplicate', err.name);
+					done();
+				})
+				.done();
+			});
+
+		});
+
+		describe('when given an invalid relationship', function() {
+
+			it('should return an invalid relationship error', function(done) {
+				service.linkTopic(1, 2, 'invalid')
+				.fail(function(err) {
+					assert.notEqual(-1, err.indexOf('invalid relationship'));
+					done();
+				})
+				.done();
+			});
+
+		});
+	});
+
+	describe('unlinkTopic', function() {
+
+		describe('when related topic already exists', function() {
+
+			beforeEach(function(done) {
+				graph.createRelationship(1, 2, 'sub')
+				.then(function() {
+					done();
+				})
+				.done();
+			});
+
+			it('should unlink the related topic', function(done) {
+
+				service.unlinkTopic(1, 2, 'sub')
+				.then(function() {
+					return graph.getRelationship(1, 2, 'sub');
+				})
+				.then(function(link) {
+					assert.equal(undefined, link);
+					done();
+				})
+				.done();
+
+			});
+
+		});
+
+		describe('when related topic does not already exists', function() {
+
+			it('should return a notfound error', function(done) {
+				service.unlinkTopic(1, 2, 'sub')
+				.fail(function(err) {
+					assert.equal('notfound', err.name);
+					done();
+				})
+				.done();
+			});
+
+		});
+
+		describe('when given an invalid relationship', function() {
+
+			it('should return an invalid relationship error', function(done) {
+				service.unlinkTopic(1, 2, 'invalid')
+				.fail(function(err) {
+					assert.notEqual(-1, err.indexOf('invalid relationship'));
+					done();
+				})
+				.done();
+			});
+
+		});
+	});
+
 	describe('linkResource', function() {
 
 		describe('when the resource is not already linked to the topic', function() {
@@ -135,7 +282,6 @@ describe('Topic Service', function() {
 			});
 
 		});
-
 	});
 
 });
