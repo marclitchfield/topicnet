@@ -7,28 +7,6 @@ exports.createService = function(graph, topicnetGraph) {
 	var validRelationships = ['sub', 'next', 'root'];
 	var DEFAULT_RESULTS_PER_PAGE = 10;
 
-	function updateTopicIndex(nodeId, topicData) {
-		return graph.updateIndex(nodeId, 'topics_name', 'name', topicData.name);
-	}
-
-	function findTopicByName(name) {
-		var query = helper.escapeLuceneSpecialChars(name.toLowerCase());
-		return graph.queryNodeIndex('topics_name', 'name:' + query);
-	}
-
-	function checkForDuplicateUpdate(updatedValues, topicId) {
-		
-		return findTopicByName(updatedValues.name)
-		.then(function(results) {
-			var resultsOtherThanThis = _.reject(results, function(t) {
-				return t.id === topicId;
-			});
-
-			if(resultsOtherThanThis.length > 0) {
-				return Q.reject({ name: 'duplicate', message: 'Another topic exists with the specified name' });
-			}
-		});
-	}
 
 	function queryRelationship(fromId, toId, relationshipType) {
 		var cypherQuery = 'START from=node(' + fromId +	'), to=node(' + toId + ') ' +
@@ -107,9 +85,9 @@ exports.createService = function(graph, topicnetGraph) {
 				return Q.reject('name is required');
 			}
 	
-			return topicnetGraph.topicExistsWithName(topicData.name)
-			.then(function(exists) {
-				if(exists) {
+			return topicnetGraph.getTopicByName(topicData.name)
+			.then(function(existing) {
+				if(existing !== undefined) {
 					return Q.reject({ name: 'duplicate', message: 'A topic with the specified name already exists' });
 				}
 			})
@@ -123,19 +101,15 @@ exports.createService = function(graph, topicnetGraph) {
 				return Q.reject('name is required');
 			}
 
-			return checkForDuplicateUpdate(topicData, id)
+			return topicnetGraph.getTopicByName(topicData.name)
+			.then(function(existing) {
+				if(existing !== undefined && existing.id !== id) {
+					return Q.reject({ name: 'duplicate', message: 'Another topic exists with the specified name' });
+				}
+			})
 			.then(function() {
-				var result;
-				return graph.updateNode(id, topicData)
-				.then(function(nodeData) {
-					result = nodeData;
-					return updateTopicIndex(id, topicData);
-				})
-				.then(function() {
-					return result;
-				});
+				return topicnetGraph.updateTopic(id, topicData);
 			});
-
 		},
 
 		deleteTopic: function(id) {

@@ -46,6 +46,16 @@ exports.create = function(graph) {
 			});
 		},
 
+		updateTopic: function(id, topicData) {
+			return graph.updateNode(id, topicData)
+			.then(function(updatedTopic) {
+				return graph.updateIndex(updatedTopic.id, 'topics_name', 'name', topicData.name)
+				.then(function() {
+					return updatedTopic;
+				});
+			});
+		},
+
 		getTopic: function(id) {
 			var cypherQuery = 'START n=node(' + parseInt(id, 10) + ') MATCH n-[r?]->c RETURN n,r,c';
 
@@ -56,6 +66,14 @@ exports.create = function(graph) {
 				} else {
 					return makeTopics(results)[0];
 				}
+			});
+		},
+
+		getTopicByName: function(name) {
+			var query = helper.escapeLuceneSpecialChars(name.toLowerCase());
+			return graph.queryNodeIndex('topics_name', 'name:' + query)
+			.then(function(results) {
+				return results.length === 0 ? undefined : results[0];
 			});
 		},
 
@@ -77,14 +95,6 @@ exports.create = function(graph) {
 
 		deleteTopic: function(id) {
 			return graph.deleteNode(id);
-		},
-
-		topicExistsWithName: function(name) {
-			var query = helper.escapeLuceneSpecialChars(name.toLowerCase());
-			return graph.queryNodeIndex('topics_name', 'name:' + query)
-			.then(function(results) {
-				return results.length > 0;
-			});
 		},
 
 		createRelationship: function(fromId, toId, relationshipType) {

@@ -13,6 +13,8 @@ function errorHandler(response, error) {
 		'badrequest': 400
 	};
 
+	console.log(error);
+
 	response.send(error.message || error, statusCodes[error.name] || 500);
 }
 

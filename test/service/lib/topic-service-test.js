@@ -34,6 +34,18 @@ describe('Topic Service', function() {
 			.done();
 		});
 
+		it('update topic should update the topic', function(done) {
+			service.update(topic.id, { name: 'updated' })
+			.then(function() {
+				return graph.getTopic(topic.id);
+			})
+			.then(function(retrievedTopic) {
+				assert.equal('updated', retrievedTopic.name);
+				done();
+			})
+			.done();
+		});
+
 		it('get topic should retrieve the topic', function(done) {
 			service.get(topic.id)
 			.then(function(retrievedTopic) {
@@ -71,7 +83,6 @@ describe('Topic Service', function() {
 	describe('when topic does not exist', function() {
 
 		it('create topic should create the topic', function(done) {
-
 			service.create({ name: 'topic'})
 			.then(function(createdTopic) {
 				return graph.getTopic(createdTopic.id);
@@ -79,6 +90,15 @@ describe('Topic Service', function() {
 			.then(function(retrievedTopic) {
 				assert.equal('topic', retrievedTopic.name);
 				assert.notEqual(undefined, retrievedTopic.id);
+				done();
+			})
+			.done();
+		});
+
+		it('update topic should return notfound error', function(done) {
+			service.update(9999, { name: 'updated' })
+			.fail(function(err) {
+				assert.equal('notfound', err.name);
 				done();
 			})
 			.done();
@@ -113,9 +133,17 @@ describe('Topic Service', function() {
 	});
 
 	describe('when topic has no name', function() {
-
 		it('create topic should return an error', function(done) {
 			service.create({})
+			.fail(function(err) {
+				assert.equal('name is required', err);
+				done();
+			})
+			.done();
+		});
+
+		it('update topic should return an error', function(done) {
+			service.update(999, {})
 			.fail(function(err) {
 				assert.equal('name is required', err);
 				done();

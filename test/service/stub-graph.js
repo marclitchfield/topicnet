@@ -16,6 +16,15 @@ exports.create = function() {
 			return Q.resolve(topic);
 		},
 
+		updateTopic: function(id, topicData) {
+			if (!(id in topics)) {
+				return Q.reject({ name: 'notfound' });
+			}
+			topicData.id = id;
+			topics[id] = topicData;
+			return Q.resolve(topics[id]);
+		},
+
 		getTopic: function(id) {
 			return Q.resolve(topics[id]);
 		},
@@ -34,7 +43,7 @@ exports.create = function() {
 			return Q.resolve();
 		},
 
-		topicExistsWithName: function(name) {
+		getTopicByName: function(name) {
 			var found = _.find(topics, function(t) { return t.name === name.toLowerCase(); });
 			return Q.resolve(found);
 		},
