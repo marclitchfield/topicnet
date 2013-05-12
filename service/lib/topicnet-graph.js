@@ -77,6 +77,16 @@ exports.create = function(graph) {
 			});
 		},
 
+		getRelatedTopics: function(fromId, relationshipType) {
+			var cypherQuery = 'START origin=node(' + parseInt(fromId, 10) + ') ' +
+				'MATCH origin-[:' + relationshipType + ']->n RETURN n';
+
+			return graph.queryGraph(cypherQuery)
+			.then(function(results) {
+				return makeTopics(results);
+			});
+		},
+
 		searchTopicsByName: function(searchString, page, perPage) {
 			var cypherQuery = 'START n=node:topics_name({query}) RETURN n ' +
 				'SKIP {s} LIMIT {l}';

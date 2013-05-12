@@ -29,6 +29,20 @@ exports.create = function() {
 			return Q.resolve(topics[id]);
 		},
 
+		getTopicByName: function(name) {
+			var found = _.find(topics, function(t) { return t.name === name.toLowerCase(); });
+			return Q.resolve(found);
+		},
+
+		getRelatedTopics: function(fromId, relationshipType) {
+			if (!(fromId in topics)) {
+				return Q.reject({ name: 'notfound' });
+			}
+			var keys = _.filter(_.keys(relationships), function(r) { return r.indexOf(relationshipType + ':' + fromId) === 0; });
+			var related = _.map(keys, function(k) { return topics[relationships[k].toId]; });
+			return Q.resolve(related);
+		},
+
 		searchTopicsByName: function(searchString, page, perPage) {
 			return Q.resolve(_.filter(topics, function(t) {
 				return t.name.indexOf(searchString) > -1;
@@ -43,13 +57,8 @@ exports.create = function() {
 			return Q.resolve();
 		},
 
-		getTopicByName: function(name) {
-			var found = _.find(topics, function(t) { return t.name === name.toLowerCase(); });
-			return Q.resolve(found);
-		},
-
 		createRelationship: function(fromId, toId, relationshipType, data) {
-			var relationship = { id: id++ };
+			var relationship = { id: id++, fromId: fromId, toId: toId };
 			_.extend(relationship, data || {});
 			relationships[relationshipType + ':' + fromId + '->' + toId] = relationship;
 			return Q.resolve(relationship);

@@ -2,47 +2,11 @@ var _ = require('underscore');
 var Q = require('q');
 var helper = require('./service-helper');
 
-exports.createService = function(graph, topicnetGraph) {
+exports.createService = function(topicnetGraph) {
 
 	var validRelationships = ['sub', 'next', 'root'];
 	var DEFAULT_RESULTS_PER_PAGE = 10;
 
-
-	function queryRelationship(fromId, toId, relationshipType) {
-		var cypherQuery = 'START from=node(' + fromId +	'), to=node(' + toId + ') ' +
-			'MATCH from-[r:' + relationshipType + ']->to RETURN r';
-
-		return graph.queryGraph(cypherQuery);
-	}
-
-	function makeTopics(queryResult) {
-		var topics = [];
-
-		_.each(queryResult, function(result) {
-			var id = result.n.id;
-
-			var topic = _.find(topics, function(t) {
-				return t.id === id;
-			});
-
-			if (topic === undefined) {
-				topic = result.n;
-				topics.push(topic);
-			}
-
-			if (result.r && result.c) {
-				var rel = result.r.type;
-				if (!topic.hasOwnProperty(rel)) {
-					topic[rel] = [];
-				}
-
-				result.c.score = result.r.score || 0;
-				topic[rel].push(result.c);
-			}
-		});
-
-		return topics;
-	}
 
 	return {
 
@@ -67,17 +31,10 @@ exports.createService = function(graph, topicnetGraph) {
 
 		getRelated: function(fromId, relationshipType) {
 			if (!_.include(validRelationships, relationshipType)) {
-				fail('invalid relationship. must be one of: ' + validRelationships.join(', '));
-				return;
+				return Q.reject('invalid relationship. must be one of: ' + validRelationships.join(', '));
 			}
 
-			var cypherQuery = 'START origin=node(' + parseInt(fromId, 10) + ') ' +
-				'MATCH origin-[:' + relationshipType + ']->n RETURN n';
-
-			return graph.queryGraph(cypherQuery)
-			.then(function(results) {
-				return makeTopics(results);
-			});
+			return topicnetGraph.getRelatedTopics(fromId, relationshipType);
 		},
 
 		create: function(topicData) {

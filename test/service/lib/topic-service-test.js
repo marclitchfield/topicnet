@@ -9,7 +9,7 @@ describe('Topic Service', function() {
 
 	beforeEach(function() {
 		graph = StubGraph.create();
-		service = topicService.createService(undefined, graph);
+		service = topicService.createService(graph);
 	});
 
 	describe('when topic exists', function() {
@@ -53,7 +53,15 @@ describe('Topic Service', function() {
 				done();
 			})
 			.done();
+		});
 
+		it('getRelated should return empty list', function(done) {
+			service.getRelated(topic.id, 'sub')
+			.then(function(retrievedTopics) {
+				assert.deepEqual([], retrievedTopics);
+				done();
+			})
+			.done();
 		});
 
 		it('delete topic should delete the topic', function(done) {
@@ -77,13 +85,42 @@ describe('Topic Service', function() {
 			})
 			.done();
 		});
+	});
 
+	describe('when topic has related topics', function() {
+
+		var topic, relatedTopic;
+
+		beforeEach(function(done) {
+			graph.createTopic({ name: 'topic' })
+			.then(function(createdTopic1) {
+				topic = createdTopic1;
+				return graph.createTopic({ name: 'related' });
+			})
+			.then(function(createdTopic2) {
+				relatedTopic = createdTopic2;
+				return graph.createRelationship(topic.id, relatedTopic.id, 'sub');
+			})
+			.then(function() {
+				done();
+			})
+			.done();
+		});
+
+		it('getRelated returns the related topic', function(done) {
+			service.getRelated(topic.id, 'sub')
+			.then(function(related) {
+				assert.deepEqual([relatedTopic], related);
+				done();
+			})
+			.done();
+		});
 	});
 
 	describe('when topic does not exist', function() {
 
 		it('create topic should create the topic', function(done) {
-			service.create({ name: 'topic'})
+			service.create({ name: 'topic' })
 			.then(function(createdTopic) {
 				return graph.getTopic(createdTopic.id);
 			})
@@ -106,6 +143,15 @@ describe('Topic Service', function() {
 
 		it('get topic should return notfound error', function(done) {
 			service.get(99999)
+			.fail(function(err) {
+				assert.equal('notfound', err.name);
+				done();
+			})
+			.done();
+		});
+
+		it('getRelated should return notfound error', function(done) {
+			service.getRelated(9999, 'sub')
 			.fail(function(err) {
 				assert.equal('notfound', err.name);
 				done();
@@ -223,6 +269,15 @@ describe('Topic Service', function() {
 
 		it('unlinkTopic should return an invalid relationship error', function(done) {
 			service.unlinkTopic(1, 2, 'invalid')
+			.fail(function(err) {
+				assert.notEqual(-1, err.indexOf('invalid relationship'));
+				done();
+			})
+			.done();
+		});
+
+		it('getRelated should return an invalid relationship error', function(done) {
+			service.getRelated(1, 'invalid')
 			.fail(function(err) {
 				assert.notEqual(-1, err.indexOf('invalid relationship'));
 				done();
