@@ -19,7 +19,7 @@ app.post('/topics', topics.create);
 app.put('/topics/:id', topics.update);
 app.get('/topics/:id', topics.get);
 app.get('/topics/:id/:rel', topics.getRelated);
-app.get('/topics/:id/:rel/:toid', topics.getRelatedById);
+app.get('/topics/:id/:rel/:toid', topics.getLink);
 app.post('/topics/:id/:rel/:toid/vote', topics.vote);
 app.post('/topics/:id/root', topics.linkRoot);
 app.post('/topics/:id/resources', topics.linkResource);

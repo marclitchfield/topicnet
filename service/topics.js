@@ -28,8 +28,8 @@ exports.getRelated = function(request, response) {
 	handler.complete(response, topicService.getRelated(request.params.id, request.params.rel));
 };
 
-exports.getRelatedById = function(request, response) {
-	handler.complete(response, topicService.getRelationship(request.params.id, request.params.toid, request.params.rel));
+exports.getLink = function(request, response) {
+	handler.complete(response, topicService.getLink(request.params.id, request.params.toid, request.params.rel));
 };
 
 exports.vote = function(request, response) {

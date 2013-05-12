@@ -142,19 +142,19 @@ exports.createService = function(graph, topicnetGraph) {
 			return topicnetGraph.deleteTopic(id);
 		},
 
-		getRelationship: function(fromId, toId, relationshipType) {
+		getLink: function(fromId, toId, relationshipType) {
 			return topicnetGraph.getRelationship(fromId, toId, relationshipType)
-			.then(function(rel) {
-				if(rel === undefined) {
+			.then(function(link) {
+				if(link === undefined) {
 					return Q.reject({name: 'notfound', message: 'Relationship \'' + relationshipType + '\' was not found between ' + fromId + ' and ' + toId});
 				} else {
-					rel.fromId = parseInt(fromId, 10);
-					rel.toId = parseInt(toId, 10);
-					rel.relationshipType = relationshipType;
-					rel.upVotes = rel.upVotes || 0;
-					rel.downVotes = rel.downVotes || 0;
-					rel.score = rel.score || 0;
-					return rel;
+					link.fromId = parseInt(fromId, 10);
+					link.toId = parseInt(toId, 10);
+					link.relationshipType = relationshipType;
+					link.upVotes = link.upVotes || 0;
+					link.downVotes = link.downVotes || 0;
+					link.score = link.score || 0;
+					return link;
 				}
 			});
 		},

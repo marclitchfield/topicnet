@@ -227,8 +227,8 @@ describe('Topic Service', function() {
 			.done();
 		});
 
-		it('getRelationship should return a notfound error', function(done) {
-			service.getRelationship(1, 9999, 'resources')
+		it('getLink should return a notfound error', function(done) {
+			service.getLink(1, 9999, 'resources')
 			.fail(function(err) {
 				assert.equal('notfound', err.name);
 				done();
@@ -248,15 +248,15 @@ describe('Topic Service', function() {
 			.done();
 		});
 
-		it('getRelationship should return the relationship', function(done) {
-			service.getRelationship(1, 2, 'resources')
-			.then(function(rel) {
-				assert.equal(1, rel.fromId);
-				assert.equal(2, rel.toId);
-				assert.equal('resources', rel.relationshipType);
-				assert.equal(1, rel.upVotes);
-				assert.equal(2, rel.downVotes);
-				assert.equal(3, rel.score);
+		it('getLink should return the relationship', function(done) {
+			service.getLink(1, 2, 'resources')
+			.then(function(link) {
+				assert.equal(1, link.fromId);
+				assert.equal(2, link.toId);
+				assert.equal('resources', link.relationshipType);
+				assert.equal(1, link.upVotes);
+				assert.equal(2, link.downVotes);
+				assert.equal(3, link.score);
 				done();
 			})
 			.done();
