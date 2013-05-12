@@ -29,7 +29,7 @@ exports.createService = function(topicnetGraph) {
 			return topicnetGraph.searchTopicsByName(searchString, page, perPage);
 		},
 
-		getRelated: function(fromId, relationshipType) {
+		getLinkedTopics: function(fromId, relationshipType) {
 			if (!_.include(validRelationships, relationshipType)) {
 				return Q.reject('invalid relationship. must be one of: ' + validRelationships.join(', '));
 			}

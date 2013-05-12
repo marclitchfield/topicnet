@@ -8,7 +8,7 @@ exports.root = function(request, response) {
 	if (request.query.q) {
 		handler.complete(response, topicService.search(request.query));
 	} else {
-		handler.complete(response, topicService.getRelated(0, 'root'));
+		handler.complete(response, topicService.getLinkedTopics(0, 'root'));
 	}
 };
 
@@ -24,8 +24,8 @@ exports.get = function(request, response) {
 	handler.complete(response, topicService.get(request.params.id));
 };
 
-exports.getRelated = function(request, response) {
-	handler.complete(response, topicService.getRelated(request.params.id, request.params.rel));
+exports.getLinkedTopics = function(request, response) {
+	handler.complete(response, topicService.getLinkedTopics(request.params.id, request.params.rel));
 };
 
 exports.getLink = function(request, response) {

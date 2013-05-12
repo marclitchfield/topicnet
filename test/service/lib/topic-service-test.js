@@ -55,8 +55,8 @@ describe('Topic Service', function() {
 			.done();
 		});
 
-		it('getRelated should return empty list', function(done) {
-			service.getRelated(topic.id, 'sub')
+		it('getLinkedTopics should return empty list', function(done) {
+			service.getLinkedTopics(topic.id, 'sub')
 			.then(function(retrievedTopics) {
 				assert.deepEqual([], retrievedTopics);
 				done();
@@ -107,8 +107,8 @@ describe('Topic Service', function() {
 			.done();
 		});
 
-		it('getRelated returns the related topic', function(done) {
-			service.getRelated(topic.id, 'sub')
+		it('getLinkedTopics returns the related topic', function(done) {
+			service.getLinkedTopics(topic.id, 'sub')
 			.then(function(related) {
 				assert.deepEqual([relatedTopic], related);
 				done();
@@ -150,8 +150,8 @@ describe('Topic Service', function() {
 			.done();
 		});
 
-		it('getRelated should return notfound error', function(done) {
-			service.getRelated(9999, 'sub')
+		it('getLinkedTopics should return notfound error', function(done) {
+			service.getLinkedTopics(9999, 'sub')
 			.fail(function(err) {
 				assert.equal('notfound', err.name);
 				done();
@@ -276,8 +276,8 @@ describe('Topic Service', function() {
 			.done();
 		});
 
-		it('getRelated should return an invalid relationship error', function(done) {
-			service.getRelated(1, 'invalid')
+		it('getLinkedTopics should return an invalid relationship error', function(done) {
+			service.getLinkedTopics(1, 'invalid')
 			.fail(function(err) {
 				assert.notEqual(-1, err.indexOf('invalid relationship'));
 				done();
