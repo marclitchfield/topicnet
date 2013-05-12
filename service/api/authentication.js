@@ -1,8 +1,8 @@
 var	passport = require('passport'),
 	LocalStrategy = require('passport-local').Strategy,
-	graph = require('./lib/graph'),
-	userService = require('./lib/user-service').createService(graph),
-	handler = require('./handler');
+	graph = require('../lib/graph'),
+	userService = require('../lib/user-service').createService(graph),
+	handler = require('../handler');
 
 
 module.exports = function(app) {

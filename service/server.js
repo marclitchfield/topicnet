@@ -6,10 +6,10 @@ app.use(express.bodyParser());
 app.use(express.cookieParser());
 app.use(express.session({ secret: 'Silly Sampton Likes Plant-Like Petunias' }));
 
-require('./authentication.js')(app);
+require('./api/authentication.js')(app);
 
-var topics = require('./topics.js');
-var resources = require('./resources.js');
+var topics = require('./api/topics.js');
+var resources = require('./api/resources.js');
 
 
 // topics

@@ -1,6 +1,6 @@
-var	graph = require('./lib/graph'),
-	resourceService = require('./lib/resource-service').createService(graph),
-	handler = require('./handler');
+var	graph = require('../lib/graph'),
+	resourceService = require('../lib/resource-service').createService(graph),
+	handler = require('../handler');
 
 exports.create = function(request, response) {
 	handler.complete(response, resourceService.create(request.body));

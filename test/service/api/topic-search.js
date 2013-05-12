@@ -3,7 +3,7 @@ var _ = require('underscore');
 var api = require('./helper-api.js');
 var guid = require('guid');
 var Q = require('q');
-require('./test-utils');
+require('../test-utils');
 
 describe('Topic Search', function() {
 

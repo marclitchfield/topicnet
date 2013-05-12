@@ -284,7 +284,6 @@ describe('Topic Service', function() {
 			})
 			.done();
 		});
-
 	});
 
 	describe('when the resource is not already linked to the topic', function() {
@@ -318,7 +317,6 @@ describe('Topic Service', function() {
 			})
 			.done();
 		});
-
 	});
 
 	describe('when the resource is already linked to the topic', function() {

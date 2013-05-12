@@ -2,7 +2,7 @@ var assert = require('assert');
 var _ = require('underscore');
 var api = require('./helper-api.js');
 var guid = require('guid');
-require('./test-utils');
+require('../test-utils');
 
 describe('Resource Search', function() {
 
