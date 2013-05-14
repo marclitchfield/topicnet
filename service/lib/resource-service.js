@@ -2,7 +2,7 @@ var _ = require('underscore');
 var Q = require('q');
 var helper = require('./service-helper');
 
-exports.createService = function(graph) {
+exports.createService = function(graph, topicnetGraph) {
 
 	var requiredAttributes = [ 'title', 'url', 'source', 'verb' ];
 	var searchableAttributes = [ 'title', 'url' ];
@@ -35,21 +35,20 @@ exports.createService = function(graph) {
 		if(attributeName === 'url') {
 			attributeValue = decodeURIComponent(attributeValue);
 		}
-		var query = helper.escapeLuceneSpecialChars(attributeValue.toLowerCase());
-		return graph.queryNodeIndex('resources_' + attributeName, attributeName + ':' + query);
+		return topicnetGraph.getResourceByAttribute(attributeName, attributeValue);
 	}
 
 	function checkForDuplicateNew(newValues) {
-		return findResourceByAttribute('title', newValues.title)
-		.then(function(resources) {
-			if(resources && resources.length > 0) {
+		return topicnetGraph.getResourceByAttribute('title', newValues.title)
+		.then(function(resource) {
+			if(resource !== undefined) {
 				return Q.reject( { name: 'duplicate', message: 'A resource with the specified title already exists' } );
 			}
 		})
 		.then(function() {
-			return findResourceByAttribute('url', newValues.url)
-			.then(function(resources) {
-				if(resources && resources.length > 0) {
+			return topicnetGraph.getResourceByAttribute('url', decodeURIComponent(newValues.url))
+			.then(function(resource) {
+				if(resource !== undefined) {
 					return Q.reject( { name: 'duplicate', message: 'A resource with the specified url already exists' } );
 				}
 			});
@@ -90,7 +89,6 @@ exports.createService = function(graph) {
 	return {
 
 		create: function(resourceData) {
-			var result;
 			for(var i = 0; i < requiredAttributes.length; i++) {
 				if(!resourceData.hasOwnProperty(requiredAttributes[i]) || !resourceData[requiredAttributes[i]]) {
 					return Q.reject(requiredAttributes[i] + ' is required');
@@ -102,17 +100,7 @@ exports.createService = function(graph) {
 	
 			return checkForDuplicateNew(resourceData)
 			.then(function() {
-				return graph.createNode(resourceData)
-				.then(function(nodeData) {
-					result = nodeData;
-					return updateTitleIndex(result.id, resourceData.title);
-				})
-				.then(function() {
-					return updateUrlIndex(result.id, resourceData.url);
-				})
-				.then(function() {
-					return result;
-				});
+				return topicnetGraph.createResource(resourceData);
 			});
 		},
 

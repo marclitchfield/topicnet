@@ -120,7 +120,33 @@ exports.create = function(graph) {
 
 		deleteRelationship: function(relationshipId) {
 			return graph.deleteRelationship(relationshipId);
+		},
+
+		createResource: function(resourceData) {
+			return graph.createNode(resourceData)
+			.then(function(result) {
+				return graph.updateIndex(result.id, 'resources_title', 'title', resourceData.title)
+				.then(function() {
+					return graph.updateIndex(result.id, 'resources_url', 'url', resourceData.url);
+				})
+				.then(function() {
+					return result;
+				});
+			});
+		},
+
+		getResourceByAttribute: function(attributeName, attributeValue) {
+			var query = helper.escapeLuceneSpecialChars(attributeValue.toLowerCase());
+			return graph.queryNodeIndex('resources_' + attributeName, attributeName + ':' + query)
+			.then(function(results) {
+				return results.length === 0 ? undefined : results[0];
+			});
 		}
 	};
 
 };
+
+
+
+
+

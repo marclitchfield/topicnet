@@ -67,8 +67,9 @@ exports.parseBody = function(body) {
 };
 
 exports.postTopic = function() {
-	var response = {};
+	var response = {}; 
 	response.postedData = { name: 'Topic ' + guid.raw() };
+
 	return exports.post('/topics', response.postedData)
 	.then(function(res) {
 		response.response = res;

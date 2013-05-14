@@ -1,5 +1,6 @@
 var	graph = require('../lib/graph'),
-	resourceService = require('../lib/resource-service').createService(graph),
+	topicnetGraph = require('../lib/topicnet-graph').create(graph),
+	resourceService = require('../lib/resource-service').createService(graph, topicnetGraph),
 	handler = require('../handler');
 
 exports.create = function(request, response) {

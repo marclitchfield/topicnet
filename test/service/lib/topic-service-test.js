@@ -1,7 +1,7 @@
 var assert = require('assert');
 var Q = require('q');
 var topicService = require('../../../service/lib/topic-service');
-var StubGraph = require('../stub-graph');
+var StubGraph = require('./stub-graph');
 
 describe('Topic Service', function() {
 
