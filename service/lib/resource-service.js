@@ -105,7 +105,7 @@ exports.createService = function(graph, topicnetGraph) {
 		},
 
 		get: function(id) {
-			return graph.readNode(id);
+			return topicnetGraph.getResource(id);
 		},
 
 		update: function(id, data) {

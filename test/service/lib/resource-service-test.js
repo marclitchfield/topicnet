@@ -33,6 +33,15 @@ describe('Resource Service', function() {
 			})
 			.done();
 		});
+
+		it('get should return the resource', function(done) {
+			service.get(resource.id)
+			.then(function(retrievedResource) {
+				assert.deepEqual(resource, retrievedResource);
+				done();
+			})
+			.done();
+		});
 	});
 
 	describe('when resource does not already exist', function() {
@@ -45,6 +54,15 @@ describe('Resource Service', function() {
 					assert.deepEqual(retrievedResource, createdResource);
 					done();
 				});
+			})
+			.done();
+		});
+
+		it('get should return a notfound error', function(done) {
+			service.get(99999)
+			.fail(function(err) {
+				assert.equal(err.name, 'notfound');
+				done();
 			})
 			.done();
 		});

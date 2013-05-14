@@ -135,6 +135,10 @@ exports.create = function(graph) {
 			});
 		},
 
+		getResource: function(id) {
+			return graph.readNode(id);
+		},
+
 		getResourceByAttribute: function(attributeName, attributeValue) {
 			var query = helper.escapeLuceneSpecialChars(attributeValue.toLowerCase());
 			return graph.queryNodeIndex('resources_' + attributeName, attributeName + ':' + query)
