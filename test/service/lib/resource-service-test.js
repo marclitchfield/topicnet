@@ -42,6 +42,21 @@ describe('Resource Service', function() {
 			})
 			.done();
 		});
+
+		it('update should update the resource', function(done) {
+			service.update(resource.id, { title: 'updated-title', url: 'updated-url', source: 'updated-source', verb: 'watch'})
+			.then(function() {
+				return graph.getResource(resource.id)
+			})
+			.then(function(retrievedResource) {
+				assert.equal('updated-title', retrievedResource.title);
+				assert.equal('updated-url', retrievedResource.url);
+				assert.equal('updated-source', retrievedResource.source);
+				assert.equal('watch', retrievedResource.verb);
+				done();
+			})
+			.done();
+		})
 	});
 
 	describe('when resource does not already exist', function() {
@@ -66,6 +81,15 @@ describe('Resource Service', function() {
 			})
 			.done();
 		});
+
+		it('update should return a notfound error', function(done) {
+			service.update(99999, { title: 'updated-title', url: 'updated-url', source: 'updated-source', verb: 'watch'})
+			.fail(function(err) {
+				assert.equal('notfound', err.name);
+				done();
+			})
+			.done();
+		});
 	});
 
 	describe('when resource is missing required property', function() {
@@ -79,11 +103,29 @@ describe('Resource Service', function() {
 				})
 				.done();
 			});
+
+			it('update should return an error', function(done) {
+				service.update(99999, { url: 'updated-url', source: 'updated-source', verb: 'watch' })
+				.fail(function(err) {
+					assert.equal('title is required', err);
+					done();
+				})
+				.done();
+			})
 		});
 
 		describe('url', function() {
 			it('create should return an error', function(done) {
 				service.create({ title: 'title', source: 'source', verb: 'read' })
+				.fail(function(err) {
+					assert.equal('url is required', err);
+					done();
+				})
+				.done();
+			});
+
+			it('update should return an error', function(done) {
+				service.update(99999, { title: 'updated-title', source: 'updated-source', verb: 'watch' })
 				.fail(function(err) {
 					assert.equal('url is required', err);
 					done();
@@ -101,11 +143,29 @@ describe('Resource Service', function() {
 				})
 				.done();
 			});
+
+			it('udpate should return an error', function(done) {
+				service.update(99999,{ title: 'updated-title', url: 'updated-url', verb: 'watch' })
+				.fail(function(err) {
+					assert.equal('source is required', err);
+					done();
+				})
+				.done();
+			});
 		});
 
 		describe('verb', function() {
 			it('create should return an error', function(done) {
 				service.create({ title: 'title', url: 'url', source: 'source' })
+				.fail(function(err) {
+					assert.equal('verb is required', err);
+					done();
+				})
+				.done();
+			});
+
+			it('update should return an error', function(done) {
+				service.update(99999,{ title: 'updated-title', url: 'updated-url', source: 'updated-source' })
 				.fail(function(err) {
 					assert.equal('verb is required', err);
 					done();

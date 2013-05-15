@@ -304,7 +304,9 @@ describe('Resource CRUD', function() {
 	describe('PUT /resources/:id with invalid id', function() {
 
 		it('returns status 404', function(done) {
-			api.put('/resources/-9999999', {})
+			api.put('/resources/-9999999', { title: 'title',
+					url: 'http://uniqueurl/' + guid.raw(),
+					source: 'example.com', verb: 'read' })
 			.then(function(res) {
 				assert.equal(res.statusCode, 404);
 				done();

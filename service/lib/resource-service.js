@@ -9,14 +9,6 @@ exports.createService = function(graph, topicnetGraph) {
 	var validVerbs = [ 'read', 'watch', 'listen', 'engage' ];
 	var DEFAULT_RESULTS_PER_PAGE = 10;
 
-	function updateTitleIndex(nodeId, title, callback) {
-		return graph.updateIndex(nodeId, 'resources_title', 'title', title);
-	}
-
-	function updateUrlIndex(nodeId, url) {
-		return graph.updateIndex(nodeId, 'resources_url', 'url', url);
-	}
-
 	function exactSearch(attribute, query) {
 		if(!_.contains(searchableAttributes, attribute)) {
 			return Q.reject('not a searchable attribute: ' + attribute);
@@ -28,30 +20,18 @@ exports.createService = function(graph, topicnetGraph) {
 		return graph.queryNodeIndex('resources_' + attribute, attribute + ':' + query);
 	}
 
-	function findResourceByAttribute(attributeName, attributeValue) {
-		if(!_.contains(searchableAttributes, attributeName)) {
-			return Q.reject({ name: 'ResourceServiceError', message: 'An invalid attributeName was passed to findResourceByAttribute' });
-		}
-		if(attributeName === 'url') {
-			attributeValue = decodeURIComponent(attributeValue);
-		}
-		return topicnetGraph.getResourceByAttribute(attributeName, attributeValue);
-	}
-
 	function checkForDuplicateNew(newValues) {
 		return topicnetGraph.getResourceByAttribute('title', newValues.title)
 		.then(function(resource) {
 			if(resource !== undefined) {
 				return Q.reject( { name: 'duplicate', message: 'A resource with the specified title already exists' } );
 			}
-		})
-		.then(function() {
 			return topicnetGraph.getResourceByAttribute('url', decodeURIComponent(newValues.url))
-			.then(function(resource) {
-				if(resource !== undefined) {
-					return Q.reject( { name: 'duplicate', message: 'A resource with the specified url already exists' } );
-				}
-			});
+		})
+		.then(function(resource) {
+			if(resource !== undefined) {
+				return Q.reject( { name: 'duplicate', message: 'A resource with the specified url already exists' } );
+			}
 		});
 	}
 
@@ -62,21 +42,30 @@ exports.createService = function(graph, topicnetGraph) {
 			});
 		}
 
-		return findResourceByAttribute('title', updatedValues.title)
-		.then(function(results) {
-			var resultsOtherThanThis = filterResults(results);
-			if(resultsOtherThanThis.length > 0) {
+		return topicnetGraph.getResourceByAttribute('title', updatedValues.title)
+		.then(function(resource) {
+			if (resource !== undefined && resource.id !== updatedValues.id) {
 				return Q.reject({ name: 'duplicate', message: 'Another resource exists with the specified title' });
-			} else {
-				return findResourceByAttribute('url', updatedValues.url);
 			}
+			return topicnetGraph.getResourceByAttribute('url', decodeURIComponent(updatedValues.url));
 		})
-		.then(function(results) {
-			var resultsOtherThanThis = filterResults(results);
-			if(resultsOtherThanThis.length > 0) {
+		.then(function(resource) {
+			if(resource !== undefined && resource.id !== updatedValues.id) {
 				return Q.reject({ name: 'duplicate', message: 'Another resource exists with the specified url' });
 			}
 		});
+	}
+
+	function validateRequest(data) {
+		for(var i = 0; i < requiredAttributes.length; i++) {
+			if(!data.hasOwnProperty(requiredAttributes[i]) || !data[requiredAttributes[i]]) {
+				return Q.reject(requiredAttributes[i] + ' is required');
+			}
+		}
+		if(!_.contains(validVerbs, data.verb)) {
+			return Q.reject('invalid verb');
+		}
+		return undefined;
 	}
 
 	function makeResources(queryResults) {
@@ -89,13 +78,9 @@ exports.createService = function(graph, topicnetGraph) {
 	return {
 
 		create: function(resourceData) {
-			for(var i = 0; i < requiredAttributes.length; i++) {
-				if(!resourceData.hasOwnProperty(requiredAttributes[i]) || !resourceData[requiredAttributes[i]]) {
-					return Q.reject(requiredAttributes[i] + ' is required');
-				}
-			}
-			if(!_.contains(validVerbs, resourceData.verb)) {
-				return Q.reject('invalid verb');
+			var validationRejection = validateRequest(resourceData);
+			if (validationRejection) {
+				return validationRejection;
 			}
 	
 			return checkForDuplicateNew(resourceData)
@@ -108,40 +93,21 @@ exports.createService = function(graph, topicnetGraph) {
 			return topicnetGraph.getResource(id);
 		},
 
-		update: function(id, data) {
-			var result;
-			return graph.readNode(id)
+		update: function(id, resourceData) {
+			var validationRejection = validateRequest(resourceData);
+			if (validationRejection) {
+				return validationRejection;
+			}
+
+			return checkForDuplicateUpdate(resourceData, id)
 			.then(function() {
-
-				for(var i = 0; i < requiredAttributes.length; i++) {
-					if(!data.hasOwnProperty(requiredAttributes[i]) || !data[requiredAttributes[i]]) {
-						return Q.reject(requiredAttributes[i] + ' is required');
-					}
-				}
-				if(!_.contains(validVerbs, data.verb)) {
-					return Q.reject('invalid verb');
-				}
-
-				return checkForDuplicateUpdate(data, id)
-				.then(function() {
-					var updateData = {
-						title: data.title,
-						url: data.url,
-						source: data.source,
-						verb: data.verb
-					};
-					return graph.updateNode(id, updateData);
-				})
-				.then(function(nodeData) {
-					result = nodeData;
-					return updateTitleIndex(id, data.title);
-				})
-				.then(function() {
-					return updateUrlIndex(id, data.url);
-				})
-				.then(function() {
-					return result;
-				});
+				var updateData = {
+					title: resourceData.title,
+					url: resourceData.url,
+					source: resourceData.source,
+					verb: resourceData.verb
+				};
+				return topicnetGraph.updateResource(id, updateData);
 			});
 		},
 

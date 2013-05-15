@@ -82,6 +82,15 @@ exports.create = function() {
 			return Q.resolve(resource);
 		},
 
+		updateResource: function(id, resourceData) {
+			if (!(id in resources)) {
+				return Q.reject({ name: 'notfound' });
+			}
+			resourceData.id = id;
+			resources[id] = resourceData;
+			return Q.resolve(resources[id]);
+		},
+
 		getResource: function(id) {
 			if (!(id in resources)) {
 				return Q.reject({ name: 'notfound' });

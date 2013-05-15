@@ -135,6 +135,19 @@ exports.create = function(graph) {
 			});
 		},
 
+		updateResource: function(id, resourceData) {
+			return graph.updateNode(id, resourceData)
+			.then(function(updatedResource) {
+				return graph.updateIndex(id, 'resource_title', 'title', resourceData.title)
+				.then(function() {
+					return graph.updateIndex(id, 'resource_url', 'url', resourceData.url);
+				})
+				.then(function() {
+					return updatedResource;
+				});
+			})
+		},
+
 		getResource: function(id) {
 			return graph.readNode(id);
 		},
