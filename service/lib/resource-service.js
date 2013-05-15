@@ -9,17 +9,6 @@ exports.createService = function(graph, topicnetGraph) {
 	var validVerbs = [ 'read', 'watch', 'listen', 'engage' ];
 	var DEFAULT_RESULTS_PER_PAGE = 10;
 
-	function exactSearch(attribute, query) {
-		if(!_.contains(searchableAttributes, attribute)) {
-			return Q.reject('not a searchable attribute: ' + attribute);
-		}
-		if(attribute === 'url') {
-			query = decodeURIComponent(query);
-		}
-		query = helper.escapeLuceneSpecialChars(query.toLowerCase());
-		return graph.queryNodeIndex('resources_' + attribute, attribute + ':' + query);
-	}
-
 	function checkForDuplicateNew(newValues) {
 		return topicnetGraph.getResourceByAttribute('title', newValues.title)
 		.then(function(resource) {
@@ -68,13 +57,6 @@ exports.createService = function(graph, topicnetGraph) {
 		return undefined;
 	}
 
-	function makeResources(queryResults) {
-		var resources = _.map(queryResults, function(result) {
-			return result.n;
-		});
-		return resources;
-	}
-
 	return {
 
 		create: function(resourceData) {
@@ -111,12 +93,18 @@ exports.createService = function(graph, topicnetGraph) {
 			});
 		},
 
-		searchByTitle: function(query) {
-			return exactSearch('title', query);
+		searchByTitle: function(title) {
+			return topicnetGraph.getResourceByAttribute('title', title)
+			.then(function(resource) {
+				return resource !== undefined ? [resource] : [];
+			});
 		},
 
-		searchByUrl: function(query) {
-			return exactSearch('url', query);
+		searchByUrl: function(url) {
+			return topicnetGraph.getResourceByAttribute('url', url)
+			.then(function(resource) {
+				return resource !== undefined ? [resource] : [];
+			});
 		},
 
 		search: function(params) {
@@ -124,19 +112,7 @@ exports.createService = function(graph, topicnetGraph) {
 			var page = helper.parsePositiveInt(params.p) || 1;
 			var perPage = helper.parsePositiveInt(params.pp) || DEFAULT_RESULTS_PER_PAGE;
 
-			var cypherQuery = 'START n=node:resources_title({query}) RETURN n ' +
-				'SKIP {s} LIMIT {l}';
-
-			var cypherQueryParams = {
-				query: 'title:*' + helper.escapeLuceneSpecialChars(searchString) + '*',
-				s: (page - 1) * perPage,
-				l: perPage
-			};
-
-			return graph.queryGraph(cypherQuery, cypherQueryParams)
-			.then(function(results) {
-				return makeResources(results);
-			});
+			return topicnetGraph.searchResourcesByTitle(searchString, page, perPage);
 		},
 
 		deleteResource: function(id) {

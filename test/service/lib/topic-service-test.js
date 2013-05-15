@@ -168,7 +168,7 @@ describe('Topic Service', function() {
 			.done();
 		});
 
-		it('search for topic by name should find the topic', function(done) {
+		it('search for topic by name should not find topics', function(done) {
 			service.search({ q: 'notfound' })
 			.then(function(foundTopics) {
 				assert.equal(0, foundTopics.length);

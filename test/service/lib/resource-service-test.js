@@ -34,15 +34,6 @@ describe('Resource Service', function() {
 			.done();
 		});
 
-		it('get should return the resource', function(done) {
-			service.get(resource.id)
-			.then(function(retrievedResource) {
-				assert.deepEqual(resource, retrievedResource);
-				done();
-			})
-			.done();
-		});
-
 		it('update should update the resource', function(done) {
 			service.update(resource.id, { title: 'updated-title', url: 'updated-url', source: 'updated-source', verb: 'watch'})
 			.then(function() {
@@ -56,7 +47,46 @@ describe('Resource Service', function() {
 				done();
 			})
 			.done();
-		})
+		});
+
+		it('get should return the resource', function(done) {
+			service.get(resource.id)
+			.then(function(retrievedResource) {
+				assert.deepEqual(resource, retrievedResource);
+				done();
+			})
+			.done();
+		});
+
+		it('search for resource by title should find the resource', function(done) {
+			service.searchByTitle(resource.title)
+			.then(function(foundResources) {
+				assert.equal(1, foundResources.length);
+				assert.equal(resource.id, foundResources[0].id);
+				done();
+			})
+			.done();
+		});
+
+		it('search for resource by url should find the resource', function(done) {
+			service.searchByUrl(resource.url)
+			.then(function(foundResources) {
+				assert.equal(1, foundResources.length);
+				assert.equal(resource.id, foundResources[0].id);
+				done();
+			})
+			.done();
+		});
+
+		it('search for resource by partial title should find the resource', function(done) {
+			service.search({ q: 'itl'})
+			.then(function(foundResources) {
+				assert.equal(1, foundResources.length);
+				assert.equal(resource.id, foundResources[0].id);
+				done();
+			})
+			.done();
+		});
 	});
 
 	describe('when resource does not already exist', function() {
@@ -86,6 +116,33 @@ describe('Resource Service', function() {
 			service.update(99999, { title: 'updated-title', url: 'updated-url', source: 'updated-source', verb: 'watch'})
 			.fail(function(err) {
 				assert.equal('notfound', err.name);
+				done();
+			})
+			.done();
+		});
+
+		it('search for resource by title should not find the resource', function(done) {
+			service.searchByTitle({ q: 'search-title' })
+			.then(function(foundResources) {
+				assert.equal(0, foundResources.length);
+				done();
+			})
+			.done();
+		});
+
+		it('search for resource by url should not find the resource', function(done) {
+			service.searchByUrl({ q: 'search-url' })
+			.then(function(foundResources) {
+				assert.equal(0, foundResources.length);
+				done();
+			})
+			.done();
+		});
+
+		it('search for resource by partial title should not find the resource', function(done) {
+			service.search({ q: 'itl'})
+			.then(function(foundResources) {
+				assert.equal(0, foundResources.length);
 				done();
 			})
 			.done();

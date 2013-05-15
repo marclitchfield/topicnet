@@ -101,8 +101,13 @@ exports.create = function() {
 		getResourceByAttribute: function(attributeName, attributeValue) {
 			var found = _.find(resources, function(r) { return r[attributeName] === attributeValue; });
 			return Q.resolve(found);
-		}
+		},
 
+		searchResourcesByTitle: function(searchString, page, perPage) {
+			return Q.resolve(_.filter(resources, function(r) {
+				return r.title.indexOf(searchString) > -1;
+			}));
+		}
 	};
 
 };

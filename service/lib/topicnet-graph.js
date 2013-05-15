@@ -34,6 +34,13 @@ exports.create = function(graph) {
 		return topics;
 	}
 
+	function makeResources(queryResults) {
+		var resources = _.map(queryResults, function(result) {
+			return result.n;
+		});
+		return resources;
+	}
+
 	return {
 
 		createTopic: function(topicData) {
@@ -158,12 +165,23 @@ exports.create = function(graph) {
 			.then(function(results) {
 				return results.length === 0 ? undefined : results[0];
 			});
-		}
+		},
+
+		searchResourcesByTitle: function(searchString, page, perPage) {
+			var cypherQuery = 'START n=node:resources_title({query}) RETURN n ' +
+				'SKIP {s} LIMIT {l}';
+
+			var cypherQueryParams = {
+				query: 'title:*' + helper.escapeLuceneSpecialChars(searchString) + '*',
+				s: (page - 1) * perPage,
+				l: perPage
+			};
+
+			return graph.queryGraph(cypherQuery, cypherQueryParams)
+			.then(function(results) {
+				return makeResources(results);
+			});
+		},
 	};
 
 };
-
-
-
-
-
