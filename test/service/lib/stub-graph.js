@@ -69,6 +69,14 @@ exports.create = function() {
 			return Q.resolve(relationships[relationshipType + ':' + fromId + '->' + toId]);
 		},
 
+		hasRelationships: function(toId, relationshipTypes) {
+			return Q.resolve(_.some(_.keys(relationships), function(r) { 
+				return _.some(relationshipTypes, function(t) {
+					return r.indexOf(t + ':') === 0 && relationships[r].toId === toId;
+				});
+			}));
+		},
+
 		deleteRelationship: function(relationshipId) {
 			var k = _.find(_.keys(relationships), function(r) { return relationships[r].id === relationshipId; });
 			delete relationships[k];
@@ -92,9 +100,6 @@ exports.create = function() {
 		},
 
 		getResource: function(id) {
-			if (!(id in resources)) {
-				return Q.reject({ name: 'notfound' });
-			}
 			return Q.resolve(resources[id]);
 		},
 
@@ -107,7 +112,14 @@ exports.create = function() {
 			return Q.resolve(_.filter(resources, function(r) {
 				return r.title.indexOf(searchString) > -1;
 			}));
+		},
+
+		deleteResource: function(id) {
+			if (!(id in resources)) {
+				return Q.reject({ name: 'notfound' });
+			}
+			delete resources[id];
+			return Q.resolve();
 		}
 	};
-
 };

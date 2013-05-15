@@ -87,6 +87,18 @@ describe('Resource Service', function() {
 			})
 			.done();
 		});
+
+		it('delete resource deletes the resource', function(done) {
+			service.deleteResource(resource.id)
+			.then(function() {
+				return graph.getResource(resource.id);
+			})
+			.then(function(foundResource) {
+				assert.equal(undefined, foundResource);
+				done();
+			})
+			.done();
+		});
 	});
 
 	describe('when resource does not already exist', function() {
@@ -143,6 +155,44 @@ describe('Resource Service', function() {
 			service.search({ q: 'itl'})
 			.then(function(foundResources) {
 				assert.equal(0, foundResources.length);
+				done();
+			})
+			.done();
+		});
+
+		it('delete resource returns a notfound error', function(done) {
+			service.deleteResource(999999)
+			.fail(function(err) {
+				assert.equal('notfound', err.name);
+				done();
+			})
+			.done();
+		});
+	});
+
+	describe('when resource is linked to topic', function() {
+		
+		var resource;
+
+		beforeEach(function(done) {
+			graph.createTopic()
+			.then(function(createdTopic) {
+				return graph.createResource()
+				.then(function(createdResource) {
+					resource = createdResource;
+					return graph.createRelationship(createdTopic.id, createdResource.id, 'resources');
+				});
+			})
+			.then(function() {
+				done();
+			})
+			.done();
+		});
+
+		it('delete resource returns an error', function(done) {
+			service.deleteResource(resource.id)
+			.fail(function(err) {
+				assert.equal('cannot delete resource because it still has relationships', err);
 				done();
 			})
 			.done();

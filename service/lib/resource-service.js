@@ -72,7 +72,14 @@ exports.createService = function(graph, topicnetGraph) {
 		},
 
 		get: function(id) {
-			return topicnetGraph.getResource(id);
+			return topicnetGraph.getResource(id)
+			.then(function(resource) {
+				if (resource === undefined) {
+					return Q.reject({name: 'notfound', message: 'resource with id ' + id + ' not found'});
+				} else {
+					return resource;
+				}
+			});
 		},
 
 		update: function(id, resourceData) {
@@ -116,12 +123,12 @@ exports.createService = function(graph, topicnetGraph) {
 		},
 
 		deleteResource: function(id) {
-			return graph.hasRelationships(id, ['resources'])
+			return topicnetGraph.hasRelationships(id, ['resources'])
 			.then(function(hasRelationships) {
 				if(hasRelationships) {
 					return Q.reject('cannot delete resource because it still has relationships');
 				} else {
-					return graph.deleteNode(id);
+					return topicnetGraph.deleteResource(id);
 				}
 			});
 		}

@@ -125,6 +125,10 @@ exports.create = function(graph) {
 			});
 		},
 
+		hasRelationships: function(nodeId, relationshipTypes) {
+			return graph.hasRelationships(nodeId, relationshipTypes);
+		},
+
 		deleteRelationship: function(relationshipId) {
 			return graph.deleteRelationship(relationshipId);
 		},
@@ -182,6 +186,10 @@ exports.create = function(graph) {
 				return makeResources(results);
 			});
 		},
+
+		deleteResource: function(id) {
+			return graph.deleteNode(id);
+		}
 	};
 
 };
