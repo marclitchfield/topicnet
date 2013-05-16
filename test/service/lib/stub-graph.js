@@ -70,7 +70,7 @@ exports.create = function() {
 		},
 
 		hasRelationships: function(toId, relationshipTypes) {
-			return Q.resolve(_.some(_.keys(relationships), function(r) { 
+			return Q.resolve(_.some(_.keys(relationships), function(r) {
 				return _.some(relationshipTypes, function(t) {
 					return r.indexOf(t + ':') === 0 && relationships[r].toId === toId;
 				});

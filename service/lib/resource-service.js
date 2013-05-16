@@ -15,7 +15,7 @@ exports.createService = function(graph, topicnetGraph) {
 			if(resource !== undefined) {
 				return Q.reject( { name: 'duplicate', message: 'A resource with the specified title already exists' } );
 			}
-			return topicnetGraph.getResourceByAttribute('url', decodeURIComponent(newValues.url))
+			return topicnetGraph.getResourceByAttribute('url', decodeURIComponent(newValues.url));
 		})
 		.then(function(resource) {
 			if(resource !== undefined) {

@@ -37,7 +37,7 @@ describe('Resource Service', function() {
 		it('update should update the resource', function(done) {
 			service.update(resource.id, { title: 'updated-title', url: 'updated-url', source: 'updated-source', verb: 'watch'})
 			.then(function() {
-				return graph.getResource(resource.id)
+				return graph.getResource(resource.id);
 			})
 			.then(function(retrievedResource) {
 				assert.equal('updated-title', retrievedResource.title);
@@ -218,7 +218,7 @@ describe('Resource Service', function() {
 					done();
 				})
 				.done();
-			})
+			});
 		});
 
 		describe('url', function() {

@@ -156,7 +156,7 @@ exports.create = function(graph) {
 				.then(function() {
 					return updatedResource;
 				});
-			})
+			});
 		},
 
 		getResource: function(id) {
