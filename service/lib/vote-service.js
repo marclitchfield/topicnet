@@ -1,7 +1,7 @@
 var _ = require('underscore');
 var Q = require('q');
 
-exports.createService = function(graph) {
+exports.create = function(graph) {
 
 	var validRelationships = ['sub', 'next', 'resources'];
 	var voteDirections = ['up', 'down'];

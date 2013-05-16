@@ -1,9 +1,8 @@
 var	passport = require('passport'),
 	LocalStrategy = require('passport-local').Strategy,
-	graph = require('../lib/graph'),
-	userService = require('../lib/user-service').createService(graph),
+	neo4jGraph = require('../lib/graph/neo4j-graph'),
+	userService = require('../lib/user-service').create(neo4jGraph),
 	handler = require('../handler');
-
 
 module.exports = function(app) {
 
@@ -15,14 +14,15 @@ module.exports = function(app) {
 			usernameField: 'email'
 		},
 		function(email, password, done) {
-		userService.verify(email, password)
-		.then(function(user) {
-			done(null, user);
-		})
-		.fail(function() {
-			done(null, false);
-		});
-	}));
+			userService.verify(email, password)
+			.then(function(user) {
+				done(null, user);
+			})
+			.fail(function() {
+				done(null, false);
+			});
+		}
+	));
 
 	passport.serializeUser(function(user, done) {
 		done(null, user);
@@ -48,5 +48,4 @@ module.exports = function(app) {
 		request.logout();
 		response.send(200);
 	});
-
 };

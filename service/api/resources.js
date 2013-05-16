@@ -1,6 +1,6 @@
-var	graph = require('../lib/graph'),
-	topicnetGraph = require('../lib/topicnet-graph').create(graph),
-	resourceService = require('../lib/resource-service').createService(graph, topicnetGraph),
+var	neo4jGraph = require('../lib/graph/neo4j-graph'),
+	topicnetGraph = require('../lib/graph/topicnet-graph').create(neo4jGraph),
+	resourceService = require('../lib/resource-service').create(topicnetGraph),
 	handler = require('../handler');
 
 exports.create = function(request, response) {

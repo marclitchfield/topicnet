@@ -1,9 +1,8 @@
 var assert = require('assert');
 var Q = require('q');
-var sinon = require('sinon');
 var guid = require('guid');
-var graph = require('../../../service/lib/graph');
-var topicnetGraph = require('../../../service/lib/topicnet-graph').create(graph);
+var neo4jGraph = require('../../../service/lib/graph/neo4j-graph');
+var topicnetGraph = require('../../../service/lib/graph/topicnet-graph').create(neo4jGraph);
 
 describe('Topicnet Graph', function() {
 

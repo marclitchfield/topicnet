@@ -1,7 +1,7 @@
 var assert = require('assert');
 var Q = require('q');
 var topicService = require('../../../service/lib/topic-service');
-var StubGraph = require('./stub-graph');
+var StubGraph = require('./graph/stub-graph');
 
 describe('Topic Service', function() {
 
@@ -9,7 +9,7 @@ describe('Topic Service', function() {
 
 	beforeEach(function() {
 		graph = StubGraph.create();
-		service = topicService.createService(graph);
+		service = topicService.create(graph);
 	});
 
 	describe('when topic exists', function() {

@@ -2,7 +2,7 @@ var _ = require('underscore');
 var Q = require('q');
 var helper = require('./service-helper');
 
-exports.createService = function(graph) {
+exports.create = function(graph) {
 
 	function updateUserEmailIndex(nodeId, email) {
 		return graph.updateIndex(nodeId, 'user_email', 'email', email);

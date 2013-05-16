@@ -1,9 +1,8 @@
 var Q = require('q');
-var helper = require('./service-helper');
+var helper = require('../service-helper');
 var _ = require('underscore');
 
-
-exports.create = function(graph) {
+exports.create = function(neo4jGraph) {
 
 	function makeTopics(queryResult) {
 		var topics = [];
@@ -46,9 +45,9 @@ exports.create = function(graph) {
 		topics: {
 
 			create: function(topicData) {
-				return graph.createNode(topicData)
+				return neo4jGraph.createNode(topicData)
 				.then(function(createdTopic) {
-					return graph.updateIndex(createdTopic.id, 'topics_name', 'name', topicData.name)
+					return neo4jGraph.updateIndex(createdTopic.id, 'topics_name', 'name', topicData.name)
 					.then(function() {
 						return createdTopic;
 					});
@@ -56,9 +55,9 @@ exports.create = function(graph) {
 			},
 
 			update: function(id, topicData) {
-				return graph.updateNode(id, topicData)
+				return neo4jGraph.updateNode(id, topicData)
 				.then(function(updatedTopic) {
-					return graph.updateIndex(updatedTopic.id, 'topics_name', 'name', topicData.name)
+					return neo4jGraph.updateIndex(updatedTopic.id, 'topics_name', 'name', topicData.name)
 					.then(function() {
 						return updatedTopic;
 					});
@@ -68,7 +67,7 @@ exports.create = function(graph) {
 			get: function(id) {
 				var cypherQuery = 'START n=node(' + parseInt(id, 10) + ') MATCH n-[r?]->c RETURN n,r,c';
 
-				return graph.queryGraph(cypherQuery)
+				return neo4jGraph.queryGraph(cypherQuery)
 				.then(function(results) {
 					if (results.length < 1) {
 						return undefined;
@@ -80,7 +79,7 @@ exports.create = function(graph) {
 
 			getByName: function(name) {
 				var query = helper.escapeLuceneSpecialChars(name.toLowerCase());
-				return graph.queryNodeIndex('topics_name', 'name:' + query)
+				return neo4jGraph.queryNodeIndex('topics_name', 'name:' + query)
 				.then(function(results) {
 					return results.length === 0 ? undefined : results[0];
 				});
@@ -90,7 +89,7 @@ exports.create = function(graph) {
 				var cypherQuery = 'START origin=node(' + parseInt(fromId, 10) + ') ' +
 					'MATCH origin-[:' + relationshipType + ']->n RETURN n';
 
-				return graph.queryGraph(cypherQuery)
+				return neo4jGraph.queryGraph(cypherQuery)
 				.then(function(results) {
 					return makeTopics(results);
 				});
@@ -106,47 +105,47 @@ exports.create = function(graph) {
 					l: perPage
 				};
 
-				return graph.queryGraph(cypherQuery, cypherQueryParams)
+				return neo4jGraph.queryGraph(cypherQuery, cypherQueryParams)
 				.then(function(results) {
 					return makeTopics(results);
 				});
 			},
 
 			destroy: function(id) {
-				return graph.deleteNode(id);
+				return neo4jGraph.deleteNode(id);
 			}
 		},
 
 		relationships: {
 
 			create: function(fromId, toId, relationshipType) {
-				return graph.createRelationshipBetween(fromId, toId, relationshipType);
+				return neo4jGraph.createRelationshipBetween(fromId, toId, relationshipType);
 			},
 
 			get: function(fromId, toId, relationshipType) {
-				return graph.queryRelationship(fromId, toId, relationshipType)
+				return neo4jGraph.queryRelationship(fromId, toId, relationshipType)
 				.then(function(results) {
 					return results.length === 0 ? undefined : results[0].r;
 				});
 			},
 
 			exists: function(nodeId, relationshipTypes) {
-				return graph.hasRelationships(nodeId, relationshipTypes);
+				return neo4jGraph.hasRelationships(nodeId, relationshipTypes);
 			},
 
 			destroy: function(relationshipId) {
-				return graph.deleteRelationship(relationshipId);
+				return neo4jGraph.deleteRelationship(relationshipId);
 			}
 		},
 
 		resources: {
 
 			create: function(resourceData) {
-				return graph.createNode(resourceData)
+				return neo4jGraph.createNode(resourceData)
 				.then(function(result) {
-					return graph.updateIndex(result.id, 'resources_title', 'title', resourceData.title)
+					return neo4jGraph.updateIndex(result.id, 'resources_title', 'title', resourceData.title)
 					.then(function() {
-						return graph.updateIndex(result.id, 'resources_url', 'url', resourceData.url);
+						return neo4jGraph.updateIndex(result.id, 'resources_url', 'url', resourceData.url);
 					})
 					.then(function() {
 						return result;
@@ -155,11 +154,11 @@ exports.create = function(graph) {
 			},
 
 			update: function(id, resourceData) {
-				return graph.updateNode(id, resourceData)
+				return neo4jGraph.updateNode(id, resourceData)
 				.then(function(updatedResource) {
-					return graph.updateIndex(id, 'resource_title', 'title', resourceData.title)
+					return neo4jGraph.updateIndex(id, 'resource_title', 'title', resourceData.title)
 					.then(function() {
-						return graph.updateIndex(id, 'resource_url', 'url', resourceData.url);
+						return neo4jGraph.updateIndex(id, 'resource_url', 'url', resourceData.url);
 					})
 					.then(function() {
 						return updatedResource;
@@ -168,12 +167,12 @@ exports.create = function(graph) {
 			},
 
 			get: function(id) {
-				return graph.readNode(id);
+				return neo4jGraph.readNode(id);
 			},
 
 			getByAttribute: function(attributeName, attributeValue) {
 				var query = helper.escapeLuceneSpecialChars(attributeValue.toLowerCase());
-				return graph.queryNodeIndex('resources_' + attributeName, attributeName + ':' + query)
+				return neo4jGraph.queryNodeIndex('resources_' + attributeName, attributeName + ':' + query)
 				.then(function(results) {
 					return results.length === 0 ? undefined : results[0];
 				});
@@ -189,14 +188,14 @@ exports.create = function(graph) {
 					l: perPage
 				};
 
-				return graph.queryGraph(cypherQuery, cypherQueryParams)
+				return neo4jGraph.queryGraph(cypherQuery, cypherQueryParams)
 				.then(function(results) {
 					return makeResources(results);
 				});
 			},
 
 			destroy: function(id) {
-				return graph.deleteNode(id);
+				return neo4jGraph.deleteNode(id);
 			}
 		}
 	};

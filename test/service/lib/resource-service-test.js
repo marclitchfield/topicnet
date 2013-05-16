@@ -1,7 +1,7 @@
 var assert = require('assert');
 var Q = require('q');
 var resourceService = require('../../../service/lib/resource-service');
-var StubGraph = require('./stub-graph');
+var StubGraph = require('./graph/stub-graph');
 
 describe('Resource Service', function() {
 
@@ -9,7 +9,7 @@ describe('Resource Service', function() {
 
 	beforeEach(function() {
 		graph = StubGraph.create();
-		service = resourceService.createService(undefined, graph);
+		service = resourceService.create(graph);
 	});
 
 	describe('when resource exists', function() {
