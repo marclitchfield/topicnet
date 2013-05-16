@@ -10,12 +10,12 @@ exports.createService = function(graph, topicnetGraph) {
 	var DEFAULT_RESULTS_PER_PAGE = 10;
 
 	function checkForDuplicateNew(newValues) {
-		return topicnetGraph.getResourceByAttribute('title', newValues.title)
+		return topicnetGraph.resources.getByAttribute('title', newValues.title)
 		.then(function(resource) {
 			if(resource !== undefined) {
 				return Q.reject( { name: 'duplicate', message: 'A resource with the specified title already exists' } );
 			}
-			return topicnetGraph.getResourceByAttribute('url', decodeURIComponent(newValues.url));
+			return topicnetGraph.resources.getByAttribute('url', decodeURIComponent(newValues.url));
 		})
 		.then(function(resource) {
 			if(resource !== undefined) {
@@ -31,12 +31,12 @@ exports.createService = function(graph, topicnetGraph) {
 			});
 		}
 
-		return topicnetGraph.getResourceByAttribute('title', updatedValues.title)
+		return topicnetGraph.resources.getByAttribute('title', updatedValues.title)
 		.then(function(resource) {
 			if (resource !== undefined && resource.id !== updatedValues.id) {
 				return Q.reject({ name: 'duplicate', message: 'Another resource exists with the specified title' });
 			}
-			return topicnetGraph.getResourceByAttribute('url', decodeURIComponent(updatedValues.url));
+			return topicnetGraph.resources.getByAttribute('url', decodeURIComponent(updatedValues.url));
 		})
 		.then(function(resource) {
 			if(resource !== undefined && resource.id !== updatedValues.id) {
@@ -67,12 +67,12 @@ exports.createService = function(graph, topicnetGraph) {
 	
 			return checkForDuplicateNew(resourceData)
 			.then(function() {
-				return topicnetGraph.createResource(resourceData);
+				return topicnetGraph.resources.create(resourceData);
 			});
 		},
 
 		get: function(id) {
-			return topicnetGraph.getResource(id)
+			return topicnetGraph.resources.get(id)
 			.then(function(resource) {
 				if (resource === undefined) {
 					return Q.reject({name: 'notfound', message: 'resource with id ' + id + ' not found'});
@@ -96,19 +96,19 @@ exports.createService = function(graph, topicnetGraph) {
 					source: resourceData.source,
 					verb: resourceData.verb
 				};
-				return topicnetGraph.updateResource(id, updateData);
+				return topicnetGraph.resources.update(id, updateData);
 			});
 		},
 
 		searchByTitle: function(title) {
-			return topicnetGraph.getResourceByAttribute('title', title)
+			return topicnetGraph.resources.getByAttribute('title', title)
 			.then(function(resource) {
 				return resource !== undefined ? [resource] : [];
 			});
 		},
 
 		searchByUrl: function(url) {
-			return topicnetGraph.getResourceByAttribute('url', url)
+			return topicnetGraph.resources.getByAttribute('url', url)
 			.then(function(resource) {
 				return resource !== undefined ? [resource] : [];
 			});
@@ -119,16 +119,16 @@ exports.createService = function(graph, topicnetGraph) {
 			var page = helper.parsePositiveInt(params.p) || 1;
 			var perPage = helper.parsePositiveInt(params.pp) || DEFAULT_RESULTS_PER_PAGE;
 
-			return topicnetGraph.searchResourcesByTitle(searchString, page, perPage);
+			return topicnetGraph.resources.searchByTitle(searchString, page, perPage);
 		},
 
 		deleteResource: function(id) {
-			return topicnetGraph.hasRelationships(id, ['resources'])
+			return topicnetGraph.relationships.exists(id, ['resources'])
 			.then(function(hasRelationships) {
 				if(hasRelationships) {
 					return Q.reject('cannot delete resource because it still has relationships');
 				} else {
-					return topicnetGraph.deleteResource(id);
+					return topicnetGraph.resources.destroy(id);
 				}
 			});
 		}

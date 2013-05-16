@@ -17,7 +17,7 @@ describe('Resource Service', function() {
 		var resource;
 
 		beforeEach(function(done) {
-			graph.createResource({ title: 'title', url: 'url', source: 'source', verb: 'read' })
+			graph.resources.create({ title: 'title', url: 'url', source: 'source', verb: 'read' })
 			.then(function(createdResource) {
 				resource = createdResource;
 				done();
@@ -37,7 +37,7 @@ describe('Resource Service', function() {
 		it('update should update the resource', function(done) {
 			service.update(resource.id, { title: 'updated-title', url: 'updated-url', source: 'updated-source', verb: 'watch'})
 			.then(function() {
-				return graph.getResource(resource.id);
+				return graph.resources.get(resource.id);
 			})
 			.then(function(retrievedResource) {
 				assert.equal('updated-title', retrievedResource.title);
@@ -91,7 +91,7 @@ describe('Resource Service', function() {
 		it('delete resource deletes the resource', function(done) {
 			service.deleteResource(resource.id)
 			.then(function() {
-				return graph.getResource(resource.id);
+				return graph.resources.get(resource.id);
 			})
 			.then(function(foundResource) {
 				assert.equal(undefined, foundResource);
@@ -106,7 +106,7 @@ describe('Resource Service', function() {
 		it('create should create a new resource', function(done) {
 			service.create({ title: 'title', url: 'url', source: 'source', verb: 'read' })
 			.then(function(createdResource) {
-				return graph.getResource(createdResource.id)
+				return graph.resources.get(createdResource.id)
 				.then(function(retrievedResource) {
 					assert.deepEqual(retrievedResource, createdResource);
 					done();
@@ -175,12 +175,12 @@ describe('Resource Service', function() {
 		var resource;
 
 		beforeEach(function(done) {
-			graph.createTopic()
+			graph.topics.create()
 			.then(function(createdTopic) {
-				return graph.createResource()
+				return graph.resources.create()
 				.then(function(createdResource) {
 					resource = createdResource;
-					return graph.createRelationship(createdTopic.id, createdResource.id, 'resources');
+					return graph.relationships.create(createdTopic.id, createdResource.id, 'resources');
 				});
 			})
 			.then(function() {
@@ -281,5 +281,4 @@ describe('Resource Service', function() {
 			});
 		});
 	});
-
 });

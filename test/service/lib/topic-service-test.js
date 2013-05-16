@@ -17,7 +17,7 @@ describe('Topic Service', function() {
 		var topic;
 
 		beforeEach(function(done) {
-			graph.createTopic({ name: 'topic' })
+			graph.topics.create({ name: 'topic' })
 			.then(function(createdTopic) {
 				topic = createdTopic;
 				done();
@@ -37,7 +37,7 @@ describe('Topic Service', function() {
 		it('update topic should update the topic', function(done) {
 			service.update(topic.id, { name: 'updated' })
 			.then(function() {
-				return graph.getTopic(topic.id);
+				return graph.topics.get(topic.id);
 			})
 			.then(function(retrievedTopic) {
 				assert.equal('updated', retrievedTopic.name);
@@ -67,7 +67,7 @@ describe('Topic Service', function() {
 		it('delete topic should delete the topic', function(done) {
 			service.deleteTopic(topic.id)
 			.then(function() {
-				return graph.getTopic(topic.id);
+				return graph.topics.get(topic.id);
 			})
 			.then(function(retrievedTopic) {
 				assert.equal(undefined, retrievedTopic);
@@ -92,14 +92,14 @@ describe('Topic Service', function() {
 		var topic, relatedTopic;
 
 		beforeEach(function(done) {
-			graph.createTopic({ name: 'topic' })
+			graph.topics.create({ name: 'topic' })
 			.then(function(createdTopic1) {
 				topic = createdTopic1;
-				return graph.createTopic({ name: 'related' });
+				return graph.topics.create({ name: 'related' });
 			})
 			.then(function(createdTopic2) {
 				relatedTopic = createdTopic2;
-				return graph.createRelationship(topic.id, relatedTopic.id, 'sub');
+				return graph.relationships.create(topic.id, relatedTopic.id, 'sub');
 			})
 			.then(function() {
 				done();
@@ -122,7 +122,7 @@ describe('Topic Service', function() {
 		it('create topic should create the topic', function(done) {
 			service.create({ name: 'topic' })
 			.then(function(createdTopic) {
-				return graph.getTopic(createdTopic.id);
+				return graph.topics.get(createdTopic.id);
 			})
 			.then(function(retrievedTopic) {
 				assert.equal('topic', retrievedTopic.name);
@@ -203,7 +203,7 @@ describe('Topic Service', function() {
 		it('linkTopic should link the related topic', function(done) {
 			service.linkTopic(1, 2, 'sub')
 			.then(function() {
-				return graph.getRelationship(1, 2, 'sub');
+				return graph.relationships.get(1, 2, 'sub');
 			})
 			.then(function(link) {
 				assert.ok(link);
@@ -225,7 +225,7 @@ describe('Topic Service', function() {
 	describe('when related topic already exists', function() {
 
 		beforeEach(function(done) {
-			graph.createRelationship(1, 2, 'sub')
+			graph.relationships.create(1, 2, 'sub')
 			.then(function() {
 				done();
 			})
@@ -245,7 +245,7 @@ describe('Topic Service', function() {
 
 			service.unlinkTopic(1, 2, 'sub')
 			.then(function() {
-				return graph.getRelationship(1, 2, 'sub');
+				return graph.relationships.get(1, 2, 'sub');
 			})
 			.then(function(link) {
 				assert.equal(undefined, link);
@@ -291,7 +291,7 @@ describe('Topic Service', function() {
 		it('linkResource should link the resource to the topic', function(done) {
 			service.linkResource(1,2)
 			.then(function() {
-				return graph.getRelationship(1,2,'resources');
+				return graph.relationships.get(1,2,'resources');
 			})
 			.then(function(link) {
 				assert.ok(link);
@@ -322,7 +322,7 @@ describe('Topic Service', function() {
 	describe('when the resource is already linked to the topic', function() {
 
 		beforeEach(function(done) {
-			graph.createRelationship(1, 2, 'resources', {upVotes:1, downVotes:2, score:3})
+			graph.relationships.create(1, 2, 'resources', {upVotes:1, downVotes:2, score:3})
 			.then(function() {
 				done();
 			})
@@ -355,7 +355,7 @@ describe('Topic Service', function() {
 		it('unlinkResource should unlink the resource', function(done) {
 			service.unlinkResource(1, 2)
 			.then(function() {
-				return graph.getRelationship(1, 2, 'resources');
+				return graph.relationships.get(1, 2, 'resources');
 			})
 			.then(function(relationship) {
 				assert.equal(undefined, relationship);
