@@ -123,7 +123,10 @@ exports.create = function(neo4jGraph) {
 			},
 
 			get: function(fromId, toId, relationshipType) {
-				return neo4jGraph.queryRelationship(fromId, toId, relationshipType)
+				var cypherQuery = 'START from=node(' + fromId +	'), to=node(' + toId + ') ' +
+					'MATCH from-[r:' + relationshipType + ']->to RETURN r';
+				
+				return neo4jGraph.queryGraph(cypherQuery)
 				.then(function(results) {
 					return results.length === 0 ? undefined : results[0].r;
 				});
