@@ -2,6 +2,9 @@ var assert = require('assert');
 var Q = require('q');
 var topicService = require('../../../service/lib/topic-service');
 var StubGraph = require('./graph/stub-graph');
+//var neo4jGraph = require('../../../service/lib/graph/neo4j-graph');
+//var RealGraph = require('../../../service/lib/graph/topicnet-graph');
+var guid = require('guid');
 
 describe('Topic Service', function() {
 
@@ -17,7 +20,7 @@ describe('Topic Service', function() {
 		var topic;
 
 		beforeEach(function(done) {
-			graph.topics.create({ name: 'topic' })
+			graph.topics.create({ name: 'topic' + guid.raw() })
 			.then(function(createdTopic) {
 				topic = createdTopic;
 				done();
@@ -35,12 +38,13 @@ describe('Topic Service', function() {
 		});
 
 		it('update topic should update the topic', function(done) {
-			service.update(topic.id, { name: 'updated' })
+			var updatedName = 'updated' + guid.raw();
+			service.update(topic.id, { name: updatedName })
 			.then(function() {
 				return graph.topics.get(topic.id);
 			})
 			.then(function(retrievedTopic) {
-				assert.equal('updated', retrievedTopic.name);
+				assert.equal(updatedName, retrievedTopic.name);
 				done();
 			})
 			.done();
@@ -92,10 +96,10 @@ describe('Topic Service', function() {
 		var topic, relatedTopic;
 
 		beforeEach(function(done) {
-			graph.topics.create({ name: 'topic' })
+			graph.topics.create({ name: 'topic' + guid.raw() })
 			.then(function(createdTopic1) {
 				topic = createdTopic1;
-				return graph.topics.create({ name: 'related' });
+				return graph.topics.create({ name: 'related' + guid.raw() });
 			})
 			.then(function(createdTopic2) {
 				relatedTopic = createdTopic2;
@@ -120,12 +124,14 @@ describe('Topic Service', function() {
 	describe('when topic does not exist', function() {
 
 		it('create topic should create the topic', function(done) {
-			service.create({ name: 'topic' })
+			var topicName = 'topic' + guid.raw();
+			
+			service.create({ name: topicName })
 			.then(function(createdTopic) {
 				return graph.topics.get(createdTopic.id);
 			})
 			.then(function(retrievedTopic) {
-				assert.equal('topic', retrievedTopic.name);
+				assert.equal(topicName, retrievedTopic.name);
 				assert.notEqual(undefined, retrievedTopic.id);
 				done();
 			})
@@ -133,7 +139,7 @@ describe('Topic Service', function() {
 		});
 
 		it('update topic should return notfound error', function(done) {
-			service.update(9999, { name: 'updated' })
+			service.update(9999, { name: guid.raw() })
 			.fail(function(err) {
 				assert.equal('notfound', err.name);
 				done();
@@ -200,10 +206,26 @@ describe('Topic Service', function() {
 
 	describe('when related topic does not already exist', function() {
 
+		var fromTopic;
+		var toTopic;
+		
+		beforeEach(function(done) {
+			graph.topics.create({ name: guid.raw() })
+			.then(function(firstCreatedTopic) {
+				fromTopic = firstCreatedTopic;
+				return graph.topics.create({ name: guid.raw() });
+			})
+			.then(function(secondCreatedTopic) {
+				toTopic = secondCreatedTopic;
+				done();
+			})
+			.done();
+		});
+
 		it('linkTopic should link the related topic', function(done) {
-			service.linkTopic(1, 2, 'sub')
+			service.linkTopic(fromTopic.id, toTopic.id, 'sub')
 			.then(function() {
-				return graph.relationships.get(1, 2, 'sub');
+				return graph.relationships.get(fromTopic.id, toTopic.id, 'sub');
 			})
 			.then(function(link) {
 				assert.ok(link);
@@ -213,7 +235,7 @@ describe('Topic Service', function() {
 		});
 
 		it('unlinkTopic should return a notfound error', function(done) {
-			service.unlinkTopic(1, 2, 'sub')
+			service.unlinkTopic(fromTopic.id, toTopic.id, 'sub')
 			.fail(function(err) {
 				assert.equal('notfound', err.name);
 				done();
@@ -224,8 +246,19 @@ describe('Topic Service', function() {
 
 	describe('when related topic already exists', function() {
 
+		var fromTopic;
+		var toTopic;
+
 		beforeEach(function(done) {
-			graph.relationships.create(1, 2, 'sub')
+			graph.topics.create({ name: guid.raw() })
+			.then(function(firstCreatedTopic) {
+				fromTopic = firstCreatedTopic;
+				return graph.topics.create({ name: guid.raw() });
+			})
+			.then(function(secondCreatedTopic) {
+				toTopic = secondCreatedTopic;
+				return graph.relationships.create(fromTopic.id, toTopic.id, 'sub');
+			})
 			.then(function() {
 				done();
 			})
@@ -233,7 +266,7 @@ describe('Topic Service', function() {
 		});
 
 		it('linkTopic should return a duplicate error', function(done) {
-			service.linkTopic(1, 2, 'sub')
+			service.linkTopic(fromTopic.id, toTopic.id, 'sub')
 			.fail(function(err) {
 				assert.equal('duplicate', err.name);
 				done();
@@ -243,9 +276,9 @@ describe('Topic Service', function() {
 
 		it('unlinkTopic should unlink the related topic', function(done) {
 
-			service.unlinkTopic(1, 2, 'sub')
+			service.unlinkTopic(fromTopic.id, toTopic.id, 'sub')
 			.then(function() {
-				return graph.relationships.get(1, 2, 'sub');
+				return graph.relationships.get(fromTopic.id, toTopic.id, 'sub');
 			})
 			.then(function(link) {
 				assert.equal(undefined, link);
@@ -288,10 +321,27 @@ describe('Topic Service', function() {
 
 	describe('when the resource is not already linked to the topic', function() {
 		
+		var topic;
+		var resource;
+
+		beforeEach(function(done) {
+			graph.topics.create({name: guid.raw()})
+			.then(function(createdTopic) {
+				topic = createdTopic;
+				return graph.resources.create({url: guid.raw(), title: guid.raw(),
+					source: 'example.com', verb: 'read'});
+			})
+			.then(function(createdResource) {
+				resource = createdResource;
+				done();
+			})
+			.done();
+		});
+
 		it('linkResource should link the resource to the topic', function(done) {
-			service.linkResource(1,2)
+			service.linkResource(topic.id, resource.id)
 			.then(function() {
-				return graph.relationships.get(1,2,'resources');
+				return graph.relationships.get(topic.id, resource.id, 'resources');
 			})
 			.then(function(link) {
 				assert.ok(link);
@@ -301,7 +351,7 @@ describe('Topic Service', function() {
 		});
 
 		it('unlinkResource should return a notfound error', function(done) {
-			service.unlinkResource(1,2)
+			service.unlinkResource(topic.id, resource.id)
 			.fail(function(error) {
 				assert.equal('notfound', error.name);
 				done();
@@ -310,7 +360,7 @@ describe('Topic Service', function() {
 		});
 
 		it('getLink should return a notfound error', function(done) {
-			service.getLink(1, 9999, 'resources')
+			service.getLink(topic.id, resource.id, 'resources')
 			.fail(function(err) {
 				assert.equal('notfound', err.name);
 				done();
@@ -321,8 +371,20 @@ describe('Topic Service', function() {
 
 	describe('when the resource is already linked to the topic', function() {
 
+		var topic;
+		var resource;
+
 		beforeEach(function(done) {
-			graph.relationships.create(1, 2, 'resources', {upVotes:1, downVotes:2, score:3})
+			graph.topics.create({name: guid.raw()})
+			.then(function(createdTopic) {
+				topic = createdTopic;
+				return graph.resources.create({url: guid.raw(), title: guid.raw(),
+					source: 'example.com', verb: 'read'});
+			})
+			.then(function(createdResource) {
+				resource = createdResource;
+				return graph.relationships.create(topic.id, resource.id, 'resources', {});
+			})
 			.then(function() {
 				done();
 			})
@@ -330,21 +392,18 @@ describe('Topic Service', function() {
 		});
 
 		it('getLink should return the relationship', function(done) {
-			service.getLink(1, 2, 'resources')
+			service.getLink(topic.id, resource.id, 'resources')
 			.then(function(link) {
-				assert.equal(1, link.fromId);
-				assert.equal(2, link.toId);
+				assert.equal(topic.id, link.fromId);
+				assert.equal(resource.id, link.toId);
 				assert.equal('resources', link.relationshipType);
-				assert.equal(1, link.upVotes);
-				assert.equal(2, link.downVotes);
-				assert.equal(3, link.score);
 				done();
 			})
 			.done();
 		});
 
 		it('linkResource should return a duplicate error', function(done) {
-			service.linkResource(1, 2)
+			service.linkResource(topic.id, resource.id)
 			.fail(function(error) {
 				assert.equal('duplicate', error.name);
 				done();
@@ -353,9 +412,9 @@ describe('Topic Service', function() {
 		});
 
 		it('unlinkResource should unlink the resource', function(done) {
-			service.unlinkResource(1, 2)
+			service.unlinkResource(topic.id, resource.id)
 			.then(function() {
-				return graph.relationships.get(1, 2, 'resources');
+				return graph.relationships.get(topic.id, resource.id, 'resources');
 			})
 			.then(function(relationship) {
 				assert.equal(undefined, relationship);

@@ -86,10 +86,14 @@ exports.create = function(neo4jGraph) {
 			},
 
 			getRelated: function(fromId, relationshipType) {
-				var cypherQuery = 'START origin=node(' + parseInt(fromId, 10) + ') ' +
+				
+				var cypherQuery = 'START origin=node(' + fromId + ') ' +
 					'MATCH origin-[:' + relationshipType + ']->n RETURN n';
 
-				return neo4jGraph.queryGraph(cypherQuery)
+				return neo4jGraph.readNode(fromId)
+				.then(function() {
+					return neo4jGraph.queryGraph(cypherQuery);
+				})
 				.then(function(results) {
 					return makeTopics(results);
 				});
@@ -125,8 +129,14 @@ exports.create = function(neo4jGraph) {
 			get: function(fromId, toId, relationshipType) {
 				var cypherQuery = 'START from=node(' + fromId +	'), to=node(' + toId + ') ' +
 					'MATCH from-[r:' + relationshipType + ']->to RETURN r';
-				
-				return neo4jGraph.queryGraph(cypherQuery)
+
+				return neo4jGraph.readNode(fromId)
+				.then(function() {
+					return neo4jGraph.readNode(toId);
+				})
+				.then(function() {
+					return neo4jGraph.queryGraph(cypherQuery);
+				})
 				.then(function(results) {
 					return results.length === 0 ? undefined : results[0].r;
 				});
