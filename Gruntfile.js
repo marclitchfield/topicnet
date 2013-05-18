@@ -66,9 +66,17 @@ module.exports = function(grunt) {
 				readyText: 'Listening on'
 			}
 		},
+		env: {
+			'skip-integration-tests': {
+				TOPICNET_SKIP_INTEGRATION: true
+			}
+		},
 		'mocha-hack': {
-			backend: {
+			all: {
 				src: ['test/service/**/*.js']
+			},
+			unit: {
+				src: ['test/service/**/*.js', '!test/service/api/**']
 			},
 			options: {
 				reporter: 'spec',
@@ -83,7 +91,7 @@ module.exports = function(grunt) {
 			},
 			backend: {
 				files: ['Gruntfile.js', 'service/**/**.js', 'test/service/**/*.js'],
-				tasks: ['jshint', 'backend-tests']
+				tasks: ['jshint', 'backend-unit-tests']
 			},
 			lint: {
 				files: lintFiles,
@@ -94,16 +102,18 @@ module.exports = function(grunt) {
 
 	// Default task.
 	grunt.registerTask('frontend-tests', ['jshint', 'clean', 'uglify', 'jasmine']);
-	grunt.registerTask('backend-tests', ['develop', 'mocha-hack', 'develop-kill']);
+	grunt.registerTask('backend-tests', ['develop', 'mocha-hack:all', 'develop-kill']);
 	grunt.registerTask('default', ['frontend-tests', 'backend-tests']);
 	grunt.registerTask('ft', ['frontend-tests']);
 	grunt.registerTask('bt', ['backend-tests']);
 	grunt.registerTask('develop', ['develop']);
+	grunt.registerTask('backend-unit-tests', ['env:skip-integration-tests', 'develop', 'mocha-hack:unit', 'develop-kill']);
+	grunt.registerTask('but', ['backend-unit-tests']);
 
 	grunt.registerTask('develop-kill', function() {
 		grunt.event.emit('develop.kill');
 	});
-	
+
 	grunt.loadNpmTasks('grunt-contrib-jshint');
 	grunt.loadNpmTasks('grunt-contrib-clean');
 	grunt.loadNpmTasks('grunt-contrib-uglify');
@@ -111,4 +121,5 @@ module.exports = function(grunt) {
 	grunt.loadNpmTasks('grunt-contrib-jasmine');
 	grunt.loadNpmTasks('grunt-develop');
 	grunt.loadNpmTasks('grunt-mocha-hack');
+	grunt.loadNpmTasks('grunt-env');
 };

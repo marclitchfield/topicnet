@@ -4,9 +4,9 @@ var api = require('./helper-api.js');
 describe('Test Helper', function() {
 
 	describe('postTopic', function() {
-	
+
 		var response;
-		
+
 		before(function(done) {
 			api.postTopic()
 			.then(function(res) {
@@ -19,7 +19,7 @@ describe('Test Helper', function() {
 		it('returns a promise whose value is an object', function() {
 			assert.ok(typeof response === 'object');
 		});
-		
+
 		describe('and the returned object', function() {
 
 			it('has a postedData attribute with expected values', function() {
@@ -37,13 +37,13 @@ describe('Test Helper', function() {
 				assert.ok(response.returnedData.id > 0);
 				assert.notEqual(response.returnedData.name, undefined);
 			});
-			
+
 		});
-	
+
 	});
 
 	describe('getTopic', function() {
-		
+
 		var postedData;
 		var response;
 
@@ -83,9 +83,9 @@ describe('Test Helper', function() {
 	});
 
 	describe('postResource', function() {
-		
+
 		var response;
-		
+
 		before(function(done) {
 			api.postResource()
 			.then(function(res) {
@@ -98,7 +98,7 @@ describe('Test Helper', function() {
 		it('returns a promise whose value is an object', function() {
 			assert.ok(typeof response === 'object');
 		});
-		
+
 		describe('and the returned object', function() {
 
 			it('has a postedData attribute with expected values', function() {
@@ -116,13 +116,13 @@ describe('Test Helper', function() {
 				assert.ok(response.returnedData.id > 0);
 				assert.notEqual(response.returnedData.title, undefined);
 			});
-			
+
 		});
-		
+
 	});
-		
+
 	describe('getResource', function() {
-		
+
 		var postedData;
 		var response;
 

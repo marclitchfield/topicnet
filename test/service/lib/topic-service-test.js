@@ -427,9 +427,11 @@ describe('Topic Service', function() {
 
 	} // end runTopicServiceTests
 
-	describe('with real graph', function() {
-		runTopicServiceTests(RealGraph.create(neo4jGraph));
-	});
+	if (!process.env.TOPICNET_SKIP_INTEGRATION) {
+		describe('with real graph', function() {
+			runTopicServiceTests(RealGraph.create(neo4jGraph));
+		});
+	}
 
 	describe('with stub graph', function() {
 		runTopicServiceTests(StubGraph.create());
