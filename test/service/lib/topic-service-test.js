@@ -33,7 +33,7 @@ describe('Topic Service', function() {
 				.done(function() {
 					assert.ok(false, 'should have failed');
 					done();
-				}, 
+				},
 				function(err) {
 					assert.equal('duplicate', err.name);
 					done();
