@@ -122,7 +122,7 @@ exports.create = function(graph) {
 			return graph.resources.searchByTitle(searchString, page, perPage);
 		},
 
-		deleteResource: function(id) {
+		destroy: function(id) {
 			return graph.relationships.exists(id, ['resources'])
 			.then(function(hasRelationships) {
 				if(hasRelationships) {

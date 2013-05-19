@@ -100,8 +100,8 @@ describe('Resource Service', function() {
 				});
 			});
 
-			it('delete resource deletes the resource', function(done) {
-				service.deleteResource(resource.id)
+			it('destroy resource deletes the resource', function(done) {
+				service.destroy(resource.id)
 				.then(function() {
 					return graph.resources.get(resource.id);
 				})
@@ -171,8 +171,8 @@ describe('Resource Service', function() {
 				});
 			});
 
-			it('delete resource returns a notfound error', function(done) {
-				service.deleteResource(999999)
+			it('destroy resource returns a notfound error', function(done) {
+				service.destroy(999999)
 				.done(function() {
 					assert.ok(false, 'should have failed');
 					done();
@@ -201,8 +201,8 @@ describe('Resource Service', function() {
 				});
 			});
 
-			it('delete resource returns an error', function(done) {
-				service.deleteResource(resource.id)
+			it('destroy resource returns an error', function(done) {
+				service.destroy(resource.id)
 				.done(function() {
 					assert.ok(false, 'should have failed');
 					done();

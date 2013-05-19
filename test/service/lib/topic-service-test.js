@@ -68,8 +68,8 @@ describe('Topic Service', function() {
 				});
 			});
 
-			it('delete topic should delete the topic', function(done) {
-				service.deleteTopic(topic.id)
+			it('destroy topic should delete the topic', function(done) {
+				service.destroy(topic.id)
 				.then(function() {
 					return graph.topics.get(topic.id);
 				})
@@ -166,8 +166,8 @@ describe('Topic Service', function() {
 				});
 			});
 
-			it('delete topic should return a notfound error', function(done) {
-				service.deleteTopic(9999)
+			it('destroy topic should return a notfound error', function(done) {
+				service.destroy(9999)
 				.done(function() {
 					assert.ok(false, 'should have failed');
 					done();

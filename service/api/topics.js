@@ -56,5 +56,5 @@ exports.unlinkRelated = function(request, response) {
 };
 
 exports['delete'] = function(request, response) {
-	handler.complete(response, topicService.deleteTopic(request.params.id));
+	handler.complete(response, topicService.destroy(request.params.id));
 };

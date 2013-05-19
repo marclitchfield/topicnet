@@ -28,6 +28,6 @@ exports.update = function(request, response) {
 };
 
 exports['delete'] = function(request, response) {
-	handler.complete(response, resourceService.deleteResource(request.params.id));
+	handler.complete(response, resourceService.destroy(request.params.id));
 };
 

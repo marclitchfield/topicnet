@@ -69,7 +69,7 @@ exports.create = function(graph) {
 			});
 		},
 
-		deleteTopic: function(id) {
+		destroy: function(id) {
 			return graph.topics.destroy(id);
 		},
 
