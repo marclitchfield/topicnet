@@ -22,20 +22,22 @@ describe('Topic Service', function() {
 
 			beforeEach(function(done) {
 				graph.topics.create({ name: guid.raw() })
-				.then(function(createdTopic) {
+				.done(function(createdTopic) {
 					topic = createdTopic;
 					done();
-				})
-				.done();
+				});
 			});
 
 			it('create topic with the same name should return a duplicate error', function(done) {
 				service.create({ name: topic.name })
-				.fail(function(err) {
+				.done(function() {
+					assert.ok(false, 'should have failed');
+					done();
+				}, 
+				function(err) {
 					assert.equal('duplicate', err.name);
 					done();
-				})
-				.done();
+				});
 			});
 
 			it('update topic should update the topic', function(done) {
@@ -44,29 +46,26 @@ describe('Topic Service', function() {
 				.then(function() {
 					return graph.topics.get(topic.id);
 				})
-				.then(function(retrievedTopic) {
+				.done(function(retrievedTopic) {
 					assert.equal(updatedName, retrievedTopic.name);
 					done();
-				})
-				.done();
+				});
 			});
 
 			it('get topic should retrieve the topic', function(done) {
 				service.get(topic.id)
-				.then(function(retrievedTopic) {
+				.done(function(retrievedTopic) {
 					assert.equal(topic.name, retrievedTopic.name);
 					done();
-				})
-				.done();
+				});
 			});
 
 			it('getLinkedTopics should return empty list', function(done) {
 				service.getLinkedTopics(topic.id, 'sub')
-				.then(function(retrievedTopics) {
+				.done(function(retrievedTopics) {
 					assert.deepEqual([], retrievedTopics);
 					done();
-				})
-				.done();
+				});
 			});
 
 			it('delete topic should delete the topic', function(done) {
@@ -74,21 +73,19 @@ describe('Topic Service', function() {
 				.then(function() {
 					return graph.topics.get(topic.id);
 				})
-				.then(function(retrievedTopic) {
+				.done(function(retrievedTopic) {
 					assert.equal(undefined, retrievedTopic);
 					done();
-				})
-				.done();
+				});
 			});
 
 			it('search for topic by name should find the topic', function(done) {
 				service.search({ q: topic.name })
-				.then(function(foundTopics) {
+				.done(function(foundTopics) {
 					assert.equal(1, foundTopics.length);
 					assert.equal(topic.id, foundTopics[0].id);
 					done();
-				})
-				.done();
+				});
 			});
 		});
 
@@ -106,19 +103,17 @@ describe('Topic Service', function() {
 					relatedTopic = createdTopic2;
 					return graph.relationships.create(topic.id, relatedTopic.id, 'sub');
 				})
-				.then(function() {
+				.done(function() {
 					done();
-				})
-				.done();
+				});
 			});
 
 			it('getLinkedTopics returns the related topic', function(done) {
 				service.getLinkedTopics(topic.id, 'sub')
-				.then(function(related) {
+				.done(function(related) {
 					assert.deepEqual([relatedTopic], related);
 					done();
-				})
-				.done();
+				});
 			});
 		});
 
@@ -131,77 +126,87 @@ describe('Topic Service', function() {
 				.then(function(createdTopic) {
 					return graph.topics.get(createdTopic.id);
 				})
-				.then(function(retrievedTopic) {
+				.done(function(retrievedTopic) {
 					assert.equal(topicName, retrievedTopic.name);
 					assert.notEqual(undefined, retrievedTopic.id);
 					done();
-				})
-				.done();
+				});
 			});
 
 			it('update topic should return notfound error', function(done) {
 				service.update(9999, { name: guid.raw() })
-				.fail(function(err) {
+				.done(function() {
+					assert.ok(false, 'should have failed');
+					done();
+				}, function(err) {
 					assert.equal('notfound', err.name);
 					done();
-				})
-				.done();
+				});
 			});
 
 			it('get topic should return notfound error', function(done) {
 				service.get(99999)
-				.fail(function(err) {
+				.done(function() {
+					assert.ok(false, 'should have failed');
+					done();
+				}, function(err) {
 					assert.equal('notfound', err.name);
 					done();
-				})
-				.done();
+				});
 			});
 
 			it('getLinkedTopics should return notfound error', function(done) {
 				service.getLinkedTopics(9999, 'sub')
-				.fail(function(err) {
+				.done(function() {
+					assert.ok(false, 'should have failed');
+					done();
+				}, function(err) {
 					assert.equal('notfound', err.name);
 					done();
-				})
-				.done();
+				});
 			});
 
 			it('delete topic should return a notfound error', function(done) {
 				service.deleteTopic(9999)
-				.fail(function(err) {
+				.done(function() {
+					assert.ok(false, 'should have failed');
+					done();
+				}, function(err) {
 					assert.equal('notfound', err.name);
 					done();
-				})
-				.done();
+				});
 			});
 
 			it('search for topic by name should not find topics', function(done) {
 				service.search({ q: 'notfound' })
-				.then(function(foundTopics) {
+				.done(function(foundTopics) {
 					assert.equal(0, foundTopics.length);
 					done();
-				})
-				.done();
+				});
 			});
 		});
 
 		describe('when topic has no name', function() {
 			it('create topic should return an error', function(done) {
 				service.create({})
-				.fail(function(err) {
+				.done(function() {
+					assert.ok(false, 'should have failed');
+					done();
+				}, function(err) {
 					assert.equal('name is required', err);
 					done();
-				})
-				.done();
+				});
 			});
 
 			it('update topic should return an error', function(done) {
 				service.update(999, {})
-				.fail(function(err) {
+				.done(function() {
+					assert.ok(false, 'should have failed');
+					done();
+				}, function(err) {
 					assert.equal('name is required', err);
 					done();
-				})
-				.done();
+				});
 			});
 		});
 
@@ -216,11 +221,10 @@ describe('Topic Service', function() {
 					fromTopic = firstCreatedTopic;
 					return graph.topics.create({ name: guid.raw() });
 				})
-				.then(function(secondCreatedTopic) {
+				.done(function(secondCreatedTopic) {
 					toTopic = secondCreatedTopic;
 					done();
-				})
-				.done();
+				});
 			});
 
 			it('linkTopic should link the related topic', function(done) {
@@ -228,20 +232,21 @@ describe('Topic Service', function() {
 				.then(function() {
 					return graph.relationships.get(fromTopic.id, toTopic.id, 'sub');
 				})
-				.then(function(link) {
+				.done(function(link) {
 					assert.ok(link);
 					done();
-				})
-				.done();
+				});
 			});
 
 			it('unlinkTopic should return a notfound error', function(done) {
 				service.unlinkTopic(fromTopic.id, toTopic.id, 'sub')
-				.fail(function(err) {
+				.done(function() {
+					assert.ok(false, 'should have failed');
+					done();
+				}, function(err) {
 					assert.equal('notfound', err.name);
 					done();
-				})
-				.done();
+				});
 			});
 		});
 
@@ -260,19 +265,20 @@ describe('Topic Service', function() {
 					toTopic = secondCreatedTopic;
 					return graph.relationships.create(fromTopic.id, toTopic.id, 'sub');
 				})
-				.then(function() {
+				.done(function() {
 					done();
-				})
-				.done();
+				});
 			});
 
 			it('linkTopic should return a duplicate error', function(done) {
 				service.linkTopic(fromTopic.id, toTopic.id, 'sub')
-				.fail(function(err) {
+				.done(function() {
+					assert.ok(false, 'should have failed');
+					done();
+				}, function(err) {
 					assert.equal('duplicate', err.name);
 					done();
-				})
-				.done();
+				});
 			});
 
 			it('unlinkTopic should unlink the related topic', function(done) {
@@ -281,11 +287,10 @@ describe('Topic Service', function() {
 				.then(function() {
 					return graph.relationships.get(fromTopic.id, toTopic.id, 'sub');
 				})
-				.then(function(link) {
+				.done(function(link) {
 					assert.equal(undefined, link);
 					done();
-				})
-				.done();
+				});
 
 			});
 		});
@@ -294,29 +299,35 @@ describe('Topic Service', function() {
 
 			it('linkTopic should return an invalid relationship error', function(done) {
 				service.linkTopic(1, 2, 'invalid')
-				.fail(function(err) {
+				.done(function() {
+					assert.ok(false, 'should have failed');
+					done();
+				}, function(err) {
 					assert.notEqual(-1, err.indexOf('invalid relationship'));
 					done();
-				})
-				.done();
+				});
 			});
 
 			it('unlinkTopic should return an invalid relationship error', function(done) {
 				service.unlinkTopic(1, 2, 'invalid')
-				.fail(function(err) {
+				.done(function() {
+					assert.ok(false, 'should have failed');
+					done();
+				}, function(err) {
 					assert.notEqual(-1, err.indexOf('invalid relationship'));
 					done();
-				})
-				.done();
+				});
 			});
 
 			it('getLinkedTopics should return an invalid relationship error', function(done) {
 				service.getLinkedTopics(1, 'invalid')
-				.fail(function(err) {
+				.done(function() {
+					assert.ok(false, 'should have failed');
+					done();
+				}, function(err) {
 					assert.notEqual(-1, err.indexOf('invalid relationship'));
 					done();
-				})
-				.done();
+				});
 			});
 		});
 
@@ -332,11 +343,10 @@ describe('Topic Service', function() {
 					return graph.resources.create({url: guid.raw(), title: guid.raw(),
 						source: 'example.com', verb: 'read'});
 				})
-				.then(function(createdResource) {
+				.done(function(createdResource) {
 					resource = createdResource;
 					done();
-				})
-				.done();
+				});
 			});
 
 			it('linkResource should link the resource to the topic', function(done) {
@@ -344,29 +354,32 @@ describe('Topic Service', function() {
 				.then(function() {
 					return graph.relationships.get(topic.id, resource.id, 'resources');
 				})
-				.then(function(link) {
+				.done(function(link) {
 					assert.ok(link);
 					done();
-				})
-				.done();
+				});
 			});
 
 			it('unlinkResource should return a notfound error', function(done) {
 				service.unlinkResource(topic.id, resource.id)
-				.fail(function(error) {
+				.done(function() {
+					assert.ok(false, 'should have failed');
+					done();
+				}, function(error) {
 					assert.equal('notfound', error.name);
 					done();
-				})
-				.done();
+				});
 			});
 
 			it('getLink should return a notfound error', function(done) {
 				service.getLink(topic.id, resource.id, 'resources')
-				.fail(function(err) {
+				.done(function() {
+					assert.ok(false, 'should have failed');
+					done();
+				}, function(err) {
 					assert.equal('notfound', err.name);
 					done();
-				})
-				.done();
+				});
 			});
 		});
 
@@ -386,30 +399,30 @@ describe('Topic Service', function() {
 					resource = createdResource;
 					return graph.relationships.create(topic.id, resource.id, 'resources', {});
 				})
-				.then(function() {
+				.done(function() {
 					done();
-				})
-				.done();
+				});
 			});
 
 			it('getLink should return the relationship', function(done) {
 				service.getLink(topic.id, resource.id, 'resources')
-				.then(function(link) {
+				.done(function(link) {
 					assert.equal(topic.id, link.fromId);
 					assert.equal(resource.id, link.toId);
 					assert.equal('resources', link.relationshipType);
 					done();
-				})
-				.done();
+				});
 			});
 
 			it('linkResource should return a duplicate error', function(done) {
 				service.linkResource(topic.id, resource.id)
-				.fail(function(error) {
+				.done(function() {
+					assert.ok(false, 'should have failed');
+					done();
+				}, function(error) {
 					assert.equal('duplicate', error.name);
 					done();
-				})
-				.done();
+				});
 			});
 
 			it('unlinkResource should unlink the resource', function(done) {
@@ -417,11 +430,10 @@ describe('Topic Service', function() {
 				.then(function() {
 					return graph.relationships.get(topic.id, resource.id, 'resources');
 				})
-				.then(function(relationship) {
+				.done(function(relationship) {
 					assert.equal(undefined, relationship);
 					done();
-				})
-				.done();
+				});
 			});
 		});
 
