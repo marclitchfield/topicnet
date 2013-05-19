@@ -1,7 +1,6 @@
 var	neo4jGraph = require('../lib/graph/neo4j-graph'),
 	topicnetGraph = require('../lib/graph/topicnet-graph').create(neo4jGraph),
 	topicService = require('../lib/topic-service').create(topicnetGraph),
-	voteService = require('../lib/vote-service').create(neo4jGraph),
 	handler = require('../handler');
 
 exports.root = function(request, response) {
@@ -30,10 +29,6 @@ exports.getLinkedTopics = function(request, response) {
 
 exports.getLink = function(request, response) {
 	handler.complete(response, topicService.getLink(request.params.id, request.params.toid, request.params.rel));
-};
-
-exports.vote = function(request, response) {
-	handler.complete(response, voteService.addVote(request.params.id, request.params.toid, request.params.rel, request.body));
 };
 
 exports.linkRoot = function(request, response) {
