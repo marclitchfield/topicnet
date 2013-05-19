@@ -40,7 +40,13 @@ exports.create = function(neo4jGraph) {
 		},
 
 		get: function(id) {
-			return neo4jGraph.readNode(id);
+			return neo4jGraph.readNode(id)
+			.fail(function(err) {
+				if (err.name === 'notfound') {
+					return Q.resolve(undefined);
+				}
+				throw err;
+			});
 		},
 
 		getByAttribute: function(attributeName, attributeValue) {

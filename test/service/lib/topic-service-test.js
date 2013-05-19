@@ -21,7 +21,7 @@ describe('Topic Service', function() {
 			var topic;
 
 			beforeEach(function(done) {
-				graph.topics.create({ name: 'topic' + guid.raw() })
+				graph.topics.create({ name: guid.raw() })
 				.then(function(createdTopic) {
 					topic = createdTopic;
 					done();
@@ -39,7 +39,7 @@ describe('Topic Service', function() {
 			});
 
 			it('update topic should update the topic', function(done) {
-				var updatedName = 'updated' + guid.raw();
+				var updatedName = guid.raw();
 				service.update(topic.id, { name: updatedName })
 				.then(function() {
 					return graph.topics.get(topic.id);
@@ -97,7 +97,7 @@ describe('Topic Service', function() {
 			var topic, relatedTopic;
 
 			beforeEach(function(done) {
-				graph.topics.create({ name: 'topic' + guid.raw() })
+				graph.topics.create({ name: guid.raw() })
 				.then(function(createdTopic1) {
 					topic = createdTopic1;
 					return graph.topics.create({ name: 'related' + guid.raw() });
@@ -125,7 +125,7 @@ describe('Topic Service', function() {
 		describe('when topic does not exist', function() {
 
 			it('create topic should create the topic', function(done) {
-				var topicName = 'topic' + guid.raw();
+				var topicName = guid.raw();
 
 				service.create({ name: topicName })
 				.then(function(createdTopic) {

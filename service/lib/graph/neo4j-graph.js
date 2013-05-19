@@ -124,7 +124,7 @@ exports.updateIndex = function(nodeId, index, field, value) {
 
 exports.queryNodeIndex = function(indexName, indexQuery) {
 	var deferred = Q.defer();
-	
+
 	graphDatabase.queryNodeIndex(indexName, indexQuery, function(err, results) {
 		if(err || results === undefined) {
 			deferred.resolve([]);
