@@ -6,6 +6,7 @@ exports.create = function() {
 	var topics = {};
 	var resources = {};
 	var relationships = {};
+	var users = {};
 	var id = 1;
 
 	return {
@@ -128,6 +129,24 @@ exports.create = function() {
 				}
 				delete resources[id];
 				return Q.resolve();
+			}
+		},
+
+		users: {
+			create: function(userData) {
+				var user = { id: id++ };
+				_.extend(user, userData);
+				users[user.id] = user;
+				return Q.resolve(user);
+			},
+
+			get: function(id) {
+				return Q.resolve(users[id]);
+			},
+
+			getByEmail: function(email) {
+				var found = _.find(users, function(u) { return u.email === email.toLowerCase(); });
+				return Q.resolve(found);
 			}
 		}
 	};
