@@ -38,52 +38,15 @@ describe('Topic Search', function() {
 		});
 	});
 
-	describe('GET /topics?q with spaces', function() {
-		var searchString = 'testnode to f';
-		var searchResults;
-
-		before(function(done) {
-			api.get('/topics?q=' + searchString)
-			.then(function(res) {
-				searchResults = api.parseBody(res.body);
-				done();
-			})
-			.done();
-		});
-
-		it('returns a topic containing the search string', function() {
-			assert.ok(_.any(searchResults, function(t) {
-				return t.name.contains(searchString);
-			}));
-		});
-	});
-
-	describe('GET /topics?q with !', function() {
-
-		it('returns existing topic', function(done) {
-			var searchString = 'ind!';
-			api.get('/topics?q=' + searchString)
-			.then(function(res) {
-				var searchResults = api.parseBody(res.body);
-				assert.ok(_.any(searchResults, function(t) {
-					return t.name.contains(searchString);
-				}));
-				done();
-			})
-			.done();
-		});
-
-	});
-
 	describe('GET /topics?q with query that will return over 10 results', function() {
-	 
+
 		var searchString = 'similar';
 		var first5Results;
 		var last5Results;
 
 		before(function(done) {
 			var posts = [];
-			
+
 			for(var i = 0; i < 11; i++) {
 				posts.push(api.post('/topics', { name: 'similar topic ' + guid.raw() }));
 			}

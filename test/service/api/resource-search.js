@@ -51,25 +51,6 @@ describe('Resource Search', function() {
 
 	});
 
-	describe('GET /resources?title with title differing only by case', function() {
-
-		it('returns existing resource', function(done) {
-			api.get('/resources?title=' + resourceToFind.title.toUpperCase())
-			.then(function(res) {
-				var searchResults = api.parseBody(res.body);
-				assert.ok(_.all(searchResults, function(r) {
-					return r.title === resourceToFind.title;
-				}));
-				assert.ok(_.any(searchResults, function(r) {
-					return r.id === resourceToFind.id;
-				}));
-				done();
-			})
-			.done();
-		});
-
-	});
-
 	describe('GET /resources?url with exact matching url', function() {
 
 		it('returns resource ', function(done) {
@@ -108,7 +89,7 @@ describe('Resource Search', function() {
 	});
 
 	describe('GET /resources?q with query that will return over 10 results', function() {
-	 
+
 		var searchString = 'Similar';
 		var first5Results;
 		var last5Results;

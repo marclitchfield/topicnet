@@ -4,52 +4,6 @@ var api = require('./helper-api.js');
 
 describe('Topic Resources', function() {
 
-	describe('POST to /topics/:id/resources with invalid id', function() {
-
-		it('returns status 404', function(done) {
-			api.post('/topics/-9999999/resources', {})
-			.then(function(res) {
-				assert.equal(res.statusCode, 404);
-				done();
-			})
-			.done();
-		});
-
-	});
-
-	describe('POST to /topics/:id/resources with invalid resid', function() {
-
-		it('returns status 404', function(done) {
-			api.postTopic()
-			.then(function(postTopic) {
-				return api.post('/topics/' + postTopic.returnedData.id + '/resources');
-			})
-			.then(function(res) {
-				assert.equal(res.statusCode, 404);
-				done();
-			})
-			.done();
-		});
-
-	});
-
-	describe('POST to /topics/:id/resources with duplicate resource', function() {
-
-		it('returns status 200', function(done) {
-			api.postAndLinkTopicAndResource()
-			.then(function(res) {
-				return api.post('/topics/' + res.postTopic.returnedData.id + '/resources',
-					{ resid: res.postResource.returnedData.id });
-			})
-			.then(function(res) {
-				assert.equal(res.statusCode, 400);
-				done();
-			})
-			.done();
-		});
-
-	});
-
 	describe('POST to /topics/:id/resources with valid data', function() {
 
 		var postTopic;
@@ -97,35 +51,6 @@ describe('Topic Resources', function() {
 				.done();
 			});
 
-		});
-
-	});
-
-	describe('DELETE /topics/:id/resources/:resid with invalid id', function() {
-
-		it('returns status 404', function(done) {
-			api.del('/topics/-9999999/resources/-9999999')
-			.then(function(res) {
-				assert.equal(res.statusCode, 404);
-				done();
-			})
-			.done();
-		});
-
-	});
-
-	describe('DELETE /topics/:id/resources/:resid with invalid resid', function() {
-
-		it('returns status 404', function(done) {
-			api.postTopic()
-			.then(function(res) {
-				return api.del('/topics/' + res.returnedData.id + '/resources/-9999999');
-			})
-			.then(function(res) {
-				assert.equal(res.statusCode, 404);
-				done();
-			})
-			.done();
 		});
 
 	});

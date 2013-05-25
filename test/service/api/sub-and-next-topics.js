@@ -2,7 +2,9 @@ var assert = require('assert');
 var _ = require('underscore');
 var api = require('./helper-api.js');
 
-var testTopicRelationships = function(relationshipType) {
+describe('Topic Relationships', function() {
+
+	var relationshipType = 'sub';
 
 	describe('POST to /topics/:id/' + relationshipType, function() {
 
@@ -32,7 +34,7 @@ var testTopicRelationships = function(relationshipType) {
 		describe('then GET /topics/:id/' + relationshipType, function() {
 
 			var getRelatedResponse;
-	
+
 			before(function(done) {
 				api.get('/topics/' + postTopic.returnedData.id + '/' + relationshipType)
 				.then(function(res) {
@@ -55,59 +57,12 @@ var testTopicRelationships = function(relationshipType) {
 
 		});
 
-		describe('then POST a duplicate ' + relationshipType + 'topic to /topics/:id/' + relationshipType, function() {
-
-			var duplicateResponse;
-
-			before(function(done) {
-				api.post('/topics/' + postTopic.returnedData.id + '/' + relationshipType,
-					{ toid: postRelatedTopic.returnedData.id })
-				.then(function(res) {
-					duplicateResponse = res;
-					done();
-				})
-				.done();
-			});
-
-			it('returns status 400', function() {
-				assert.equal(duplicateResponse.statusCode, 400);
-			});
-
-			it('returns error message', function() {
-				assert.notEqual(-1, duplicateResponse.body.indexOf("Relationship '" + relationshipType + "' already exists"));
-			});
-		});
-
 	});
 
 	describe('DELETE /topics/:id/' + relationshipType + '/:toid with an invalid id', function() {
 
 		it('returns status 404', function(done) {
 			api.del('/topics/-9999999/' + relationshipType + '/-99999999')
-			.then(function(res) {
-				assert.equal(res.statusCode, 404);
-				done();
-			})
-			.done();
-		});
-
-	});
-
-	describe('DELETE /topics/:id/' + relationshipType + '/:toid with an invalid toid', function() {
-
-		var postTopic;
-
-		before(function(done) {
-			api.postTopic()
-			.then(function(res) {
-				postTopic = res;
-				done();
-			})
-			.done();
-		});
-
-		it('returns status 404', function(done) {
-			api.del('/topics/' + postTopic.returnedData.id + '/' + relationshipType + '/-9999999')
 			.then(function(res) {
 				assert.equal(res.statusCode, 404);
 				done();
@@ -158,12 +113,5 @@ var testTopicRelationships = function(relationshipType) {
 		});
 
 	});
-};
 
-describe('Sub Topics', function() {
-	testTopicRelationships('sub');
-});
-
-describe('Next Topics', function() {
-	testTopicRelationships('next');
 });

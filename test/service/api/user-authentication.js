@@ -38,66 +38,6 @@ describe('User Authentication', function() {
 		});
 	});
 
-	describe('POST to /user with plain text password', function() {
-		var postResult;
-
-		before(function(done) {
-			var email = guid.raw();
-			api.post('/user', { email: email, password: 'plaintext' })
-			.then(function(res) {
-				postResult = res;
-				done();
-			});
-		});
-
-		it('returns status 400', function() {
-			assert.equal(400, postResult.statusCode);
-		});
-
-	});
-
-	describe('POST to /user with duplicate email', function() {
-		var email = getUniqueEmail();
-		var password = getHashedPassword();
-
-		before(function(done) {
-			api.post('/user', { email: email, password: password })
-			.then(function() {
-				done();
-			})
-			.done();
-		});
-
-		it('returns status 400 duplicate', function(done) {
-			api.post('/user', { email: email, password: getHashedPassword() })
-			.then(function(res) {
-				assert.equal(400, res.statusCode);
-				done();
-			})
-			.done();
-		});
-	});
-
-	describe('POST to /login with invalid credentials', function() {
-		it('returns status 401 unauthorized', function(done) {
-			api.post('/login', { email: guid.raw(), password: 'incorrect' })
-			.then(function(res) {
-				assert.equal(401, res.statusCode);
-				done();
-			})
-			.done();
-		});
-
-		it('user is not authenticated', function(done) {
-			api.get('/user').then(function(res) {
-				assert.equal(204, res.statusCode);
-				assert.equal(null, res.body);
-				done();
-			})
-			.done();
-		});
-	});
-
 	describe('POST to /login with valid credentials', function() {
 
 		var email = getUniqueEmail();
