@@ -7,6 +7,39 @@ exports.create = function(graph) {
 	var validRelationships = ['sub', 'next', 'root'];
 	var DEFAULT_RESULTS_PER_PAGE = 10;
 
+	function linkTopic(fromId, toId, relationshipType) {
+		if (!_.include(validRelationships, relationshipType)) {
+			return Q.reject('invalid relationship. must be one of: ' + validRelationships.join(', '));
+		}
+
+		return graph.relationships.get(fromId, toId, relationshipType)
+		.then(function(rel) {
+			if(rel !== undefined) {
+				return Q.reject({name: 'duplicate', message: 'Relationship \'' +
+					relationshipType + '\' already exists between ' + fromId + ' and ' + toId});
+			}
+		})
+		.then(function() {
+			return graph.relationships.create(fromId, toId, relationshipType, {});
+		})
+		.then(function() {
+			return { score: 0 };
+		});
+	}
+
+	function unlinkTopic(fromId, toId, relationshipType) {
+		if(!_.include(validRelationships, relationshipType)) {
+			return Q.reject('invalid relationship. must be one of: ' + validRelationships.join(', '));
+		}
+		return graph.relationships.get(fromId, toId, relationshipType)
+		.then(function(rel) {
+			if (rel === undefined) {
+				return Q.reject({name: 'notfound'});
+			} else {
+				return graph.relationships.destroy(rel.id);
+			}
+		});
+	}
 
 	return {
 
@@ -90,44 +123,24 @@ exports.create = function(graph) {
 			});
 		},
 
-		linkTopic: function(fromId, toId, relationshipType) {
-			if (!_.include(validRelationships, relationshipType)) {
-				return Q.reject('invalid relationship. must be one of: ' + validRelationships.join(', '));
-			}
+		linkTopic: linkTopic,
 
-			return graph.relationships.get(fromId, toId, relationshipType)
-			.then(function(rel) {
-				if(rel !== undefined) {
-					return Q.reject({name: 'duplicate', message: 'Relationship \'' + relationshipType + '\' already exists between ' + fromId + ' and ' + toId});
-				}
-			})
-			.then(function() {
-				return graph.relationships.create(fromId, toId, relationshipType, {});
-			})
-			.then(function() {
-				return { score: 0 };
-			});
+		linkRoot: function(topicId) {
+			return linkTopic(0, topicId, 'root');
 		},
 
-		unlinkTopic: function(fromId, toId, relationshipType) {
-			if(!_.include(validRelationships, relationshipType)) {
-				return Q.reject('invalid relationship. must be one of: ' + validRelationships.join(', '));
-			}
-			return graph.relationships.get(fromId, toId, relationshipType)
-			.then(function(rel) {
-				if (rel === undefined) {
-					return Q.reject({name: 'notfound'});
-				} else {
-					return graph.relationships.destroy(rel.id);
-				}
-			});
+		unlinkTopic: unlinkTopic,
+
+		unlinkRoot: function(topicId) {
+			return unlinkTopic(0, topicId, 'root');
 		},
 
 		linkResource: function(topicId, resId) {
 			return graph.relationships.get(topicId, resId, 'resources')
 			.then(function(rel) {
 				if(rel !== undefined) {
-					return Q.reject({name: 'duplicate', message: 'Relationship to resource already exists between ' + topicId + ' and ' + resId});
+					return Q.reject({name: 'duplicate',
+						message: 'Relationship to resource already exists between ' + topicId + ' and ' + resId});
 				}
 			})
 			.then(function() {
