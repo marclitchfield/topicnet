@@ -5,6 +5,7 @@ var StubGraph = require('./graph/stub-graph');
 var neo4jGraph = require('../../../service/lib/graph/neo4j-graph');
 var RealGraph = require('../../../service/lib/graph/topicnet-graph');
 var guid = require('guid');
+require('../test-utils');
 
 describe('User Service', function() {
 
@@ -30,10 +31,7 @@ describe('User Service', function() {
 
 			it('create with same email returns a duplicate error', function(done) {
 				service.create(user.email, user.password)
-				.done(function() {
-					assert.ok(false, 'should have failed');
-					done();
-				}, function(error) {
+				.done(assert.expectFail, function(error) {
 					assert.equal('duplicate', error.name);
 					done();
 				});
@@ -52,10 +50,7 @@ describe('User Service', function() {
 			describe('when invalid credentials are supplied', function() {
 				it('verify fails', function(done) {
 					service.verify(user.email, 'FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF')
-					.done(function() {
-						assert.ok(false, 'should have failed');
-						done();
-					}, function(error) {
+					.done(assert.expectFail, function(error) {
 						assert.equal(error, 'Invalid credentials');
 						done();
 					});
@@ -79,10 +74,7 @@ describe('User Service', function() {
 		describe('when the password is not hashed', function() {
 			it('create should return an error', function(done) {
 				service.create(guid.raw(), 'this is not a hashed password')
-				.done(function() {
-					assert.ok(false, 'should have failed');
-					done();
-				}, function(error) {
+				.done(assert.expectFail, function(error) {
 					assert.equal(error.message, 'Invalid password');
 					done();
 				});

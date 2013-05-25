@@ -6,6 +6,7 @@ var neo4jGraph = require('../../../service/lib/graph/neo4j-graph');
 var RealGraph = require('../../../service/lib/graph/topicnet-graph');
 var guid = require('guid');
 var _ = require('underscore');
+require('../test-utils');
 
 describe('Topic Service', function() {
 
@@ -31,11 +32,7 @@ describe('Topic Service', function() {
 
 			it('create topic with the same name should return a duplicate error', function(done) {
 				service.create({ name: topic.name })
-				.done(function() {
-					assert.ok(false, 'should have failed');
-					done();
-				},
-				function(err) {
+				.done(assert.expectFail, function(err) {
 					assert.equal('duplicate', err.name);
 					done();
 				});
@@ -177,10 +174,7 @@ describe('Topic Service', function() {
 
 			it('linkTopic when parent topic is missing should return notfound error', function(done) {
 				service.linkTopic(topic.id, 99999, 'sub')
-				.done(function() {
-					assert.ok(false, 'should have failed');
-					done();
-				}, function(err) {
+				.done(assert.expectFail, function(err) {
 					assert.equal('notfound', err.name);
 					done();
 				});
@@ -188,10 +182,7 @@ describe('Topic Service', function() {
 
 			it('unlinkTopic when parent topic is missing should return notfound error', function(done) {
 				service.unlinkTopic(topic.id, 99999, 'sub')
-				.done(function() {
-					assert.ok(false, 'should have failed');
-					done();
-				}, function(err) {
+				.done(assert.expectFail, function(err) {
 					assert.equal('notfound', err.name);
 					done();
 				});
@@ -199,10 +190,7 @@ describe('Topic Service', function() {
 
 			it('linkTopic when child topic is missing should return notfound error', function(done) {
 				service.linkTopic(99999, topic.id, 'sub')
-				.done(function() {
-					assert.ok(false, 'should have failed');
-					done();
-				}, function(err) {
+				.done(assert.expectFail, function(err) {
 					assert.equal('notfound', err.name);
 					done();
 				});
@@ -210,10 +198,7 @@ describe('Topic Service', function() {
 
 			it('unlinkTopic when child topic is missing should return notfound error', function(done) {
 				service.unlinkTopic(99999, topic.id, 'sub')
-				.done(function() {
-					assert.ok(false, 'should have failed');
-					done();
-				}, function(err) {
+				.done(assert.expectFail, function(err) {
 					assert.equal('notfound', err.name);
 					done();
 				});
@@ -239,10 +224,7 @@ describe('Topic Service', function() {
 
 			it('update topic should return notfound error', function(done) {
 				service.update(9999, { name: guid.raw() })
-				.done(function() {
-					assert.ok(false, 'should have failed');
-					done();
-				}, function(err) {
+				.done(assert.expectFail, function(err) {
 					assert.equal('notfound', err.name);
 					done();
 				});
@@ -250,10 +232,7 @@ describe('Topic Service', function() {
 
 			it('get topic should return notfound error', function(done) {
 				service.get(99999)
-				.done(function() {
-					assert.ok(false, 'should have failed');
-					done();
-				}, function(err) {
+				.done(assert.expectFail, function(err) {
 					assert.equal('notfound', err.name);
 					done();
 				});
@@ -261,10 +240,7 @@ describe('Topic Service', function() {
 
 			it('getLinkedTopics should return notfound error', function(done) {
 				service.getLinkedTopics(9999, 'sub')
-				.done(function() {
-					assert.ok(false, 'should have failed');
-					done();
-				}, function(err) {
+				.done(assert.expectFail, function(err) {
 					assert.equal('notfound', err.name);
 					done();
 				});
@@ -272,10 +248,7 @@ describe('Topic Service', function() {
 
 			it('destroy topic should return a notfound error', function(done) {
 				service.destroy(9999)
-				.done(function() {
-					assert.ok(false, 'should have failed');
-					done();
-				}, function(err) {
+				.done(assert.expectFail, function(err) {
 					assert.equal('notfound', err.name);
 					done();
 				});
@@ -297,10 +270,7 @@ describe('Topic Service', function() {
 		describe('when topic has no name', function() {
 			it('create topic should return an error', function(done) {
 				service.create({})
-				.done(function() {
-					assert.ok(false, 'should have failed');
-					done();
-				}, function(err) {
+				.done(assert.expectFail, function(err) {
 					assert.equal('name is required', err);
 					done();
 				});
@@ -308,10 +278,7 @@ describe('Topic Service', function() {
 
 			it('update topic should return an error', function(done) {
 				service.update(999, {})
-				.done(function() {
-					assert.ok(false, 'should have failed');
-					done();
-				}, function(err) {
+				.done(assert.expectFail, function(err) {
 					assert.equal('name is required', err);
 					done();
 				});
@@ -348,10 +315,7 @@ describe('Topic Service', function() {
 
 			it('unlinkTopic should return a notfound error', function(done) {
 				service.unlinkTopic(fromTopic.id, toTopic.id, 'sub')
-				.done(function() {
-					assert.ok(false, 'should have failed');
-					done();
-				}, function(err) {
+				.done(assert.expectFail, function(err) {
 					assert.equal('notfound', err.name);
 					done();
 				});
@@ -380,10 +344,7 @@ describe('Topic Service', function() {
 
 			it('linkTopic should return a duplicate error', function(done) {
 				service.linkTopic(fromTopic.id, toTopic.id, 'sub')
-				.done(function() {
-					assert.ok(false, 'should have failed');
-					done();
-				}, function(err) {
+				.done(assert.expectFail, function(err) {
 					assert.equal('duplicate', err.name);
 					done();
 				});
@@ -416,10 +377,7 @@ describe('Topic Service', function() {
 
 			it('linkTopic should return an invalid relationship error', function(done) {
 				service.linkTopic(1, 2, 'invalid')
-				.done(function() {
-					assert.ok(false, 'should have failed');
-					done();
-				}, function(err) {
+				.done(assert.expectFail, function(err) {
 					assert.notEqual(-1, err.indexOf('invalid relationship'));
 					done();
 				});
@@ -427,10 +385,7 @@ describe('Topic Service', function() {
 
 			it('unlinkTopic should return an invalid relationship error', function(done) {
 				service.unlinkTopic(1, 2, 'invalid')
-				.done(function() {
-					assert.ok(false, 'should have failed');
-					done();
-				}, function(err) {
+				.done(assert.expectFail, function(err) {
 					assert.notEqual(-1, err.indexOf('invalid relationship'));
 					done();
 				});
@@ -438,10 +393,7 @@ describe('Topic Service', function() {
 
 			it('getLinkedTopics should return an invalid relationship error', function(done) {
 				service.getLinkedTopics(1, 'invalid')
-				.done(function() {
-					assert.ok(false, 'should have failed');
-					done();
-				}, function(err) {
+				.done(assert.expectFail, function(err) {
 					assert.notEqual(-1, err.indexOf('invalid relationship'));
 					done();
 				});
@@ -479,10 +431,7 @@ describe('Topic Service', function() {
 
 			it('unlinkResource should return a notfound error', function(done) {
 				service.unlinkResource(topic.id, resource.id)
-				.done(function() {
-					assert.ok(false, 'should have failed');
-					done();
-				}, function(error) {
+				.done(assert.expectFail, function(error) {
 					assert.equal('notfound', error.name);
 					done();
 				});
@@ -490,10 +439,7 @@ describe('Topic Service', function() {
 
 			it('getLink should return a notfound error', function(done) {
 				service.getLink(topic.id, resource.id, 'resources')
-				.done(function() {
-					assert.ok(false, 'should have failed');
-					done();
-				}, function(err) {
+				.done(assert.expectFail, function(err) {
 					assert.equal('notfound', err.name);
 					done();
 				});
@@ -513,10 +459,7 @@ describe('Topic Service', function() {
 
 			it('linkResource should return notfound error', function(done) {
 				service.linkResource(topic.id, 99999)
-				.done(function() {
-					assert.ok(false, 'should have failed');
-					done();
-				}, function(error) {
+				.done(assert.expectFail, function(error) {
 					assert.equal('notfound', error.name);
 					done();
 				});
@@ -524,10 +467,7 @@ describe('Topic Service', function() {
 
 			it('unlinkResource should return notfound error', function(done) {
 				service.unlinkResource(topic.id, 99999)
-				.done(function() {
-					assert.ok(false, 'should have failed');
-					done();
-				}, function(error) {
+				.done(assert.expectFail, function(error) {
 					assert.equal('notfound', error.name);
 					done();
 				});
@@ -547,10 +487,7 @@ describe('Topic Service', function() {
 
 			it('linkResource should return notfound error', function(done) {
 				service.linkResource(99999, resource.id)
-				.done(function() {
-					assert.ok(false, 'should have failed');
-					done();
-				}, function(error) {
+				.done(assert.expectFail, function(error) {
 					assert.equal('notfound', error.name);
 					done();
 				});
@@ -558,10 +495,7 @@ describe('Topic Service', function() {
 
 			it('unlinkResource should return notfound error', function(done) {
 				service.unlinkResource(99999, resource.id)
-				.done(function() {
-					assert.ok(false, 'should have failed');
-					done();
-				}, function(error) {
+				.done(assert.expectFail, function(error) {
 					assert.equal('notfound', error.name);
 					done();
 				});
@@ -601,10 +535,7 @@ describe('Topic Service', function() {
 
 			it('linkResource should return a duplicate error', function(done) {
 				service.linkResource(topic.id, resource.id)
-				.done(function() {
-					assert.ok(false, 'should have failed');
-					done();
-				}, function(error) {
+				.done(assert.expectFail, function(error) {
 					assert.equal('duplicate', error.name);
 					done();
 				});

@@ -5,6 +5,7 @@ var StubGraph = require('./graph/stub-graph');
 var neo4jGraph = require('../../../service/lib/graph/neo4j-graph');
 var RealGraph = require('../../../service/lib/graph/topicnet-graph');
 var guid = require('guid');
+require('../test-utils');
 
 describe('Resource Service', function() {
 
@@ -29,10 +30,7 @@ describe('Resource Service', function() {
 
 			it('create with duplicate title should return a duplicate error', function(done) {
 				service.create({ title: resource.title, url: guid.raw(), source: guid.raw(), verb: 'read' })
-				.done(function() {
-					assert.ok(false, 'should have failed');
-					done();
-				}, function(err) {
+				.done(assert.expectFail, function(err) {
 					assert.equal('duplicate', err.name);
 					done();
 				});
@@ -40,10 +38,7 @@ describe('Resource Service', function() {
 
 			it('create with duplicate url should return a duplicate error', function(done) {
 				service.create({ title: guid.raw(), url: resource.url, source: guid.raw(), verb: 'read' })
-				.done(function() {
-					assert.ok(false, 'should have failed');
-					done();
-				}, function(err) {
+				.done(assert.expectFail, function(err) {
 					assert.equal('duplicate', err.name);
 					done();
 				});
@@ -138,10 +133,7 @@ describe('Resource Service', function() {
 
 			it('update first resource with title that would be a duplicate returns a duplicate error', function(done) {
 				service.update(resource.id, { title: otherResource.title, url: guid.raw(), source: guid.raw(), verb: 'read'})
-				.done(function() {
-					assert.ok(false, 'should have failed');
-					done();
-				}, function(error) {
+				.done(assert.expectFail, function(error) {
 					assert.equal('duplicate', error.name);
 					done();
 				});
@@ -149,10 +141,7 @@ describe('Resource Service', function() {
 
 			it('update first resource with url that would be a duplicate returns a duplicate error', function(done) {
 				service.update(resource.id, { title: guid.raw(), url: otherResource.url, source: guid.raw(), verb: 'read'})
-				.done(function() {
-					assert.ok(false, 'should have failed');
-					done();
-				}, function(error) {
+				.done(assert.expectFail, function(error) {
 					assert.equal('duplicate', error.name);
 					done();
 				});
@@ -174,10 +163,7 @@ describe('Resource Service', function() {
 
 			it('get should return a notfound error', function(done) {
 				service.get(99999)
-				.done(function() {
-					assert.ok(false, 'should have failed');
-					done();
-				}, function(err) {
+				.done(assert.expectFail, function(err) {
 					assert.equal(err.name, 'notfound');
 					done();
 				});
@@ -185,10 +171,7 @@ describe('Resource Service', function() {
 
 			it('update should return a notfound error', function(done) {
 				service.update(99999, { title: guid.raw(), url: guid.raw(), source: guid.raw(), verb: 'watch'})
-				.done(function() {
-					assert.ok(false, 'should have failed');
-					done();
-				}, function(err) {
+				.done(assert.expectFail, function(err) {
 					assert.equal('notfound', err.name);
 					done();
 				});
@@ -220,10 +203,7 @@ describe('Resource Service', function() {
 
 			it('destroy resource returns a notfound error', function(done) {
 				service.destroy(999999)
-				.done(function() {
-					assert.ok(false, 'should have failed');
-					done();
-				}, function(err) {
+				.done(assert.expectFail, function(err) {
 					assert.equal('notfound', err.name);
 					done();
 				});
@@ -250,10 +230,7 @@ describe('Resource Service', function() {
 
 			it('destroy resource returns an error', function(done) {
 				service.destroy(resource.id)
-				.done(function() {
-					assert.ok(false, 'should have failed');
-					done();
-				}, function(err) {
+				.done(assert.expectFail, function(err) {
 					assert.equal('cannot delete resource because it still has relationships', err);
 					done();
 				});
@@ -265,10 +242,7 @@ describe('Resource Service', function() {
 			describe('title', function() {
 				it('create should return an error', function(done) {
 					service.create({ url: guid.raw(), source: guid.raw(), verb: 'read' })
-					.done(function() {
-						assert.ok(false, 'should have failed');
-						done();
-					}, function(err) {
+					.done(assert.expectFail, function(err) {
 						assert.equal('title is required', err);
 						done();
 					});
@@ -276,10 +250,7 @@ describe('Resource Service', function() {
 
 				it('update should return an error', function(done) {
 					service.update(99999, { url: guid.raw(), source: guid.raw(), verb: 'watch' })
-					.done(function() {
-						assert.ok(false, 'should have failed');
-						done();
-					}, function(err) {
+					.done(assert.expectFail, function(err) {
 						assert.equal('title is required', err);
 						done();
 					});
@@ -289,10 +260,7 @@ describe('Resource Service', function() {
 			describe('url', function() {
 				it('create should return an error', function(done) {
 					service.create({ title: guid.raw(), source: guid.raw(), verb: 'read' })
-					.done(function() {
-						assert.ok(false, 'should have failed');
-						done();
-					}, function(err) {
+					.done(assert.expectFail, function(err) {
 						assert.equal('url is required', err);
 						done();
 					});
@@ -300,10 +268,7 @@ describe('Resource Service', function() {
 
 				it('update should return an error', function(done) {
 					service.update(99999, { title: guid.raw(), source: guid.raw(), verb: 'watch' })
-					.done(function() {
-						assert.ok(false, 'should have failed');
-						done();
-					}, function(err) {
+					.done(assert.expectFail, function(err) {
 						assert.equal('url is required', err);
 						done();
 					});
@@ -313,10 +278,7 @@ describe('Resource Service', function() {
 			describe('source', function() {
 				it('create should return an error', function(done) {
 					service.create({ title: guid.raw(), url: guid.raw(), verb: 'read' })
-					.done(function() {
-						assert.ok(false, 'should have failed');
-						done();
-					}, function(err) {
+					.done(assert.expectFail, function(err) {
 						assert.equal('source is required', err);
 						done();
 					});
@@ -324,10 +286,7 @@ describe('Resource Service', function() {
 
 				it('udpate should return an error', function(done) {
 					service.update(99999,{ title: guid.raw(), url: guid.raw(), verb: 'watch' })
-					.done(function() {
-						assert.ok(false, 'should have failed');
-						done();
-					}, function(err) {
+					.done(assert.expectFail, function(err) {
 						assert.equal('source is required', err);
 						done();
 					});
@@ -337,10 +296,7 @@ describe('Resource Service', function() {
 			describe('verb', function() {
 				it('create should return an error', function(done) {
 					service.create({ title: guid.raw(), url: guid.raw(), source: guid.raw() })
-					.done(function() {
-						assert.ok(false, 'should have failed');
-						done();
-					}, function(err) {
+					.done(assert.expectFail, function(err) {
 						assert.equal('verb is required', err);
 						done();
 					});
@@ -348,10 +304,7 @@ describe('Resource Service', function() {
 
 				it('update should return an error', function(done) {
 					service.update(99999,{ title: guid.raw(), url: guid.raw(), source: guid.raw() })
-					.done(function() {
-						assert.ok(false, 'should have failed');
-						done();
-					}, function(err) {
+					.done(assert.expectFail, function(err) {
 						assert.equal('verb is required', err);
 						done();
 					});
@@ -363,10 +316,7 @@ describe('Resource Service', function() {
 
 			it('create returns invalid verb error', function(done) {
 				service.create({ title: guid.raw(), url: guid.raw(), source: guid.raw(), verb: 'invalid' })
-				.done(function() {
-					assert.ok(false, 'should have failed');
-					done();
-				}, function(err) {
+				.done(assert.expectFail, function(err) {
 					assert.equal('invalid verb', err);
 					done();
 				});
@@ -374,10 +324,7 @@ describe('Resource Service', function() {
 
 			it('update returns invalid verb error', function(done) {
 				service.create({ title: guid.raw(), url: guid.raw(), source: guid.raw(), verb: 'invalid' })
-				.done(function() {
-					assert.ok(false, 'should have failed');
-					done();
-				}, function(err) {
+				.done(assert.expectFail, function(err) {
 					assert.equal('invalid verb', err);
 					done();
 				});
