@@ -113,9 +113,11 @@ describe('Topic Service', function() {
 		describe('when topic containing special characters exists', function() {
 
 			var topic;
+			var ourGuid;
 
 			beforeEach(function(done) {
-				var topicName = (guid.raw() + ' hey abboooot! ').toLowerCase();
+				ourGuid = guid.raw();
+				var topicName = (ourGuid + ' hey abboooot! ').toLowerCase();
 				graph.topics.create({ name: topicName })
 				.done(function(createdTopic) {
 					topic = createdTopic;
@@ -124,7 +126,7 @@ describe('Topic Service', function() {
 			});
 
 			it('search for topic where search contains spaces returns the topic', function(done) {
-				service.search({ q: ' hey abboo' })
+				service.search({ q: ourGuid + ' hey abboo' })
 				.done(function(foundTopics) {
 					assert.equal(1, foundTopics.length);
 					assert.equal(topic.id, foundTopics[0].id);
@@ -133,12 +135,10 @@ describe('Topic Service', function() {
 			});
 
 			it('search for topic where search contains ! returns the topic', function(done) {
-				service.search({ q: 'oot!' })
+				service.search({ q: ourGuid + ' hey abboooot!' })
 				.done(function(foundTopics) {
-					assert.ok(foundTopics.length > 0);
-					assert.ok(_.some(foundTopics, function(t) {
-						return topic.id === t.id;
-					}));
+					assert.equal(1, foundTopics.length);
+					assert.equal(topic.id, foundTopics[0].id);
 					done();
 				});
 			});
@@ -262,9 +262,28 @@ describe('Topic Service', function() {
 				});
 			});
 
-			it('linkRoot should return notfound error');
+			it('linkRoot should return notfound error', function(done) {
+				service.linkRoot(9999)
+				.done(function() {
+					assert.ok(false, 'should have failed');
+					done();
+				}, function(err) {
+					assert.equal('notfound', err.name);
+					done();
+				});
+			});
 
-			it('unlinkRoot should return notfound error');
+			it('unlinkRoot should return notfound error', function(done) {
+				service.unlinkRoot(9999)
+				.done(function() {
+					assert.ok(false, 'should have failed');
+					done();
+				}, function(err) {
+					assert.equal('notfound', err.name);
+					done();
+				});
+			});
+
 		});
 
 		describe('when topic has no name', function() {
@@ -365,12 +384,52 @@ describe('Topic Service', function() {
 
 		describe('when topic is not a root', function() {
 
-			it('linkRoot should make the topic a root topic');
+			var topic;
+
+			beforeEach(function(done) {
+				graph.topics.create({ name: guid.raw().toLowerCase() })
+				.done(function(createdTopic) {
+					topic = createdTopic;
+					done();
+				});
+			});
+
+			it('linkRoot should make the topic a root topic', function(done) {
+				service.linkRoot(topic.id)
+				.then(function() {
+					return graph.relationships.get(0, topic.id, 'root');
+				})
+				.done(function(link) {
+					assert.ok(link);
+					done();
+				}, assert.fail);
+			});
+
 		});
 
 		describe('when topic is already a root', function() {
 
-			it('linkRoot should return a duplicate error');
+			var topic;
+
+			beforeEach(function(done) {
+				graph.topics.create({ name: guid.raw().toLowerCase() })
+				.then(function(createdTopic) {
+					topic = createdTopic;
+					return graph.relationships.create(0, topic.id, 'root');
+				})
+				.done(function() {
+					done();
+				});
+			});
+
+			it('linkRoot should return a duplicate error', function(done) {
+				service.linkRoot(topic.id)
+				.done(assert.expectFail, function(err) {
+					assert.equal('duplicate', err.name);
+					done();
+				});
+			});
+
 		});
 
 		describe('when given an invalid relationship', function() {
