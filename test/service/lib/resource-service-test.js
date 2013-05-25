@@ -20,7 +20,7 @@ describe('Resource Service', function() {
 			var resource;
 
 			beforeEach(function(done) {
-				graph.resources.create({ title: guid.raw(), url: guid.raw(), source: guid.raw(), verb: 'read' })
+				graph.resources.create({ title: guid.raw().toLowerCase(), url: guid.raw(), source: guid.raw(), verb: 'read' })
 				.done(function(createdResource) {
 					resource = createdResource;
 					done();
@@ -128,7 +128,7 @@ describe('Resource Service', function() {
 				graph.resources.create({ title: guid.raw(), url: guid.raw(), source: guid.raw(), verb: 'read' })
 				.then(function(createdResource) {
 					resource = createdResource;
-					return graph.resources.create({ title: guid.raw(), url: guid.raw(), source: guid.raw(), verb: 'read' })
+					return graph.resources.create({ title: guid.raw(), url: guid.raw(), source: guid.raw(), verb: 'read' });
 				})
 				.done(function(createdResource) {
 					otherResource = createdResource;

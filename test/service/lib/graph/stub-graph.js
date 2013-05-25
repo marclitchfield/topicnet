@@ -72,6 +72,12 @@ exports.create = function() {
 			},
 
 			get: function(fromId, toId, relationshipType) {
+				if (!(fromId in topics)) {
+					return Q.reject({ name: 'notfound' });
+				}
+				if (!(toId in topics) && !(toId in resources)) {
+					return Q.reject({ name: 'notfound' });
+				}
 				return Q.resolve(relationships[relationshipType + ':' + fromId + '->' + toId]);
 			},
 

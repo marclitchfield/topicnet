@@ -111,7 +111,7 @@ module.exports = function(grunt) {
 	grunt.registerTask('ft', ['frontend-tests']);
 	grunt.registerTask('bt', ['backend-tests']);
 	grunt.registerTask('develop', ['develop']);
-	grunt.registerTask('backend-unit-tests', ['env:skip-integration-tests', 'develop', 'mocha-hack:unit', 'develop-kill']);
+	grunt.registerTask('backend-unit-tests', ['env:skip-integration-tests', 'mocha-hack:unit']);
 	grunt.registerTask('but', ['backend-unit-tests']);
 
 	grunt.registerTask('develop-kill', function() {

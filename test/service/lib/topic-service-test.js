@@ -133,6 +133,51 @@ describe('Topic Service', function() {
 					done();
 				});
 			});
+
+			it('linkTopic when parent topic is missing should return notfound error', function(done) {
+				service.linkTopic(topic.id, 99999, 'sub')
+				.done(function() {
+					assert.ok(false, 'should have failed');
+					done();
+				}, function(err) {
+					assert.equal('notfound', err.name);
+					done();
+				});
+			});
+
+			it('unlinkTopic when parent topic is missing should return notfound error', function(done) {
+				service.unlinkTopic(topic.id, 99999, 'sub')
+				.done(function() {
+					assert.ok(false, 'should have failed');
+					done();
+				}, function(err) {
+					assert.equal('notfound', err.name);
+					done();
+				});
+			});
+
+			it('linkTopic when child topic is missing should return notfound error', function(done) {
+				service.linkTopic(99999, topic.id, 'sub')
+				.done(function() {
+					assert.ok(false, 'should have failed');
+					done();
+				}, function(err) {
+					assert.equal('notfound', err.name);
+					done();
+				});
+			});
+
+			it('unlinkTopic when child topic is missing should return notfound error', function(done) {
+				service.unlinkTopic(99999, topic.id, 'sub')
+				.done(function() {
+					assert.ok(false, 'should have failed');
+					done();
+				}, function(err) {
+					assert.equal('notfound', err.name);
+					done();
+				});
+			});
+
 		});
 
 		describe('when topic does not exist', function() {
@@ -203,21 +248,9 @@ describe('Topic Service', function() {
 				});
 			});
 
-			it('linkTopic when parent topic is missing should return notfound error');
-
-			it('unlinkTopic when parent topic is missing should return notfound error');
-
-			it('linkTopic when child topic is missing should return notfound error');
-
-			it('unlinkTopic when child topic is missing should return notfound error');
-
 			it('linkRoot should return notfound error');
 
 			it('unlinkRoot should return notfound error');
-
-			it('linkResource should return notfound error');
-
-			it('unlinkResource should return notfound error');
 		});
 
 		describe('when topic has no name', function() {
@@ -284,57 +317,50 @@ describe('Topic Service', function() {
 			});
 		});
 
-		function testTopicRelationships(relationshipType) {
+		describe('when related topic already exists', function() {
 
-			describe('when ' + relationshipType + ' topic already exists', function() {
+			var fromTopic;
+			var toTopic;
 
-				var fromTopic;
-				var toTopic;
-
-				beforeEach(function(done) {
-					graph.topics.create({ name: guid.raw() })
-					.then(function(firstCreatedTopic) {
-						fromTopic = firstCreatedTopic;
-						return graph.topics.create({ name: guid.raw() });
-					})
-					.then(function(secondCreatedTopic) {
-						toTopic = secondCreatedTopic;
-						return graph.relationships.create(fromTopic.id, toTopic.id, relationshipType);
-					})
-					.done(function() {
-						done();
-					});
-				});
-
-				it('linkTopic should return a duplicate error', function(done) {
-					service.linkTopic(fromTopic.id, toTopic.id, relationshipType)
-					.done(function() {
-						assert.ok(false, 'should have failed');
-						done();
-					}, function(err) {
-						assert.equal('duplicate', err.name);
-						done();
-					});
-				});
-
-				it('unlinkTopic should unlink the related topic', function(done) {
-
-					service.unlinkTopic(fromTopic.id, toTopic.id, relationshipType)
-					.then(function() {
-						return graph.relationships.get(fromTopic.id, toTopic.id, 'sub');
-					})
-					.done(function(link) {
-						assert.equal(undefined, link);
-						done();
-					});
-
+			beforeEach(function(done) {
+				graph.topics.create({ name: guid.raw() })
+				.then(function(firstCreatedTopic) {
+					fromTopic = firstCreatedTopic;
+					return graph.topics.create({ name: guid.raw() });
+				})
+				.then(function(secondCreatedTopic) {
+					toTopic = secondCreatedTopic;
+					return graph.relationships.create(fromTopic.id, toTopic.id, 'sub');
+				})
+				.done(function() {
+					done();
 				});
 			});
-		}
 
-		testTopicRelationships('sub');
-		testTopicRelationships('next');		
-		
+			it('linkTopic should return a duplicate error', function(done) {
+				service.linkTopic(fromTopic.id, toTopic.id, 'sub')
+				.done(function() {
+					assert.ok(false, 'should have failed');
+					done();
+				}, function(err) {
+					assert.equal('duplicate', err.name);
+					done();
+				});
+			});
+
+			it('unlinkTopic should unlink the related topic', function(done) {
+
+				service.unlinkTopic(fromTopic.id, toTopic.id, 'sub')
+				.then(function() {
+					return graph.relationships.get(fromTopic.id, toTopic.id, 'sub');
+				})
+				.done(function(link) {
+					assert.equal(undefined, link);
+					done();
+				});
+
+			});
+		});
 
 		describe('when topic is not a root', function() {
 
@@ -434,12 +460,73 @@ describe('Topic Service', function() {
 			});
 		});
 
-		describe('when the resource does not exist', function() {
+		describe('when the topic exists but the resource does not', function() {
+			var topic;
 
-			it('linkResource should return notfound error');
+			beforeEach(function(done) {
+				graph.topics.create({name: guid.raw()})
+				.done(function(createdTopic) {
+					topic = createdTopic;
+					done();
+				});
+			});
 
-			it('unlinkResource should return notfound error');
-		})
+			it('linkResource should return notfound error', function(done) {
+				service.linkResource(topic.id, 99999)
+				.done(function() {
+					assert.ok(false, 'should have failed');
+					done();
+				}, function(error) {
+					assert.equal('notfound', error.name);
+					done();
+				});
+			});
+
+			it('unlinkResource should return notfound error', function(done) {
+				service.unlinkResource(topic.id, 99999)
+				.done(function() {
+					assert.ok(false, 'should have failed');
+					done();
+				}, function(error) {
+					assert.equal('notfound', error.name);
+					done();
+				});
+			});
+		});
+
+		describe('when the resource exists but the topic does not', function() {
+			var resource;
+
+			beforeEach(function(done) {
+				graph.resources.create({url: guid.raw(), title: guid.raw(), source: guid.raw(), verb: 'read'})
+				.done(function(createdResource) {
+					resource = createdResource;
+					done();
+				});
+			});
+
+			it('linkResource should return notfound error', function(done) {
+				service.linkResource(99999, resource.id)
+				.done(function() {
+					assert.ok(false, 'should have failed');
+					done();
+				}, function(error) {
+					assert.equal('notfound', error.name);
+					done();
+				});
+			});
+
+			it('unlinkResource should return notfound error', function(done) {
+				service.unlinkResource(99999, resource.id)
+				.done(function() {
+					assert.ok(false, 'should have failed');
+					done();
+				}, function(error) {
+					assert.equal('notfound', error.name);
+					done();
+				});
+			});
+		});
 
 		describe('when the resource is already linked to the topic', function() {
 
