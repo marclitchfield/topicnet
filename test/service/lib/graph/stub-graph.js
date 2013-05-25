@@ -3,7 +3,7 @@ var _ = require('underscore');
 
 exports.create = function() {
 
-	var topics = {};
+	var topics = { '0': { name: 'root' } };
 	var resources = {};
 	var relationships = {};
 	var users = {};
