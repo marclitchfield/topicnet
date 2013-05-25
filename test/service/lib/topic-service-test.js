@@ -5,6 +5,7 @@ var StubGraph = require('./graph/stub-graph');
 var neo4jGraph = require('../../../service/lib/graph/neo4j-graph');
 var RealGraph = require('../../../service/lib/graph/topicnet-graph');
 var guid = require('guid');
+var _ = require('underscore');
 
 describe('Topic Service', function() {
 
@@ -21,7 +22,7 @@ describe('Topic Service', function() {
 			var topic;
 
 			beforeEach(function(done) {
-				graph.topics.create({ name: guid.raw() })
+				graph.topics.create({ name: guid.raw().toLowerCase() })
 				.done(function(createdTopic) {
 					topic = createdTopic;
 					done();
@@ -91,20 +92,60 @@ describe('Topic Service', function() {
 			it('search for topic by partial name should find the topic', function(done) {
 				service.search({ q: topic.name.substr(1) })
 				.done(function(foundTopics) {
+					assert.ok(foundTopics.length > 0);
+					assert.ok(_.some(foundTopics, function(t) {
+						return topic.id === t.id;
+					}));
+					done();
+				});
+			});
+
+			it('search for topic by name with different case should find the topic', function(done) {
+				service.search({ q: topic.name.substr(1).toUpperCase() })
+				.done(function(foundTopics) {
+					assert.ok(foundTopics.length > 0);
+					assert.ok(_.some(foundTopics, function(t) {
+						return topic.id === t.id;
+					}));
+					done();
+				});
+			});
+
+		});
+
+		describe('when topic containing special characters exists', function() {
+
+			var topic;
+
+			beforeEach(function(done) {
+				var topicName = (guid.raw() + ' hey abboooot! ').toLowerCase();
+				graph.topics.create({ name: topicName })
+				.done(function(createdTopic) {
+					topic = createdTopic;
+					done();
+				});
+			});
+
+			it('search for topic where search contains spaces returns the topic', function(done) {
+				service.search({ q: ' hey abboo' })
+				.done(function(foundTopics) {
 					assert.equal(1, foundTopics.length);
 					assert.equal(topic.id, foundTopics[0].id);
 					done();
 				});
 			});
 
-			it('search for topic by name with different case should find the topic');
-		});
+			it('search for topic where search contains ! returns the topic', function(done) {
+				service.search({ q: 'oot!' })
+				.done(function(foundTopics) {
+					assert.ok(foundTopics.length > 0);
+					assert.ok(_.some(foundTopics, function(t) {
+						return topic.id === t.id;
+					}));
+					done();
+				});
+			});
 
-		describe('when topic containing special characters exists', function() {
-
-			it('search for topic where search contains spaces returns the topic');
-
-			it('search for topic where search contains ! returns the topic');
 		});
 
 		describe('when topic has related topics', function() {
@@ -358,7 +399,6 @@ describe('Topic Service', function() {
 					assert.equal(undefined, link);
 					done();
 				});
-
 			});
 		});
 
