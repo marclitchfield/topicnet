@@ -128,7 +128,7 @@ describe('Resource Service', function() {
 				graph.resources.create({ title: guid.raw(), url: guid.raw(), source: guid.raw(), verb: 'read' })
 				.then(function(createdResource) {
 					resource = createdResource;
-					return graph.resources.create({ title: guid.raw(), url: guid.raw(), source: guid.raw(), verb: 'read' })
+					return graph.resources.create({ title: guid.raw(), url: guid.raw(), source: guid.raw(), verb: 'read' });
 				})
 				.done(function(createdResource) {
 					otherResource = createdResource;
