@@ -49,7 +49,6 @@ describe('Resource Service', function() {
 				});
 			});
 
-
 			it('update should update the resource', function(done) {
 				var updateData = { title: guid.raw(), url: guid.raw(), source: guid.raw(), verb: 'watch'};
 				service.update(resource.id, updateData)
@@ -82,6 +81,15 @@ describe('Resource Service', function() {
 				});
 			});
 
+			it('search for resource by title with different case should find the resource', function(done) {
+				service.searchByTitle(resource.title.toUpperCase())
+				.done(function(foundResources) {
+					assert.equal(1, foundResources.length);
+					assert.equal(resource.id, foundResources[0].id);
+					done();
+				});
+			});
+
 			it('search for resource by url should find the resource', function(done) {
 				service.searchByUrl(resource.url)
 				.done(function(foundResources) {
@@ -107,6 +115,45 @@ describe('Resource Service', function() {
 				})
 				.done(function(foundResource) {
 					assert.equal(undefined, foundResource);
+					done();
+				});
+			});
+		});
+
+		describe('when two resources exist', function() {
+
+			var resource, otherResource;
+
+			beforeEach(function(done) {
+				graph.resources.create({ title: guid.raw(), url: guid.raw(), source: guid.raw(), verb: 'read' })
+				.then(function(createdResource) {
+					resource = createdResource;
+					return graph.resources.create({ title: guid.raw(), url: guid.raw(), source: guid.raw(), verb: 'read' })
+				})
+				.done(function(createdResource) {
+					otherResource = createdResource;
+					done();
+				});
+			});
+
+			it('update first resource with title that would be a duplicate returns a duplicate error', function(done) {
+				service.update(resource.id, { title: otherResource.title, url: guid.raw(), source: guid.raw(), verb: 'read'})
+				.done(function() {
+					assert.ok(false, 'should have failed');
+					done();
+				}, function(error) {
+					assert.equal('duplicate', error.name);
+					done();
+				});
+			});
+
+			it('update first resource with url that would be a duplicate returns a duplicate error', function(done) {
+				service.update(resource.id, { title: guid.raw(), url: otherResource.url, source: guid.raw(), verb: 'read'})
+				.done(function() {
+					assert.ok(false, 'should have failed');
+					done();
+				}, function(error) {
+					assert.equal('duplicate', error.name);
 					done();
 				});
 			});
@@ -310,6 +357,32 @@ describe('Resource Service', function() {
 					});
 				});
 			});
+		});
+
+		describe('when resource has an invalid verb', function() {
+
+			it('create returns invalid verb error', function(done) {
+				service.create({ title: guid.raw(), url: guid.raw(), source: guid.raw(), verb: 'invalid' })
+				.done(function() {
+					assert.ok(false, 'should have failed');
+					done();
+				}, function(err) {
+					assert.equal('invalid verb', err);
+					done();
+				});
+			});
+
+			it('update returns invalid verb error', function(done) {
+				service.create({ title: guid.raw(), url: guid.raw(), source: guid.raw(), verb: 'invalid' })
+				.done(function() {
+					assert.ok(false, 'should have failed');
+					done();
+				}, function(err) {
+					assert.equal('invalid verb', err);
+					done();
+				});
+			});
+
 		});
 	}
 

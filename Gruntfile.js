@@ -93,6 +93,10 @@ module.exports = function(grunt) {
 				files: ['Gruntfile.js', 'service/**/**.js', 'test/service/**/*.js'],
 				tasks: ['jshint', 'backend-unit-tests']
 			},
+			all: {
+				files: ['Gruntfile.js', 'public/js/**/*.js', 'test/public/**/*.js', '!public/js/dist/**', 'service/**/**.js', 'test/service/**/*.js'],
+				tasks: ['frontend-tests', 'backend-tests']
+			},
 			lint: {
 				files: lintFiles,
 				tasks: ['jshint']

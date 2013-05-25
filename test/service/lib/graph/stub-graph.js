@@ -49,7 +49,7 @@ exports.create = function() {
 
 			searchByName: function(searchString, page, perPage) {
 				return Q.resolve(_.filter(topics, function(t) {
-					return t.name.indexOf(searchString) > -1;
+					return t.name.toLowerCase().indexOf(searchString.toLowerCase()) > -1;
 				}));
 			},
 
@@ -113,13 +113,13 @@ exports.create = function() {
 			},
 
 			getByAttribute: function(attributeName, attributeValue) {
-				var found = _.find(resources, function(r) { return r[attributeName] === attributeValue; });
+				var found = _.find(resources, function(r) { return r[attributeName].toLowerCase() === attributeValue.toLowerCase(); });
 				return Q.resolve(found);
 			},
 
 			searchByTitle: function(searchString, page, perPage) {
 				return Q.resolve(_.filter(resources, function(r) {
-					return r.title.indexOf(searchString) > -1;
+					return r.title.toLowerCase().indexOf(searchString.toLowerCase()) > -1;
 				}));
 			},
 

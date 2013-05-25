@@ -87,6 +87,24 @@ describe('Topic Service', function() {
 					done();
 				});
 			});
+
+			it('search for topic by partial name should find the topic', function(done) {
+				service.search({ q: topic.name.substr(1) })
+				.done(function(foundTopics) {
+					assert.equal(1, foundTopics.length);
+					assert.equal(topic.id, foundTopics[0].id);
+					done();
+				});
+			});
+
+			it('search for topic by name with different case should find the topic');
+		});
+
+		describe('when topic containing special characters exists', function() {
+
+			it('search for topic where search contains spaces returns the topic');
+
+			it('search for topic where search contains ! returns the topic');
 		});
 
 		describe('when topic has related topics', function() {
@@ -184,6 +202,22 @@ describe('Topic Service', function() {
 					done();
 				});
 			});
+
+			it('linkTopic when parent topic is missing should return notfound error');
+
+			it('unlinkTopic when parent topic is missing should return notfound error');
+
+			it('linkTopic when child topic is missing should return notfound error');
+
+			it('unlinkTopic when child topic is missing should return notfound error');
+
+			it('linkRoot should return notfound error');
+
+			it('unlinkRoot should return notfound error');
+
+			it('linkResource should return notfound error');
+
+			it('unlinkResource should return notfound error');
 		});
 
 		describe('when topic has no name', function() {
@@ -210,7 +244,7 @@ describe('Topic Service', function() {
 			});
 		});
 
-		describe('when related topic does not already exist', function() {
+		describe('when topic link does not already exist', function() {
 
 			var fromTopic;
 			var toTopic;
@@ -250,49 +284,66 @@ describe('Topic Service', function() {
 			});
 		});
 
-		describe('when related topic already exists', function() {
+		function testTopicRelationships(relationshipType) {
 
-			var fromTopic;
-			var toTopic;
+			describe('when ' + relationshipType + ' topic already exists', function() {
 
-			beforeEach(function(done) {
-				graph.topics.create({ name: guid.raw() })
-				.then(function(firstCreatedTopic) {
-					fromTopic = firstCreatedTopic;
-					return graph.topics.create({ name: guid.raw() });
-				})
-				.then(function(secondCreatedTopic) {
-					toTopic = secondCreatedTopic;
-					return graph.relationships.create(fromTopic.id, toTopic.id, 'sub');
-				})
-				.done(function() {
-					done();
-				});
-			});
+				var fromTopic;
+				var toTopic;
 
-			it('linkTopic should return a duplicate error', function(done) {
-				service.linkTopic(fromTopic.id, toTopic.id, 'sub')
-				.done(function() {
-					assert.ok(false, 'should have failed');
-					done();
-				}, function(err) {
-					assert.equal('duplicate', err.name);
-					done();
-				});
-			});
-
-			it('unlinkTopic should unlink the related topic', function(done) {
-
-				service.unlinkTopic(fromTopic.id, toTopic.id, 'sub')
-				.then(function() {
-					return graph.relationships.get(fromTopic.id, toTopic.id, 'sub');
-				})
-				.done(function(link) {
-					assert.equal(undefined, link);
-					done();
+				beforeEach(function(done) {
+					graph.topics.create({ name: guid.raw() })
+					.then(function(firstCreatedTopic) {
+						fromTopic = firstCreatedTopic;
+						return graph.topics.create({ name: guid.raw() });
+					})
+					.then(function(secondCreatedTopic) {
+						toTopic = secondCreatedTopic;
+						return graph.relationships.create(fromTopic.id, toTopic.id, relationshipType);
+					})
+					.done(function() {
+						done();
+					});
 				});
 
+				it('linkTopic should return a duplicate error', function(done) {
+					service.linkTopic(fromTopic.id, toTopic.id, relationshipType)
+					.done(function() {
+						assert.ok(false, 'should have failed');
+						done();
+					}, function(err) {
+						assert.equal('duplicate', err.name);
+						done();
+					});
+				});
+
+				it('unlinkTopic should unlink the related topic', function(done) {
+
+					service.unlinkTopic(fromTopic.id, toTopic.id, relationshipType)
+					.then(function() {
+						return graph.relationships.get(fromTopic.id, toTopic.id, 'sub');
+					})
+					.done(function(link) {
+						assert.equal(undefined, link);
+						done();
+					});
+
+				});
 			});
+		}
+
+		testTopicRelationships('sub');
+		testTopicRelationships('next');		
+		
+
+		describe('when topic is not a root', function() {
+
+			it('linkRoot should make the topic a root topic');
+		});
+
+		describe('when topic is already a root', function() {
+
+			it('linkRoot should return a duplicate error');
 		});
 
 		describe('when given an invalid relationship', function() {
@@ -382,6 +433,13 @@ describe('Topic Service', function() {
 				});
 			});
 		});
+
+		describe('when the resource does not exist', function() {
+
+			it('linkResource should return notfound error');
+
+			it('unlinkResource should return notfound error');
+		})
 
 		describe('when the resource is already linked to the topic', function() {
 
