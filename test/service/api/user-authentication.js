@@ -79,7 +79,7 @@ describe('User Authentication', function() {
 			it('user is not authenticated', function(done) {
 				api.get('/user').then(function(res) {
 					assert.equal(204, res.statusCode);
-					assert.equal(null, res.body);
+					assert.equal('', res.body);
 					done();
 				})
 				.done();
