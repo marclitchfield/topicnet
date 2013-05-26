@@ -20,11 +20,10 @@ describe('Resource Service', function() {
 
 			var resource;
 
-			beforeEach(function(done) {
-				graph.resources.create({ title: guid.raw().toLowerCase(), url: guid.raw(), source: guid.raw(), verb: 'read' })
-				.done(function(createdResource) {
+			beforeEach(function() {
+				return graph.resources.create({ title: guid.raw().toLowerCase(), url: guid.raw(), source: guid.raw(), verb: 'read' })
+				.then(function(createdResource) {
 					resource = createdResource;
-					done();
 				});
 			});
 
@@ -111,15 +110,14 @@ describe('Resource Service', function() {
 
 			var resource, otherResource;
 
-			beforeEach(function(done) {
-				graph.resources.create({ title: guid.raw(), url: guid.raw(), source: guid.raw(), verb: 'read' })
+			beforeEach(function() {
+				return graph.resources.create({ title: guid.raw(), url: guid.raw(), source: guid.raw(), verb: 'read' })
 				.then(function(createdResource) {
 					resource = createdResource;
 					return graph.resources.create({ title: guid.raw(), url: guid.raw(), source: guid.raw(), verb: 'read' });
 				})
-				.done(function(createdResource) {
+				.then(function(createdResource) {
 					otherResource = createdResource;
-					done();
 				});
 			});
 
@@ -197,16 +195,15 @@ describe('Resource Service', function() {
 
 			var resource;
 
-			beforeEach(function(done) {
-				graph.topics.create({ name: guid.raw() })
+			beforeEach(function() {
+				return graph.topics.create({ name: guid.raw() })
 				.then(function(createdTopic) {
 					return graph.resources.create({ title: guid.raw(), url: guid.raw(), source: guid.raw(), verb: 'read' })
 					.then(function(createdResource) {
 						resource = createdResource;
 						return graph.relationships.create(createdTopic.id, createdResource.id, 'resources');
 					});
-				})
-				.done(function() { done(); });
+				});
 			});
 
 			it('destroy resource returns an error', function() {
