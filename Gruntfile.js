@@ -62,7 +62,7 @@ module.exports = function(grunt) {
 		develop: {
 			server: {
 				file: 'service/server.js',
-				disableOutput: false,
+				disableOutput: true,
 				readyText: 'Listening on'
 			}
 		},
