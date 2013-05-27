@@ -5,7 +5,8 @@ function findMocha(module) {
 		for (var i=0; i<module.children.length; i++) {
 			var childModule = module.children[i];
 
-			if (childModule.id && childModule.id.indexOf('/mocha/lib/mocha.js') > -1) {
+			var suffix = 'mocha.js';
+			if (childModule.id && childModule.id.indexOf(suffix, childModule.id.length - suffix.length) > -1) {
 				return childModule;
 			}
 
