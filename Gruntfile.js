@@ -1,6 +1,6 @@
 module.exports = function(grunt) {
 
-	var lintFiles = ['**/*.js', '!node_modules/**', '!public/js/vendor/**', '!public/js/dist/**'];
+	var lintFiles = ['**/*.js', '!Gruntfile.js', '!node_modules/**', '!public/js/vendor/**', '!public/js/dist/**'];
 
 	// Project configuration.
 	grunt.initConfig({
@@ -71,6 +71,7 @@ module.exports = function(grunt) {
 				TOPICNET_SKIP_INTEGRATION: true
 			}
 		},
+<<<<<<< HEAD
 		'mocha-hack': {
 			all: {
 				src: ['test/service/**/*.js']
@@ -83,6 +84,16 @@ module.exports = function(grunt) {
 				timeout: 3000,
 				grep: grunt.option('grep')
 			}
+=======
+		mocha_spawn: {
+			options: {
+				reporter: 'dot',
+				timeout: 3000,
+				grep: grunt.option('grep')
+			},
+			all: ['test/service/**/*.js'],
+			unit: ['test/service/**/*.js', '!test/service/api/**']
+>>>>>>> Replaced grunt-mocha-hack with grunt-mocha-spawn
 		},
 		watch: {
 			frontend: {
@@ -106,12 +117,12 @@ module.exports = function(grunt) {
 
 	// Default task.
 	grunt.registerTask('frontend-tests', ['jshint', 'clean', 'uglify', 'jasmine']);
-	grunt.registerTask('backend-tests', ['develop', 'mocha-hack:all', 'develop-kill']);
+	grunt.registerTask('backend-tests', ['develop', 'mocha_spawn:all', 'develop-kill']);
 	grunt.registerTask('default', ['frontend-tests', 'backend-tests']);
 	grunt.registerTask('ft', ['frontend-tests']);
 	grunt.registerTask('bt', ['backend-tests']);
 	grunt.registerTask('develop', ['develop']);
-	grunt.registerTask('backend-unit-tests', ['env:skip-integration-tests', 'mocha-hack:unit']);
+	grunt.registerTask('backend-unit-tests', ['env:skip-integration-tests', 'mocha_spawn:unit']);
 	grunt.registerTask('but', ['backend-unit-tests']);
 
 	grunt.registerTask('develop-kill', function() {
@@ -124,6 +135,6 @@ module.exports = function(grunt) {
 	grunt.loadNpmTasks('grunt-contrib-watch');
 	grunt.loadNpmTasks('grunt-contrib-jasmine');
 	grunt.loadNpmTasks('grunt-develop');
-	grunt.loadNpmTasks('grunt-mocha-hack');
+	grunt.loadNpmTasks('grunt-mocha-spawn');
 	grunt.loadNpmTasks('grunt-env');
 };
