@@ -83,7 +83,7 @@ describe('Topic Relationships', function() {
 		it('returns status 200', function() {
 			return api.del('/topics/' + postTopic.returnedData.id + '/' + relationshipType + '/' + postRelatedTopic.returnedData.id)
 			.then(function(results) {
-				assert.equal(results.statusCode, 201);
+				assert.equal(results.statusCode, 200);
 			});
 		});
 
