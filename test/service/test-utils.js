@@ -1,5 +1,4 @@
 var assert = require('assert');
-
 require('mocha-as-promised')();
 
 String.prototype.contains = function(searchString) {
