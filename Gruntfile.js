@@ -71,20 +71,6 @@ module.exports = function(grunt) {
 				TOPICNET_SKIP_INTEGRATION: true
 			}
 		},
-<<<<<<< HEAD
-		'mocha-hack': {
-			all: {
-				src: ['test/service/**/*.js']
-			},
-			unit: {
-				src: ['test/service/**/*.js', '!test/service/api/**']
-			},
-			options: {
-				reporter: 'spec',
-				timeout: 3000,
-				grep: grunt.option('grep')
-			}
-=======
 		mocha_spawn: {
 			options: {
 				reporter: 'dot',
@@ -93,7 +79,6 @@ module.exports = function(grunt) {
 			},
 			all: ['test/service/**/*.js'],
 			unit: ['test/service/**/*.js', '!test/service/api/**']
->>>>>>> Replaced grunt-mocha-hack with grunt-mocha-spawn
 		},
 		watch: {
 			frontend: {
