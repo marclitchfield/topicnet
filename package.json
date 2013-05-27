@@ -31,7 +31,7 @@
     "grunt-mocha-test": "~0.2.0",
     "grunt-develop": "git://github.com/marclitchfield/grunt-develop.git",
     "grunt-env": "~0.4.0",
-    "mocha-as-promised": "~1.3.0",
+    "mocha-as-promised": "git://github.com/marclitchfield/mocha-as-promised.git",
     "grunt-mocha-spawn": "~0.1.1"
   }
 }
