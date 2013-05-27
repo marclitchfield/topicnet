@@ -30,7 +30,7 @@ exports.create = function(neo4jGraph) {
 		},
 
 		get: function(fromId, toId, relationshipType) {
-			return getMany()
+			return getMany(fromId, toId, relationshipType)
 			.then(function(results) {
 				return results.length === 0 ? undefined : results[0];
 			});

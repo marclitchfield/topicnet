@@ -12,10 +12,8 @@ exports.create = function(graph) {
 			return Q.reject('invalid relationship. must be one of: ' + validRelationships.join(', '));
 		}
 
-		console.log('in linkTopic');
 		return graph.relationships.get(fromId, toId, relationshipType)
 		.then(function(rel) {
-			console.log('rel = ', rel);
 			if(rel !== undefined) {
 				return Q.reject({name: 'duplicate', message: 'Relationship \'' +
 					relationshipType + '\' already exists between ' + fromId + ' and ' + toId});
