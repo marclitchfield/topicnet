@@ -1,6 +1,7 @@
 var assert = require('assert');
 var _ = require('underscore');
 var api = require('./helper-api.js');
+require('../test-utils');
 
 describe('Topic Resources', function() {
 
@@ -10,8 +11,8 @@ describe('Topic Resources', function() {
 		var postResource;
 		var linkResourceResponse;
 
-		before(function(done) {
-			api.postTopic()
+		before(function() {
+			return api.postTopic()
 			.then(function(res) {
 				postTopic = res;
 				return api.postResource();
@@ -23,9 +24,7 @@ describe('Topic Resources', function() {
 			})
 			.then(function(res) {
 				linkResourceResponse = res;
-				done();
-			})
-			.done();
+			});
 		});
 
 		it('returns status 200', function() {
@@ -38,17 +37,15 @@ describe('Topic Resources', function() {
 
 		describe('then GET /topics/:id', function() {
 
-			it('returns the topic with the newly associated resource', function(done) {
-				api.get('/topics/' + postTopic.returnedData.id)
+			it('returns the topic with the newly associated resource', function() {
+				return api.get('/topics/' + postTopic.returnedData.id)
 				.then(function(res) {
 					assert.equal(res.statusCode, 200);
 					var topic = api.parseBody(res.body);
 					assert.ok(_.any(topic.resources, function(r) {
 						return r.id === postResource.returnedData.id;
 					}));
-					done();
-				})
-				.done();
+				});
 			});
 
 		});
@@ -60,37 +57,31 @@ describe('Topic Resources', function() {
 		var postTopic;
 		var postResource;
 
-		before(function(done) {
-			api.postAndLinkTopicAndResource()
+		before(function() {
+			return api.postAndLinkTopicAndResource()
 			.then(function(res) {
 				postTopic = res.postTopic;
 				postResource = res.postResource;
-				done();
-			})
-			.done();
+			});
 		});
 
-		it('returns status 200', function(done) {
-			api.del('/topics/' + postTopic.returnedData.id + '/resources/' + postResource.returnedData.id)
+		it('returns status 200', function() {
+			return api.del('/topics/' + postTopic.returnedData.id + '/resources/' + postResource.returnedData.id)
 			.then(function(res) {
 				assert.equal(res.statusCode, 200);
-				done();
-			})
-			.done();
+			});
 		});
 
 		describe('then GET /topics/:id', function() {
 
-			it('does not include the unlinked resource', function(done) {
-				api.getTopic(postTopic.returnedData.id)
+			it('does not include the unlinked resource', function() {
+				return api.getTopic(postTopic.returnedData.id)
 				.then(function(returnedTopic) {
 					assert.ok(returnedTopic.resources === undefined ||
 						!_.any(returnedTopic.resources, function(r) {
 							return r.id === postResource.returnedData.id;
 						}));
-					done();
-				})
-				.done();
+				});
 			});
 
 		});

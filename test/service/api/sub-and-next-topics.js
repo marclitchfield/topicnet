@@ -1,6 +1,7 @@
 var assert = require('assert');
 var _ = require('underscore');
 var api = require('./helper-api.js');
+require('../test-utils');
 
 describe('Topic Relationships', function() {
 
@@ -12,15 +13,13 @@ describe('Topic Relationships', function() {
 		var postRelatedTopic;
 		var createRelationshipResponse;
 
-		before(function(done) {
-			api.postAndLinkTopics(relationshipType)
+		before(function() {
+			return api.postAndLinkTopics(relationshipType)
 			.then(function(res) {
 				postTopic = res.postTopic;
 				postRelatedTopic = res.postRelatedTopic;
 				createRelationshipResponse = res.response;
-				done();
-			})
-			.done();
+			});
 		});
 
 		it('returns status 200', function() {
@@ -35,13 +34,11 @@ describe('Topic Relationships', function() {
 
 			var getRelatedResponse;
 
-			before(function(done) {
-				api.get('/topics/' + postTopic.returnedData.id + '/' + relationshipType)
+			before(function() {
+				return api.get('/topics/' + postTopic.returnedData.id + '/' + relationshipType)
 				.then(function(res) {
 					getRelatedResponse = res;
-					done();
-				})
-				.done();
+				});
 			});
 
 			it('returns status 200', function() {
@@ -61,13 +58,11 @@ describe('Topic Relationships', function() {
 
 	describe('DELETE /topics/:id/' + relationshipType + '/:toid with an invalid id', function() {
 
-		it('returns status 404', function(done) {
-			api.del('/topics/-9999999/' + relationshipType + '/-99999999')
+		it('returns status 404', function() {
+			return api.del('/topics/-9999999/' + relationshipType + '/-99999999')
 			.then(function(res) {
 				assert.equal(res.statusCode, 404);
-				done();
-			})
-			.done();
+			});
 		});
 
 	});
@@ -77,37 +72,31 @@ describe('Topic Relationships', function() {
 		var postTopic;
 		var postRelatedTopic;
 
-		before(function(done) {
-			api.postAndLinkTopics(relationshipType)
+		before(function() {
+			return api.postAndLinkTopics(relationshipType)
 			.then(function(res) {
 				postTopic = res.postTopic;
 				postRelatedTopic = res.postRelatedTopic;
-				done();
-			})
-			.done();
+			});
 		});
 
-		it('returns status 200', function(done) {
-			api.del('/topics/' + postTopic.returnedData.id + '/' + relationshipType + '/' + postRelatedTopic.returnedData.id)
+		it('returns status 200', function() {
+			return api.del('/topics/' + postTopic.returnedData.id + '/' + relationshipType + '/' + postRelatedTopic.returnedData.id)
 			.then(function(results) {
-				assert.equal(results.statusCode, 200);
-				done();
-			})
-			.done();
+				assert.equal(results.statusCode, 201);
+			});
 		});
 
 		describe('then GET /topics/:id/' + relationshipType, function() {
 
-			it('does not include the topic whose ' + relationshipType + ' relationship was deleted', function(done) {
-				api.get('/topics/' + postTopic.returnedData.id + '/' + relationshipType)
+			it('does not include the topic whose ' + relationshipType + ' relationship was deleted', function() {
+				return api.get('/topics/' + postTopic.returnedData.id + '/' + relationshipType)
 				.then(function(results) {
 					var relatedTopics = api.parseBody(results.body);
 					assert.ok(!_.any(relatedTopics, function(t) {
 						return t.id === postRelatedTopic.returnedData.id;
 					}));
-					done();
-				})
-				.done();
+				});
 			});
 
 		});

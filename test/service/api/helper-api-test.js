@@ -1,5 +1,6 @@
 var assert = require('assert');
 var api = require('./helper-api.js');
+require('../test-utils');
 
 describe('Test Helper', function() {
 
@@ -7,13 +8,11 @@ describe('Test Helper', function() {
 
 		var response;
 
-		before(function(done) {
-			api.postTopic()
+		before(function() {
+			return api.postTopic()
 			.then(function(res) {
 				response = res;
-				done();
-			})
-			.done();
+			});
 		});
 
 		it('returns a promise whose value is an object', function() {
@@ -47,17 +46,15 @@ describe('Test Helper', function() {
 		var postedData;
 		var response;
 
-		before(function(done) {
-			api.postTopic()
+		before(function() {
+			return api.postTopic()
 			.then(function(res) {
 				postedData = res.returnedData;
 				return api.getTopic(postedData.id);
 			})
 			.then(function(res) {
 				response = res;
-				done();
-			})
-			.done();
+			});
 		});
 
 		it('returns a promise whose value is an object', function() {
@@ -86,13 +83,11 @@ describe('Test Helper', function() {
 
 		var response;
 
-		before(function(done) {
-			api.postResource()
+		before(function() {
+			return api.postResource()
 			.then(function(res) {
 				response = res;
-				done();
-			})
-			.done();
+			});
 		});
 
 		it('returns a promise whose value is an object', function() {
@@ -126,17 +121,15 @@ describe('Test Helper', function() {
 		var postedData;
 		var response;
 
-		before(function(done) {
-			api.postResource()
+		before(function() {
+			return api.postResource()
 			.then(function(res) {
 				postedData = res.returnedData;
 				return api.getResource(postedData.id);
 			})
 			.then(function(res) {
 				response = res;
-				done();
-			})
-			.done();
+			});
 		});
 
 		it('returns a promise whose value is an object', function() {

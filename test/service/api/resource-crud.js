@@ -2,18 +2,17 @@ var assert = require('assert');
 var _ = require('underscore');
 var api = require('./helper-api.js');
 var guid = require('guid');
+require('../test-utils');
 
 describe('Resource CRUD', function() {
 
 	describe('GET /resources/:id with invalid id', function() {
 
-		it('returns status 404', function(done) {
-			api.get('/resources/-9999999')
+		it('returns status 404', function() {
+			return api.get('/resources/-9999999')
 			.then(function(res) {
 				assert.equal(res.statusCode, 404);
-				done();
-			})
-			.done();
+			});
 		});
 
 	});
@@ -22,13 +21,11 @@ describe('Resource CRUD', function() {
 
 		var postResource;
 
-		before(function(done) {
-			api.postResource()
+		before(function() {
+			return api.postResource()
 			.then(function(res) {
 				postResource = res;
-				done();
-			})
-			.done();
+			});
 		});
 
 		it('returns status 200', function() {
@@ -62,17 +59,15 @@ describe('Resource CRUD', function() {
 		var postResource;
 		var getResource;
 
-		before(function(done) {
-			api.postResource()
+		before(function() {
+			return api.postResource()
 			.then(function(res) {
 				postResource = res;
 				return api.getResource(postResource.returnedData.id);
 			})
 			.then(function(res) {
 				getResource = res;
-				done();
-			})
-			.done();
+			});
 		});
 
 		it('returns status 200', function() {
@@ -111,8 +106,8 @@ describe('Resource CRUD', function() {
 		var putResponse;
 		var returnedResource;
 
-		before(function(done) {
-			api.postResource()
+		before(function() {
+			return api.postResource()
 			.then(function(res) {
 				postResource = res;
 				return api.put('/resources/' + postResource.returnedData.id, resourceUpdate);
@@ -120,9 +115,7 @@ describe('Resource CRUD', function() {
 			.then(function(res) {
 				putResponse = res;
 				returnedResource = api.parseBody(res.body);
-				done();
-			})
-			.done();
+			});
 		});
 
 		it('returns status 200', function() {
@@ -149,13 +142,11 @@ describe('Resource CRUD', function() {
 
 			var getResource;
 
-			before(function(done) {
-				api.getResource(postResource.returnedData.id)
+			before(function() {
+				return api.getResource(postResource.returnedData.id)
 				.then(function(res) {
 					getResource = res;
-					done();
-				})
-				.done();
+				});
 			});
 
 			it('returns resource with updated title', function() {
@@ -182,33 +173,27 @@ describe('Resource CRUD', function() {
 
 		var postResource;
 
-		before(function(done) {
-			api.postResource()
+		before(function() {
+			return api.postResource()
 			.then(function(res) {
 				postResource = res;
-				done();
-			})
-			.done();
+			});
 		});
 
-		it('returns status 200', function(done) {
-			api.del('/resources/' + postResource.returnedData.id)
+		it('returns status 200', function() {
+			return api.del('/resources/' + postResource.returnedData.id)
 			.then(function(res) {
 				assert.equal(res.statusCode, 200);
-				done();
-			})
-			.done();
+			});
 		});
 
 		describe('then GET /resources/:id with the deleted resource id', function() {
 
-			it('returns status 404', function(done) {
-				api.get('/resources/' + postResource.returnedData.id)
+			it('returns status 404', function() {
+				return api.get('/resources/' + postResource.returnedData.id)
 				.then(function(res) {
 					assert.equal(res.statusCode, 404);
-					done();
-				})
-				.done();
+				});
 			});
 
 		});

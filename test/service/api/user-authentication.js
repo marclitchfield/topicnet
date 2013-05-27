@@ -3,6 +3,7 @@ var _ = require('underscore');
 var api = require('./helper-api.js');
 var guid = require('guid');
 var crypto = require('crypto');
+require('../test-utils');
 
 function getUniqueEmail() {
 	return guid.raw() + '@' + guid.raw() + '.com';
@@ -19,11 +20,10 @@ describe('User Authentication', function() {
 	describe('POST to /user with valid email and hashed password', function() {
 		var postResult;
 
-		before(function(done) {
-			api.post('/user', { email: getUniqueEmail(), password: getHashedPassword() })
+		before(function() {
+			return api.post('/user', { email: getUniqueEmail(), password: getHashedPassword() })
 			.then(function(res) {
 				postResult = res;
-				done();
 			});
 		});
 
@@ -44,14 +44,13 @@ describe('User Authentication', function() {
 		var password = getHashedPassword();
 		var loginResponse;
 
-		before(function(done) {
-			api.post('/user', { email: email, password: password })
+		before(function() {
+			return api.post('/user', { email: email, password: password })
 			.then(function(res) {
 				return api.post('/login', { email: email, password: password });
 			})
 			.then(function(res) {
 				loginResponse = res;
-				done();
 			});
 		});
 
@@ -59,30 +58,24 @@ describe('User Authentication', function() {
 			assert.equal(loginResponse.statusCode, 200);
 		});
 
-		it('user is authenticated', function(done) {
-			api.get('/user').then(function(res) {
+		it('user is authenticated', function() {
+			return api.get('/user').then(function(res) {
 				assert.equal(200, res.statusCode);
 				var user = api.parseBody(res.body);
 				assert.equal(email, user.email);
-				done();
-			})
-			.done();
+			});
 		});
 
 		describe('then POST to /logout', function() {
-			before(function(done) {
-				api.post('/logout').then(function(res) {
-					done();
-				});
+			before(function() {
+				return api.post('/logout');
 			});
 
-			it('user is not authenticated', function(done) {
-				api.get('/user').then(function(res) {
+			it('user is not authenticated', function() {
+				return api.get('/user').then(function(res) {
 					assert.equal(204, res.statusCode);
-					assert.equal(null, res.body);
-					done();
-				})
-				.done();
+					assert.equal('', res.body);
+				});
 			});
 		});
 

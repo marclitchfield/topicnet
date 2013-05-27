@@ -2,18 +2,17 @@ var assert = require('assert');
 var _ = require('underscore');
 var api = require('./helper-api.js');
 var guid = require('guid');
+require('../test-utils');
 
 describe('Topic CRUD', function() {
 
 	describe('POST to /topics with no name', function() {
-		it('returns status 500 and error message', function(done) {
-			api.post('/topics', {})
+		it('returns status 500 and error message', function() {
+			return api.post('/topics', {})
 			.then(function(res) {
 				assert.equal(500, res.statusCode);
 				assert.notEqual(-1, res.body.indexOf('name is required'));
-				done();
-			})
-			.done();
+			});
 		});
 	});
 
@@ -21,13 +20,11 @@ describe('Topic CRUD', function() {
 
 		var postTopic;
 
-		before(function(done) {
-			api.postTopic()
+		before(function() {
+			return api.postTopic()
 			.then(function(res) {
 				postTopic = res;
-				done();
-			})
-			.done();
+			});
 		});
 
 		it('returns status 200', function() {
@@ -49,17 +46,15 @@ describe('Topic CRUD', function() {
 		var postTopic;
 		var duplicatePostResponse;
 
-		before(function(done) {
-			api.postTopic()
+		before(function() {
+			return api.postTopic()
 			.then(function(res) {
 				postTopic = res;
 				return api.post('/topics', postTopic.postedData);
 			})
 			.then(function(res) {
 				duplicatePostResponse = res;
-				done();
-			})
-			.done();
+			});
 		});
 
 		it('returns status 400', function() {
@@ -74,13 +69,11 @@ describe('Topic CRUD', function() {
 
 	describe('GET /topics/:id with invalid id', function() {
 
-		it('returns status 404', function(done) {
-			api.get('/topics/-99999')
+		it('returns status 404', function() {
+			return api.get('/topics/-99999')
 			.then(function(res) {
 				assert.equal(res.statusCode, 404);
-				done();
-			})
-			.done();
+			});
 		});
 
 	});
@@ -90,17 +83,15 @@ describe('Topic CRUD', function() {
 		var postTopic;
 		var getTopic;
 	
-		before(function(done) {
-			api.postTopic()
+		before(function() {
+			return api.postTopic()
 			.then(function(res) {
 				postTopic = res;
 				return api.getTopic(postTopic.returnedData.id);
 			})
 			.then(function(res) {
 				getTopic = res;
-				done();
-			})
-			.done();
+			});
 		});
 
 		it('returns status 200', function() {
@@ -123,8 +114,8 @@ describe('Topic CRUD', function() {
 		var postRelated;
 		var retreivedTopic;
 
-		before(function(done) {
-			(function() {
+		before(function() {
+			return (function() {
 				if(relationshipType === 'resources') {
 					return api.postAndLinkTopicAndResource()
 					.then(function(res) {
@@ -144,9 +135,7 @@ describe('Topic CRUD', function() {
 			})
 			.then(function(res) {
 				retreivedTopic = JSON.parse(res.body);
-				done();
-			})
-			.done();
+			});
 		});
 
 		it('returns the topic with a ' + relationshipType +
@@ -192,29 +181,23 @@ describe('Topic CRUD', function() {
 		var postTopic;
 		var updatedTopic = { name: 'updated ' + guid.raw() };
 
-		before(function(done) {
-			api.postTopic()
+		before(function() {
+			return api.postTopic()
 			.then(function(res) {
 				postTopic = res;
 				return api.put('/topics/' + postTopic.returnedData.id, updatedTopic);
-			})
-			.then(function() {
-				done();
-			})
-			.done();
+			});
 		});
 
 		describe('then GET /topics/:id', function() {
 
 			var getTopic;
 			
-			before(function(done) {
-				api.getTopic(postTopic.returnedData.id)
+			before(function() {
+				return api.getTopic(postTopic.returnedData.id)
 				.then(function(res) {
 					getTopic = res;
-					done();
-				})
-				.done();
+				});
 			});
 
 			it('topic name has been updated', function() {
@@ -229,8 +212,8 @@ describe('Topic CRUD', function() {
 		var postOtherTopic;
 		var putResponse;
 
-		before(function(done) {
-			api.postTopic()
+		before(function() {
+			return api.postTopic()
 			.then(function(res) {
 				postTopic = res;
 				return api.postTopic();
@@ -241,9 +224,7 @@ describe('Topic CRUD', function() {
 			})
 			.then(function(res) {
 				putResponse = res;
-				done();
-			})
-			.done();
+			});
 		});
 
 		it('returns status 400', function() {
@@ -258,13 +239,11 @@ describe('Topic CRUD', function() {
 
 	describe('DELETE /topics/:id with invalid id', function() {
 
-		it('returns status 404', function(done) {
-			api.del('/topics/-9999999')
+		it('returns status 404', function() {
+			return api.del('/topics/-9999999')
 			.then(function(res) {
 				assert.equal(res.statusCode, 404);
-				done();
-			})
-			.done();
+			});
 		});
 
 	});
@@ -275,8 +254,8 @@ describe('Topic CRUD', function() {
 		var postResource;
 		var delResponse;
 		
-		before(function(done) {
-			api.postAndLinkTopicAndResource()
+		before(function() {
+			return api.postAndLinkTopicAndResource()
 			.then(function(res) {
 				postTopic = res.postTopic;
 				postResource = res.postResource;
@@ -284,9 +263,7 @@ describe('Topic CRUD', function() {
 			})
 			.then(function(res) {
 				delResponse = res;
-				done();
-			})
-			.done();
+			});
 		});
 
 		it('returns status 500', function() {
@@ -295,14 +272,12 @@ describe('Topic CRUD', function() {
 
 		describe('then GET /topics/:id', function() {
 
-			it('returns the topic', function(done) {
-				api.get('/topics/' + postTopic.returnedData.id)
+			it('returns the topic', function() {
+				return api.get('/topics/' + postTopic.returnedData.id)
 				.then(function(res) {
 					var topic = api.parseBody(res.body);
 					assert.equal(topic.id, postTopic.returnedData.id);
-					done();
-				})
-				.done();
+				});
 			});
 
 		});
@@ -313,33 +288,27 @@ describe('Topic CRUD', function() {
 
 		var postTopic;
 
-		before(function(done) {
-			api.postTopic()
+		before(function() {
+			return api.postTopic()
 			.then(function(res) {
 				postTopic = res;
-				done();
-			})
-			.done();
+			});
 		});
 
-		it('returns status 200', function(done) {
-			api.del('/topics/' + postTopic.returnedData.id)
+		it('returns status 200', function() {
+			return api.del('/topics/' + postTopic.returnedData.id)
 			.then(function(res) {
 				assert.equal(res.statusCode, 200);
-				done();
-			})
-			.done();
+			});
 		});
 
 		describe('then GET /topics/:id with the deleted id', function() {
 
-			it('returns status 404', function(done) {
-				api.get('/topics/' + postTopic.returnedData.id)
+			it('returns status 404', function() {
+				return api.get('/topics/' + postTopic.returnedData.id)
 				.then(function(res) {
 					assert.equal(res.statusCode, 404);
-					done();
-				})
-				.done();
+				});
 			});
 
 		});

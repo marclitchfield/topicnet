@@ -1,6 +1,7 @@
 var assert = require('assert');
 var _ = require('underscore');
 var api = require('./helper-api.js');
+require('../test-utils');
 
 describe('Root Topics', function() {
 
@@ -9,17 +10,15 @@ describe('Root Topics', function() {
 		var postTopic;
 		var rootResponse;
 
-		before(function(done) {
-			api.postTopic()
+		before(function() {
+			return api.postTopic()
 			.then(function(res) {
 				postTopic = res;
 				return api.post('/topics/' + postTopic.returnedData.id + '/root', {});
 			})
 			.then(function(res) {
 				rootResponse = res;
-				done();
-			})
-			.done();
+			});
 		});
 
 		it('returns status 200', function() {
@@ -30,13 +29,11 @@ describe('Root Topics', function() {
 
 			var rootTopicsResponse;
 
-			before(function(done) {
-				api.get('/topics')
+			before(function() {
+				return api.get('/topics')
 				.then(function(res) {
 					rootTopicsResponse = res;
-					done();
-				})
-				.done();
+				});
 			});
 
 			it('returns status 200', function() {
@@ -59,39 +56,31 @@ describe('Root Topics', function() {
 
 		var postTopic;
 
-		before(function(done) {
-			api.postTopic()
+		before(function() {
+			return api.postTopic()
 			.then(function(res) {
 				postTopic = res;
 				return api.post('/topics/' + postTopic.returnedData.id + '/root', {});
-			})
-			.then(function(results) {
-				done();
-			})
-			.done();
+			});
 		});
 
-		it('returns status 200', function(done) {
-			api.del('/topics/' + postTopic.returnedData.id + '/root')
+		it('returns status 200', function() {
+			return api.del('/topics/' + postTopic.returnedData.id + '/root')
 			.then(function(results) {
 				assert.equal(results.statusCode, 200);
-				done();
-			})
-			.done();
+			});
 		});
 
 		describe('then GET /topics', function() {
 
-			it('does not include the topic in the root topics', function(done) {
-				api.get('/topics')
+			it('does not include the topic in the root topics', function() {
+				return api.get('/topics')
 				.then(function(results) {
 					var rootTopics = api.parseBody(results.body);
 					assert.ok(!_.any(rootTopics, function(t) {
 						return t.id === postTopic.returnedData.id;
 					}));
-					done();
-				})
-				.done();
+				});
 			});
 
 		});

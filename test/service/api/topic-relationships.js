@@ -1,6 +1,7 @@
 var assert = require('assert');
 var _ = require('underscore');
 var api = require('./helper-api.js');
+require('../test-utils');
 
 describe('Topic Relationships', function() {
 
@@ -11,8 +12,8 @@ describe('Topic Relationships', function() {
 		var response;
 		var rel;
 
-		before(function(done) {
-			(function() {
+		before(function() {
+			return (function() {
 				if(relationshipType === 'resources') {
 					return api.postAndLinkTopicAndResource()
 					.then(function(res) {
@@ -34,9 +35,7 @@ describe('Topic Relationships', function() {
 			.then(function(res) {
 				response = res;
 				rel = JSON.parse(response.body);
-				done();
-			})
-			.done();
+			});
 		});
 
 		it('returns status 200', function() {
@@ -87,45 +86,39 @@ describe('Topic Relationships', function() {
 
 	describe('GET /topics/:id/:rel/:toid with invalid id', function() {
 
-		it('returns status 404', function(done) {
-			api.get('/topics/-9999999/next/1')
+		it('returns status 404', function() {
+			return api.get('/topics/-9999999/next/1')
 			.then(function(res) {
 				assert.equal(res.statusCode, 404);
-				done();
-			})
-			.done();
+			});
 		});
 
 	});
 
 	describe('GET /topics/:id/:rel/:toid with invalid rel', function() {
 
-		it('returns status 404', function(done) {
-			api.postTopic()
+		it('returns status 404', function() {
+			return api.postTopic()
 			.then(function(postTopic) {
 				return api.get('/topics/' + postTopic.returnedData.id + '/invalidRel/-999999');
 			})
 			.then(function(res) {
 				assert.equal(res.statusCode, 404);
-				done();
-			})
-			.done();
+			});
 		});
 
 	});
 
 	describe('GET /topics/:id/:rel/:toid with invalid toid', function() {
 
-		it('returns status 404', function(done) {
-			api.postTopic()
+		it('returns status 404', function() {
+			return api.postTopic()
 			.then(function(postTopic) {
 				return api.get('/topics/' + postTopic.returnedData.id + '/next/-999999');
 			})
 			.then(function(res) {
 				assert.equal(res.statusCode, 404);
-				done();
-			})
-			.done();
+			});
 		});
 
 	});
@@ -134,13 +127,11 @@ describe('Topic Relationships', function() {
 
 		var postResponse;
 
-		before(function(done) {
-			api.post('/topics/1/invalid', { toid: 2 })
+		before(function() {
+			return api.post('/topics/1/invalid', { toid: 2 })
 			.then(function(res) {
 				postResponse = res;
-				done();
-			})
-			.done();
+			});
 		});
 
 		it('returns status 500', function() {
@@ -155,29 +146,25 @@ describe('Topic Relationships', function() {
 
 	describe('POST to /topics/:id/:rel with an invalid id', function() {
 
-		it('returns status 404', function(done) {
-			api.post('/topics/-9999999/sub', {})
+		it('returns status 404', function() {
+			return api.post('/topics/-9999999/sub', {})
 			.then(function(res) {
 				assert.equal(res.statusCode, 404);
-				done();
-			})
-			.done();
+			});
 		});
 
 	});
 
 	describe('DELETE /topics/:id/:rel with an invalid relationship type', function() {
 
-		it('returns status 500', function(done) {
-			api.postTopic()
+		it('returns status 500', function() {
+			return api.postTopic()
 			.then(function(res) {
 				return api.del('/topics/' + res.returnedData.id + '/invalidrel/-9999999');
 			})
 			.then(function(res) {
 				assert.equal(res.statusCode, 500);
-				done();
-			})
-			.done();
+			});
 		});
 
 	});
