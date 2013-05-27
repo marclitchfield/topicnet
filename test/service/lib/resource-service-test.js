@@ -15,7 +15,7 @@ describe('Resource Service', function() {
 		beforeEach(function() {
 			service = resourceService.create(graph);
 
-			return graph.users.create()
+			return graph.users.create({ email: guid.raw() })
 			.then(function(createdUser) {
 				user = createdUser;
 			});

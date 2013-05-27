@@ -100,8 +100,8 @@ exports.create = function() {
 			getMany: getRelationships,
 
 			exists: function(toId, relationshipTypes) {
-				var exists = _.some(relationships, function(r) {
-					return r._toId === toId && _.contains(relationshipTypes, r._type);
+				var exists = _.some(_.values(relationships), function(r) {
+					return r._toId === toId && _.contains(relationshipTypes, r.type);
 				});
 				return Q.resolve(exists);
 			},
