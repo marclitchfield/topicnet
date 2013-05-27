@@ -559,13 +559,14 @@ describe('Topic Service', function() {
 				});
 			});
 
-			it('hide resource updates the opinion for the user', function() {
+			it('hide resource adds an opinion on the resource', function() {
 				return service.hideResource(topic.id, resource.id, user.id)
 				.then(function() {
-					return graph.relationships.get(user.id, topic.id, 'opinion');
+					return graph.relationships.get(user.id, topic.id, 'opinion_hide');
 				})
 				.then(function(opinion) {
-					assert.deepEqual(opinion.hidden.resources, [resource.id]);
+					assert.equal('resources', opinion.rel);
+					assert.equal(resource.id, opinion.toId);
 				});
 			});
 
@@ -585,19 +586,15 @@ describe('Topic Service', function() {
 					});
 				})
 				.then(function() {
-					var opinionData = {
-						hidden: {
-							resources: [resource.id]
-						}
-					};
-					return graph.relationships.create(user.id, topic.id, 'opinion', opinionData);
+					var opinionData = { rel: 'resources', toId: resource.id };
+					return graph.relationships.create(user.id, topic.id, 'opinion_hide', opinionData);
 				});
 			});
 
 			it('hide resource fails with a duplicate error', function() {
 				return service.hideResource(topic.id, resource.id, user.id)
 				.then(function() {
-					return graph.relationships.get(user.id, topic.id, 'opinion');
+					return graph.relationships.get(user.id, topic.id, 'opinion_hide');
 				})
 				.then(assert.expectFail, function(err) {
 					assert.equal('duplicate', err.name);

@@ -20,11 +20,9 @@ exports.create = function(graph) {
 			}
 		})
 		.then(function() {
-			console.log('about to create the root relationship');
 			return graph.relationships.create(fromId, toId, relationshipType, {});
 		})
 		.then(function() {
-			console.log('created the root relationship, returning it');
 			return { score: 0 };
 		});
 	}
@@ -128,7 +126,6 @@ exports.create = function(graph) {
 		linkTopic: linkTopic,
 
 		linkRoot: function(topicId) {
-			console.log('in linkRoot');
 			return linkTopic(0, topicId, 'root');
 		},
 
@@ -166,22 +163,14 @@ exports.create = function(graph) {
 		},
 
 		hideResource: function(topicId, resId, userId) {
-			return graph.relationships.get(userId, topicId, 'opinion')
-			.then(function(existingOpinion) {
-				var opinion;
-				if (existingOpinion === undefined) {
-					opinion = { hidden: { resources: [resId] }};
-					return graph.relationships.create(userId, topicId, 'opinion', opinion);
+			return graph.relationships.getMany(userId, topicId, 'opinion_hide')
+			.then(function(existingOpinions) {
+				var isDuplicate = _.some(existingOpinions, function(o) { return o.toId = resId; });
+				if (isDuplicate) {
+					return Q.reject({ name: 'duplicate', message: 'Opinion already exists on resource' });
 				} else {
-					opinion = { hidden: { resources: [] } };
-					_.extend(opinion, existingOpinion);
-
-					if (_.contains(opinion.hidden.resources, resId)) {
-						return Q.reject({ name: 'duplicate', message: 'resource has already been hidden'});
-					}
-
-					opinion.hidden.resources.push(resId);
-					return graph.relationships.update(userId, topicId, 'opinion', opinion);
+					var opinion = { rel: 'resources', toId: resId };
+					return graph.relationships.create(userId, topicId, 'opinion_hide', opinion);
 				}
 			});
 		}

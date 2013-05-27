@@ -16,9 +16,10 @@ exports.create = function() {
 		if (!(toId in topics) && !(toId in resources) && !(toId in users)) {
 			return Q.reject({ name: 'notfound' });
 		}
-		var rels = _.filter(relationships, function(r) {
-			return r.fromId === fromId && r.toId === toId &&
-				r.relationshipType === relationshipType;
+
+		var rels = _.filter(_.values(relationships), function(r) {
+			return r._fromId === fromId && r._toId === toId &&
+				r.type === relationshipType;
 		});
 		return Q.resolve(rels);
 	}
@@ -57,10 +58,10 @@ exports.create = function() {
 					return Q.reject({ name: 'notfound' });
 				}
 				var rels = _.filter(relationships, function(r) {
-					return r.fromId === fromId && r.relationshipType === relationshipType;
+					return r._fromId === fromId && r.type === relationshipType;
 				});
 				var relatedTopics = _.map(rels, function(r) {
-					return topics[r.toId];
+					return topics[r._toId];
 				});
 				return Q.resolve(relatedTopics);
 			},
@@ -83,21 +84,11 @@ exports.create = function() {
 		relationships: {
 
 			create: function(fromId, toId, relationshipType, data) {
-				var relationship = { id: id++, fromId: fromId, toId: toId,
-					relationshipType: relationshipType };
+				var relationship = { id: id++, _fromId: fromId, _toId: toId, type: relationshipType };
 				_.extend(relationship, data || {});
 				relationships[relationship.id] = relationship;
 				return Q.resolve(relationship);
 			},
-
-			//update: function(fromId, toId, relationshipType, data) {
-				//var key = relationshipType + ':' + fromId + '->' + toId;
-				//if (!(key in relationships)) {
-					//return Q.reject({ name: 'notfound' });
-				//}
-				//_.extend(relationships[key], data || {});
-				//return Q.resolve(relationships[key]);
-			//},
 
 			get: function(fromId, toId, relationshipType) {
 				return getRelationships(fromId, toId, relationshipType)
@@ -110,7 +101,7 @@ exports.create = function() {
 
 			exists: function(toId, relationshipTypes) {
 				var exists = _.some(relationships, function(r) {
-					return r.toId === toId && _.contains(relationshipTypes, r.relationshipType);
+					return r._toId === toId && _.contains(relationshipTypes, r._type);
 				});
 				return Q.resolve(exists);
 			},
