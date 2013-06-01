@@ -21,11 +21,10 @@ describe('User Service', function() {
 
 			var user;
 
-			beforeEach(function(done) {
+			beforeEach(function() {
 				return graph.users.create({ email: guid.raw(), password: '0000000000000000000000000000000000000000000000000000000000000000' })
-				.done(function(createdUser) {
+				.then(function(createdUser) {
 					user = createdUser;
-					done();
 				});
 			});
 
