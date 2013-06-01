@@ -71,23 +71,14 @@ module.exports = function(grunt) {
 				TOPICNET_SKIP_INTEGRATION: true
 			}
 		},
-		mochaTest: {
-			all: {
-				options: {
-					reporter: 'spec',
-					timeout: 3000,
-					grep: grunt.option('grep')
-				},
-				src: ['test/service/**/*.js']
+		'mocha_spawn': {
+			options: {
+				reporter: 'spec',
+				timeout: 3000,
+				grep: grunt.option('grep')
 			},
-			unit: {
-				options: {
-					reporter: 'spec',
-					timeout: 3000,
-					grep: grunt.option('grep')
-				},
-				src: ['test/service/**/*.js', '!test/service/api/**']
-			}
+			all: ['test/service/**/*.js'],
+			unit: ['test/service/**/*.js', '!test/service/api/**']
 		},
 		watch: {
 			frontend: {
@@ -111,12 +102,12 @@ module.exports = function(grunt) {
 
 	// Default task.
 	grunt.registerTask('frontend-tests', ['jshint', 'clean', 'uglify', 'jasmine']);
-	grunt.registerTask('backend-tests', ['develop', 'mochaTest:all', 'develop-kill']);
+	grunt.registerTask('backend-tests', ['develop', 'mocha_spawn:all', 'develop-kill']);
 	grunt.registerTask('default', ['frontend-tests', 'backend-tests']);
 	grunt.registerTask('ft', ['frontend-tests']);
 	grunt.registerTask('bt', ['backend-tests']);
 	grunt.registerTask('develop', ['develop']);
-	grunt.registerTask('backend-unit-tests', ['env:skip-integration-tests', 'mochaTest:unit']);
+	grunt.registerTask('backend-unit-tests', ['env:skip-integration-tests', 'mocha_spawn:unit']);
 	grunt.registerTask('but', ['backend-unit-tests']);
 
 	grunt.registerTask('develop-kill', function() {
@@ -129,6 +120,6 @@ module.exports = function(grunt) {
 	grunt.loadNpmTasks('grunt-contrib-watch');
 	grunt.loadNpmTasks('grunt-contrib-jasmine');
 	grunt.loadNpmTasks('grunt-develop');
-	grunt.loadNpmTasks('grunt-mocha-test');
+	grunt.loadNpmTasks('grunt-mocha-spawn');
 	grunt.loadNpmTasks('grunt-env');
 };
