@@ -22,10 +22,11 @@ describe('Topic Service', function() {
 
 			var topic;
 
-			beforeEach(function() {
-				return graph.topics.create({ name: guid.raw().toLowerCase() })
-				.then(function(createdTopic) {
+			beforeEach(function(done) {
+				graph.topics.create({ name: guid.raw().toLowerCase() })
+				.done(function(createdTopic) {
 					topic = createdTopic;
+					done();
 				});
 			});
 
@@ -106,13 +107,14 @@ describe('Topic Service', function() {
 			var topic;
 			var ourGuid;
 
-			beforeEach(function() {
+			beforeEach(function(done) {
 				ourGuid = guid.raw();
 				var topicName = (ourGuid + ' hey abboooot! ').toLowerCase();
 				
-				return graph.topics.create({ name: topicName })
-				.then(function(createdTopic) {
+				graph.topics.create({ name: topicName })
+				.done(function(createdTopic) {
 					topic = createdTopic;
+					done();
 				});
 			});
 
@@ -137,8 +139,8 @@ describe('Topic Service', function() {
 
 			var topic, relatedTopic;
 
-			beforeEach(function() {
-				return graph.topics.create({ name: guid.raw() })
+			beforeEach(function(done) {
+				graph.topics.create({ name: guid.raw() })
 				.then(function(createdTopic1) {
 					topic = createdTopic1;
 					return graph.topics.create({ name: 'related' + guid.raw() });
@@ -146,7 +148,8 @@ describe('Topic Service', function() {
 				.then(function(createdTopic2) {
 					relatedTopic = createdTopic2;
 					return graph.relationships.create(topic.id, relatedTopic.id, 'sub');
-				});
+				})
+				.done(function() { done(); });
 			});
 
 			it('getLinkedTopics returns the related topic', function() {
@@ -271,14 +274,15 @@ describe('Topic Service', function() {
 			var fromTopic;
 			var toTopic;
 
-			beforeEach(function() {
-				return graph.topics.create({ name: guid.raw() })
+			beforeEach(function(done) {
+				graph.topics.create({ name: guid.raw() })
 				.then(function(firstCreatedTopic) {
 					fromTopic = firstCreatedTopic;
 					return graph.topics.create({ name: guid.raw() });
 				})
-				.then(function(secondCreatedTopic) {
+				.done(function(secondCreatedTopic) {
 					toTopic = secondCreatedTopic;
+					done();
 				});
 			});
 
@@ -305,8 +309,8 @@ describe('Topic Service', function() {
 			var fromTopic;
 			var toTopic;
 
-			beforeEach(function() {
-				return graph.topics.create({ name: guid.raw() })
+			beforeEach(function(done) {
+				graph.topics.create({ name: guid.raw() })
 				.then(function(firstCreatedTopic) {
 					fromTopic = firstCreatedTopic;
 					return graph.topics.create({ name: guid.raw() });
@@ -314,7 +318,8 @@ describe('Topic Service', function() {
 				.then(function(secondCreatedTopic) {
 					toTopic = secondCreatedTopic;
 					return graph.relationships.create(fromTopic.id, toTopic.id, 'sub');
-				});
+				})
+				.done(function() { done(); });
 			});
 
 			it('linkTopic should return a duplicate error', function() {
@@ -339,10 +344,11 @@ describe('Topic Service', function() {
 
 			var topic;
 
-			beforeEach(function() {
-				return graph.topics.create({ name: guid.raw().toLowerCase() })
-				.then(function(createdTopic) {
+			beforeEach(function(done) {
+				graph.topics.create({ name: guid.raw().toLowerCase() })
+				.done(function(createdTopic) {
 					topic = createdTopic;
+					done();
 				});
 			});
 
@@ -361,12 +367,13 @@ describe('Topic Service', function() {
 
 			var topic;
 
-			beforeEach(function() {
-				return graph.topics.create({ name: guid.raw().toLowerCase() })
+			beforeEach(function(done) {
+				graph.topics.create({ name: guid.raw().toLowerCase() })
 				.then(function(createdTopic) {
 					topic = createdTopic;
 					return graph.relationships.create(0, topic.id, 'root');
-				});
+				})
+				.done(function() { done(); });
 			});
 
 			it('linkRoot should return a duplicate error', function() {
@@ -406,15 +413,16 @@ describe('Topic Service', function() {
 			var topic;
 			var resource;
 
-			beforeEach(function() {
-				return graph.topics.create({name: guid.raw()})
+			beforeEach(function(done) {
+				graph.topics.create({name: guid.raw()})
 				.then(function(createdTopic) {
 					topic = createdTopic;
 					return graph.resources.create({url: guid.raw(), title: guid.raw(),
 						source: 'example.com', verb: 'read'});
 				})
-				.then(function(createdResource) {
+				.done(function(createdResource) {
 					resource = createdResource;
+					done();
 				});
 			});
 
@@ -446,10 +454,11 @@ describe('Topic Service', function() {
 		describe('when the topic exists but the resource does not', function() {
 			var topic;
 
-			beforeEach(function() {
-				return graph.topics.create({name: guid.raw()})
-				.then(function(createdTopic) {
+			beforeEach(function(done) {
+				graph.topics.create({name: guid.raw()})
+				.done(function(createdTopic) {
 					topic = createdTopic;
+					done();
 				});
 			});
 
@@ -471,10 +480,11 @@ describe('Topic Service', function() {
 		describe('when the resource exists but the topic does not', function() {
 			var resource;
 
-			beforeEach(function() {
-				return graph.resources.create({url: guid.raw(), title: guid.raw(), source: guid.raw(), verb: 'read'})
-				.then(function(createdResource) {
+			beforeEach(function(done) {
+				graph.resources.create({url: guid.raw(), title: guid.raw(), source: guid.raw(), verb: 'read'})
+				.done(function(createdResource) {
 					resource = createdResource;
+					done();
 				});
 			});
 
@@ -498,7 +508,7 @@ describe('Topic Service', function() {
 			var topic;
 			var resource;
 
-			beforeEach(function() {
+			beforeEach(function(done) {
 				return graph.topics.create({name: guid.raw()})
 				.then(function(createdTopic) {
 					topic = createdTopic;
@@ -508,7 +518,8 @@ describe('Topic Service', function() {
 				.then(function(createdResource) {
 					resource = createdResource;
 					return graph.relationships.create(topic.id, resource.id, 'resources', {});
-				});
+				})
+				.done(function() { done(); });
 			});
 
 			it('getLink should return the relationship', function() {
