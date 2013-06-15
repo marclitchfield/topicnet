@@ -131,6 +131,27 @@ exports.create = function(graph) {
 					return graph.resources.destroy(id);
 				}
 			});
+		},
+
+		hide: function(id, topicId, userId) {
+			return graph.relationships.get(userId, topicId, 'opinion')
+			.then(function(existingOpinion) {
+				var opinion;
+				if (existingOpinion === undefined) {
+					opinion = { hidden: { resources: [id] }};
+					return graph.relationships.create(userId, topicId, 'opinion', opinion);
+				} else {
+					opinion = { hidden: { resources: [] } };
+					_.extend(opinion, existingOpinion);
+
+					if (_.contains(opinion.hidden.resources, id)) {
+						return Q.reject({ name: 'duplicate', message: 'resource has already been hidden'});
+					}
+
+					opinion.hidden.resources.push(id);
+					return graph.relationships.update(userId, topicId, 'opinion', opinion);
+				}
+			});
 		}
 
 	};

@@ -71,11 +71,20 @@ exports.create = function() {
 				return Q.resolve(relationship);
 			},
 
-			get: function(fromId, toId, relationshipType) {
-				if (!(fromId in topics)) {
+			update: function(fromId, toId, relationshipType, data) {
+				var key = relationshipType + ':' + fromId + '->' + toId;
+				if (!(key in relationships)) {
 					return Q.reject({ name: 'notfound' });
 				}
-				if (!(toId in topics) && !(toId in resources)) {
+				_.extend(relationships[key], data || {});
+				return Q.resolve(relationships[key]);
+			},
+
+			get: function(fromId, toId, relationshipType) {
+				if (!(fromId in topics) && !(fromId in resources) && !(fromId in users)) {
+					return Q.reject({ name: 'notfound' });
+				}
+				if (!(toId in topics) && !(toId in resources) && !(toId in users)) {
 					return Q.reject({ name: 'notfound' });
 				}
 				return Q.resolve(relationships[relationshipType + ':' + fromId + '->' + toId]);

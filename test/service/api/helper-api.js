@@ -148,3 +148,28 @@ exports.postAndLinkTopicAndResource = function() {
 		return result;
 	});
 };
+
+exports.postUserAndLogin = function() {
+
+	function getUniqueEmail() {
+		return guid.raw() + '@' + guid.raw() + '.com';
+	}
+
+	function getHashedPassword() {
+		sha256 = crypto.createHash('sha256');
+		sha256.update(guid.raw());
+		return sha256.digest('hex');
+	}
+
+	var result = {};
+	var userData = { email: getUniqueEmail(), password: getHashedPassword() };
+
+	return api.post('/user', userData)
+	.then(function(res) {
+		result.postUser = res;
+		return api.post('/login', userData);
+	})
+	.then(function(res) {
+		return result;
+	});
+};

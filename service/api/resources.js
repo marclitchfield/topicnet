@@ -31,3 +31,6 @@ exports['delete'] = function(request, response) {
 	handler.complete(response, resourceService.destroy(request.params.id));
 };
 
+exports.hideResource = function(request, response) {
+	handler.complete(response, resourceService.hide(request.params.id, request.params.resid, request.user.id));
+};

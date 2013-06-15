@@ -10,10 +10,15 @@ require('../test-utils');
 describe('Resource Service', function() {
 
 	function runResourceServiceTests(graph) {
-		var service;
+		var service, user;
 
 		beforeEach(function() {
 			service = resourceService.create(graph);
+
+			return graph.users.create()
+			.then(function(createdUser) {
+				user = createdUser;
+			});
 		});
 
 		describe('when resource exists', function() {
@@ -43,7 +48,7 @@ describe('Resource Service', function() {
 
 			it('update should update the resource', function() {
 				var updateData = { title: guid.raw(), url: guid.raw(), source: guid.raw(), verb: 'watch'};
-				
+
 				return service.update(resource.id, updateData)
 				.then(function() {
 					return graph.resources.get(resource.id);
@@ -193,11 +198,12 @@ describe('Resource Service', function() {
 
 		describe('when resource is linked to topic', function() {
 
-			var resource;
+			var resource, topic;
 
 			beforeEach(function() {
 				return graph.topics.create({ name: guid.raw() })
 				.then(function(createdTopic) {
+					topic = createdTopic;
 					return graph.resources.create({ title: guid.raw(), url: guid.raw(), source: guid.raw(), verb: 'read' })
 					.then(function(createdResource) {
 						resource = createdResource;
@@ -212,6 +218,52 @@ describe('Resource Service', function() {
 					assert.equal('cannot delete resource because it still has relationships', err);
 				});
 			});
+
+			it('hide resource updates the opinion for the user', function() {
+				return service.hide(resource.id, topic.id, user.id)
+				.then(function() {
+					return graph.relationships.get(user.id, topic.id, 'opinion');
+				})
+				.then(function(opinion) {
+					assert.deepEqual(opinion.hidden.resources, [resource.id]);
+				});
+			});
+
+		});
+
+		describe('when user already has a hidden relationship opinion', function() {
+			var resource, topic;
+
+			beforeEach(function() {
+				return graph.topics.create({ name: guid.raw() })
+				.then(function(createdTopic) {
+					topic = createdTopic;
+					return graph.resources.create({ title: guid.raw(), url: guid.raw(), source: guid.raw(), verb: 'read' })
+					.then(function(createdResource) {
+						resource = createdResource;
+						return graph.relationships.create(createdTopic.id, createdResource.id, 'resources');
+					});
+				})
+				.then(function() {
+					var opinionData = {
+						hidden: {
+							resources: [resource.id]
+						}
+					};
+					return graph.relationships.create(user.id, topic.id, 'opinion', opinionData);
+				});
+			});
+
+			it('hide resource fails with a duplicate error', function() {
+				return service.hide(resource.id, topic.id, user.id)
+				.then(function() {
+					return graph.relationships.get(user.id, topic.id, 'opinion');
+				})
+				.then(assert.expectFail, function(err) {
+					assert.equal('duplicate', err.name);
+				});
+			});
+
 		});
 
 		describe('when resource is missing required property', function() {

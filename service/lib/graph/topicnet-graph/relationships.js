@@ -8,6 +8,9 @@ exports.create = function(neo4jGraph) {
 			return neo4jGraph.createRelationshipBetween(fromId, toId, relationshipType);
 		},
 
+		update: function(fromId, toId, relationshipType, data) {
+		},
+
 		get: function(fromId, toId, relationshipType) {
 			var cypherQuery = 'START from=node(' + fromId +	'), to=node(' + toId + ') ' +
 				'MATCH from-[r:' + relationshipType + ']->to RETURN r';

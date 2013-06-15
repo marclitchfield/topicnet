@@ -32,6 +32,7 @@ app['delete']('/topics/:id', topics['delete']);
 // resources
 
 app.post('/resources', resources.create);
+app.post('/topics/:id/resources/:resid/hide', resources.hideResource);
 app.get('/resources/:id', resources.get);
 app.get('/resources', resources.search);
 app.put('/resources/:id', resources.update);
