@@ -44,9 +44,9 @@ topicnet.controllers.controller('TopicDetailController', function($scope, $http,
 		});
 	};
 
-	$scope.moveResource = function(resource, relationshipType, toTopic) {
+	$scope.moveResource = function(resource, toTopic) {
 		$http.post('/topics/' + $scope.topic.id + '/resources/' + resource.id + '/hide').success(function() {
-			return $http.post('/topics/' + $scope.topic.id + '/' + relationshipType + '/' + toTopic.id + '/affirm');
+			return $http.post('/topics/' + toTopic.id + '/resources/' + resource.id + '/affirm');
 		}).success(function() {
 			$scope.topic.resources = $scope.topic.resources.filter(function(r) {
 				return r.id !== resource.id;

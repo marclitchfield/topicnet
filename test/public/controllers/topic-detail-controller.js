@@ -105,8 +105,8 @@ describe('TopicDetailController', function() {
 			beforeEach(function() {
 				topic.resources = [ {id: 8}, {id: 9} ];
 				httpBackend.expectPOST('/topics/1/resources/8/hide').respond(200, {});
-				httpBackend.expectPOST('/topics/1/sub/999/affirm').respond(200, {});
-				scope.moveResource({id:8}, 'sub', {id:999});
+				httpBackend.expectPOST('/topics/999/resources/8/affirm').respond(200, {});
+				scope.moveResource({id:8}, {id:999});
 				httpBackend.flush();
 			});
 

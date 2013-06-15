@@ -21,7 +21,7 @@ topicnet.controllers.controller('RelatedTopicController', function($scope, $http
 
 	$scope.moveTopic = function(topic, rel, toTopic) {
 		$http.post('/topics/' + $scope.topic.id + '/' + rel + '/' + topic.id + '/hide').success(function() {
-			return $http.post('/topics/' + topic.id + '/' + rel + '/' + toTopic.id + '/affirm');
+			return $http.post('/topics/' + toTopic.id + '/' + rel + '/' + topic.id + '/affirm');
 		}).success(function() {
 			$scope.topic[rel] = $scope.topic[rel].filter(function(t) {
 				return t.id !== topic.id;

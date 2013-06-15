@@ -66,7 +66,7 @@ describe('RelatedTopicController', function() {
 				httpBackend.expectPOST(
 					'/topics/' + scope.topic.id + '/' + scope.rel + '/' + relTopic.id + '/hide').respond(200,{});
 				httpBackend.expectPOST(
-					'/topics/' + relTopic.id + '/' + scope.rel + '/' + toTopic.id + '/affirm').respond(200,{});
+					'/topics/' + toTopic.id + '/' + scope.rel + '/' + relTopic.id + '/affirm').respond(200,{});
 				$controller('RelatedTopicController', {$scope: scope});
 				scope.moveTopic(relTopic, scope.rel, toTopic);
 				httpBackend.flush();
