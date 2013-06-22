@@ -12,17 +12,21 @@ exports.create = function(graph) {
 			return Q.reject('invalid relationship. must be one of: ' + validRelationships.join(', '));
 		}
 
+		console.log('in linkTopic');
 		return graph.relationships.get(fromId, toId, relationshipType)
 		.then(function(rel) {
+			console.log('rel = ', rel);
 			if(rel !== undefined) {
 				return Q.reject({name: 'duplicate', message: 'Relationship \'' +
 					relationshipType + '\' already exists between ' + fromId + ' and ' + toId});
 			}
 		})
 		.then(function() {
+			console.log('about to create the root relationship');
 			return graph.relationships.create(fromId, toId, relationshipType, {});
 		})
 		.then(function() {
+			console.log('created the root relationship, returning it');
 			return { score: 0 };
 		});
 	}
@@ -126,6 +130,7 @@ exports.create = function(graph) {
 		linkTopic: linkTopic,
 
 		linkRoot: function(topicId) {
+			console.log('in linkRoot');
 			return linkTopic(0, topicId, 'root');
 		},
 
@@ -158,6 +163,27 @@ exports.create = function(graph) {
 					return Q.reject({name: 'notfound'});
 				} else {
 					return graph.relationships.destroy(rel.id);
+				}
+			});
+		},
+
+		hideResource: function(topicId, resId, userId) {
+			return graph.relationships.get(userId, topicId, 'opinion')
+			.then(function(existingOpinion) {
+				var opinion;
+				if (existingOpinion === undefined) {
+					opinion = { hidden: { resources: [resId] }};
+					return graph.relationships.create(userId, topicId, 'opinion', opinion);
+				} else {
+					opinion = { hidden: { resources: [] } };
+					_.extend(opinion, existingOpinion);
+
+					if (_.contains(opinion.hidden.resources, resId)) {
+						return Q.reject({ name: 'duplicate', message: 'resource has already been hidden'});
+					}
+
+					opinion.hidden.resources.push(resId);
+					return graph.relationships.update(userId, topicId, 'opinion', opinion);
 				}
 			});
 		}

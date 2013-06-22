@@ -164,7 +164,7 @@ exports.hasRelationships = function(nodeId, relationshipTypes) {
 	});
 };
 
-exports.createRelationshipBetween = function(fromNodeId, toNodeId, relationshipType, params) {
+exports.createRelationshipBetween = function(fromNodeId, toNodeId, relationshipType, data) {
 	var deferred = Q.defer();
 	var fromNode, toNode;
 	return getNodeById(fromNodeId)
@@ -174,7 +174,7 @@ exports.createRelationshipBetween = function(fromNodeId, toNodeId, relationshipT
 	})
 	.then(function(node) {
 		toNode = node;
-		fromNode.createRelationshipTo(toNode, relationshipType, params || {}, deferred.makeNodeResolver());
+		fromNode.createRelationshipTo(toNode, relationshipType, data || {}, deferred.makeNodeResolver());
 		return deferred.promise;
 	});
 };

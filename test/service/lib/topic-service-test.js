@@ -13,9 +13,14 @@ describe('Topic Service', function() {
 	function runTopicServiceTests(graph) {
 
 		var service;
+		var user;
 
 		beforeEach(function() {
 			service = topicService.create(graph);
+			return graph.users.create({ email: guid.raw() })
+			.then(function(res) {
+				user = res;
+			});
 		});
 
 		describe('when topic exists', function() {
@@ -38,7 +43,7 @@ describe('Topic Service', function() {
 
 			it('update topic should update the topic', function() {
 				var updatedName = guid.raw();
-				
+
 				return service.update(topic.id, { name: updatedName })
 				.then(function() {
 					return graph.topics.get(topic.id);
@@ -109,7 +114,7 @@ describe('Topic Service', function() {
 			beforeEach(function() {
 				ourGuid = guid.raw();
 				var topicName = (ourGuid + ' hey abboooot! ').toLowerCase();
-				
+
 				return graph.topics.create({ name: topicName })
 				.then(function(createdTopic) {
 					topic = createdTopic;
@@ -536,6 +541,69 @@ describe('Topic Service', function() {
 					assert.equal(undefined, relationship);
 				});
 			});
+		});
+
+		describe('when resource is linked to topic', function() {
+
+			var resource, topic;
+
+			beforeEach(function() {
+				return graph.topics.create({ name: guid.raw() })
+				.then(function(createdTopic) {
+					topic = createdTopic;
+					return graph.resources.create({ title: guid.raw(), url: guid.raw(), source: guid.raw(), verb: 'read' })
+					.then(function(createdResource) {
+						resource = createdResource;
+						return graph.relationships.create(createdTopic.id, createdResource.id, 'resources');
+					});
+				});
+			});
+
+			it('hide resource updates the opinion for the user', function() {
+				return service.hideResource(topic.id, resource.id, user.id)
+				.then(function() {
+					return graph.relationships.get(user.id, topic.id, 'opinion');
+				})
+				.then(function(opinion) {
+					assert.deepEqual(opinion.hidden.resources, [resource.id]);
+				});
+			});
+
+		});
+
+		describe('when user already has a hidden relationship opinion', function() {
+			var resource, topic;
+
+			beforeEach(function() {
+				return graph.topics.create({ name: guid.raw() })
+				.then(function(createdTopic) {
+					topic = createdTopic;
+					return graph.resources.create({ title: guid.raw(), url: guid.raw(), source: guid.raw(), verb: 'read' })
+					.then(function(createdResource) {
+						resource = createdResource;
+						return graph.relationships.create(createdTopic.id, createdResource.id, 'resources');
+					});
+				})
+				.then(function() {
+					var opinionData = {
+						hidden: {
+							resources: [resource.id]
+						}
+					};
+					return graph.relationships.create(user.id, topic.id, 'opinion', opinionData);
+				});
+			});
+
+			it('hide resource fails with a duplicate error', function() {
+				return service.hideResource(topic.id, resource.id, user.id)
+				.then(function() {
+					return graph.relationships.get(user.id, topic.id, 'opinion');
+				})
+				.then(assert.expectFail, function(err) {
+					assert.equal('duplicate', err.name);
+				});
+			});
+
 		});
 
 	} // end runTopicServiceTests

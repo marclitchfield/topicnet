@@ -9,6 +9,20 @@ exports.create = function() {
 	var users = {};
 	var id = 1;
 
+	function getRelationships(fromId, toId, relationshipType) {
+		if (!(fromId in topics) && !(fromId in resources) && !(fromId in users)) {
+			return Q.reject({ name: 'notfound' });
+		}
+		if (!(toId in topics) && !(toId in resources) && !(toId in users)) {
+			return Q.reject({ name: 'notfound' });
+		}
+		var rels = _.filter(relationships, function(r) {
+			return r.fromId === fromId && r.toId === toId &&
+				r.relationshipType === relationshipType;
+		});
+		return Q.resolve(rels);
+	}
+
 	return {
 
 		topics: {
@@ -42,9 +56,13 @@ exports.create = function() {
 				if (!(fromId in topics)) {
 					return Q.reject({ name: 'notfound' });
 				}
-				var keys = _.filter(_.keys(relationships), function(r) { return r.indexOf(relationshipType + ':' + fromId) === 0; });
-				var related = _.map(keys, function(k) { return topics[relationships[k].toId]; });
-				return Q.resolve(related);
+				var rels = _.filter(relationships, function(r) {
+					return r.fromId === fromId && r.relationshipType === relationshipType;
+				});
+				var relatedTopics = _.map(rels, function(r) {
+					return topics[r.toId];
+				});
+				return Q.resolve(relatedTopics);
 			},
 
 			searchByName: function(searchString, page, perPage) {
@@ -65,42 +83,40 @@ exports.create = function() {
 		relationships: {
 
 			create: function(fromId, toId, relationshipType, data) {
-				var relationship = { id: id++, fromId: fromId, toId: toId };
+				var relationship = { id: id++, fromId: fromId, toId: toId,
+					relationshipType: relationshipType };
 				_.extend(relationship, data || {});
-				relationships[relationshipType + ':' + fromId + '->' + toId] = relationship;
+				relationships[relationship.id] = relationship;
 				return Q.resolve(relationship);
 			},
 
-			update: function(fromId, toId, relationshipType, data) {
-				var key = relationshipType + ':' + fromId + '->' + toId;
-				if (!(key in relationships)) {
-					return Q.reject({ name: 'notfound' });
-				}
-				_.extend(relationships[key], data || {});
-				return Q.resolve(relationships[key]);
-			},
+			//update: function(fromId, toId, relationshipType, data) {
+				//var key = relationshipType + ':' + fromId + '->' + toId;
+				//if (!(key in relationships)) {
+					//return Q.reject({ name: 'notfound' });
+				//}
+				//_.extend(relationships[key], data || {});
+				//return Q.resolve(relationships[key]);
+			//},
 
 			get: function(fromId, toId, relationshipType) {
-				if (!(fromId in topics) && !(fromId in resources) && !(fromId in users)) {
-					return Q.reject({ name: 'notfound' });
-				}
-				if (!(toId in topics) && !(toId in resources) && !(toId in users)) {
-					return Q.reject({ name: 'notfound' });
-				}
-				return Q.resolve(relationships[relationshipType + ':' + fromId + '->' + toId]);
+				return getRelationships(fromId, toId, relationshipType)
+				.then(function(results) {
+					return results.length === 0 ? undefined : results[0];
+				});
 			},
 
+			getMany: getRelationships,
+
 			exists: function(toId, relationshipTypes) {
-				return Q.resolve(_.some(_.keys(relationships), function(r) {
-					return _.some(relationshipTypes, function(t) {
-						return r.indexOf(t + ':') === 0 && relationships[r].toId === toId;
-					});
-				}));
+				var exists = _.some(relationships, function(r) {
+					return r.toId === toId && _.contains(relationshipTypes, r.relationshipType);
+				});
+				return Q.resolve(exists);
 			},
 
 			destroy: function(relationshipId) {
-				var k = _.find(_.keys(relationships), function(r) { return relationships[r].id === relationshipId; });
-				delete relationships[k];
+				delete relationships[relationshipId];
 				return Q.resolve();
 			}
 		},
