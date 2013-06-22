@@ -28,24 +28,24 @@ describe('User Service', function() {
 				});
 			});
 
-			it('create with same email returns a duplicate error', function() {
-				return service.create(user.email, user.password)
-				.then(assert.expectFail, function(error) {
-					assert.equal('duplicate', error.name);
+			describe('create', function() {
+				it('should return a duplicate error given a duplicate email ', function() {
+					return service.create(user.email, user.password)
+					.then(assert.expectFail, function(error) {
+						assert.equal('duplicate', error.name);
+					});
 				});
 			});
 
-			describe('when valid credentials are supplied', function() {
-				it('verify succeeds', function() {
+			describe('verify', function() {
+				it('should succeed when valid credentials are supplied', function() {
 					return service.verify(user.email, user.password)
 					.then(function(verifiedUser) {
 						assert.equal(user.id, verifiedUser.id);
 					});
 				});
-			});
 
-			describe('when invalid credentials are supplied', function() {
-				it('verify fails', function() {
+				it('should fail when invalid credentials are supplied', function() {
 					return service.verify(user.email, 'FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF')
 					.then(assert.expectFail, function(error) {
 						assert.equal(error, 'Invalid credentials');
@@ -55,22 +55,26 @@ describe('User Service', function() {
 		});
 
 		describe('when user does not exist', function() {
-			it('create should create the user', function() {
-				return service.create(guid.raw(), '0000000000000000000000000000000000000000000000000000000000000000')
-				.then(function(createdUser) {
-					return graph.users.get(createdUser.id)
-					.then(function(retrievedUser) {
-						assert.equal(createdUser.email, retrievedUser.email);
+			describe('create', function() {
+				it('should create the user', function() {
+					return service.create(guid.raw(), '0000000000000000000000000000000000000000000000000000000000000000')
+					.then(function(createdUser) {
+						return graph.users.get(createdUser.id)
+						.then(function(retrievedUser) {
+							assert.equal(createdUser.email, retrievedUser.email);
+						});
 					});
 				});
 			});
 		});
 
 		describe('when the password is not hashed', function() {
-			it('create should return an error', function() {
-				return service.create(guid.raw(), 'this is not a hashed password')
-				.then(assert.expectFail, function(error) {
-					assert.equal(error.message, 'Invalid password');
+			describe('create', function() {
+				it('should return an error', function() {
+					return service.create(guid.raw(), 'this is not a hashed password')
+					.then(assert.expectFail, function(error) {
+						assert.equal(error.message, 'Invalid password');
+					});
 				});
 			});
 		});

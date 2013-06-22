@@ -22,7 +22,6 @@ describe('Resource Service', function() {
 		});
 
 		describe('when resource exists', function() {
-
 			var resource;
 
 			beforeEach(function() {
@@ -32,81 +31,91 @@ describe('Resource Service', function() {
 				});
 			});
 
-			it('create with duplicate title should return a duplicate error', function() {
-				return service.create({ title: resource.title, url: guid.raw(), source: guid.raw(), verb: 'read' })
-				.then(assert.expectFail, function(err) {
-					assert.equal('duplicate', err.name);
+			describe('create', function() {
+				it('should return a duplicate error given a duplicate title', function() {
+					return service.create({ title: resource.title, url: guid.raw(), source: guid.raw(), verb: 'read' })
+					.then(assert.expectFail, function(err) {
+						assert.equal('duplicate', err.name);
+					});
+				});
+
+				it('should return a duplicate error given a duplicate url', function() {
+					return service.create({ title: guid.raw(), url: resource.url, source: guid.raw(), verb: 'read' })
+					.then(assert.expectFail, function(err) {
+						assert.equal('duplicate', err.name);
+					});
 				});
 			});
 
-			it('create with duplicate url should return a duplicate error', function() {
-				return service.create({ title: guid.raw(), url: resource.url, source: guid.raw(), verb: 'read' })
-				.then(assert.expectFail, function(err) {
-					assert.equal('duplicate', err.name);
+			describe('get', function() {
+				it('should return the resource', function() {
+					return service.get(resource.id)
+					.then(function(retrievedResource) {
+						assert.deepEqual(resource, retrievedResource);
+					});
 				});
 			});
 
-			it('update should update the resource', function() {
-				var updateData = { title: guid.raw(), url: guid.raw(), source: guid.raw(), verb: 'watch'};
+			describe('search', function() {
+				it('should find the resource by exact title', function() {
+					return service.searchByTitle(resource.title)
+					.then(function(foundResources) {
+						assert.equal(1, foundResources.length);
+						assert.equal(resource.id, foundResources[0].id);
+					});
+				});
 
-				return service.update(resource.id, updateData)
-				.then(function() {
-					return graph.resources.get(resource.id);
-				})
-				.then(function(retrievedResource) {
-					assert.equal(updateData.title, retrievedResource.title);
-					assert.equal(updateData.url, retrievedResource.url);
-					assert.equal(updateData.source, retrievedResource.source);
-					assert.equal(updateData.verb, retrievedResource.verb);
+				it('should find the resource given a partial title', function() {
+					return service.search({ q: resource.title.substr(1) })
+					.then(function(foundResources) {
+						assert.equal(1, foundResources.length);
+						assert.equal(resource.id, foundResources[0].id);
+					});
+				});
+
+				it('should find the resource given a title with different case', function() {
+					return service.searchByTitle(resource.title.toUpperCase())
+					.then(function(foundResources) {
+						assert.equal(1, foundResources.length);
+						assert.equal(resource.id, foundResources[0].id);
+					});
+				});
+
+				it('should find the resource given a url', function() {
+					return service.searchByUrl(resource.url)
+					.then(function(foundResources) {
+						assert.equal(1, foundResources.length);
+						assert.equal(resource.id, foundResources[0].id);
+					});
 				});
 			});
 
-			it('get should return the resource', function() {
-				return service.get(resource.id)
-				.then(function(retrievedResource) {
-					assert.deepEqual(resource, retrievedResource);
+			describe('update', function() {
+				it('should update the resource', function() {
+					var updateData = { title: guid.raw(), url: guid.raw(), source: guid.raw(), verb: 'watch'};
+
+					return service.update(resource.id, updateData)
+					.then(function() {
+						return graph.resources.get(resource.id);
+					})
+					.then(function(retrievedResource) {
+						assert.equal(updateData.title, retrievedResource.title);
+						assert.equal(updateData.url, retrievedResource.url);
+						assert.equal(updateData.source, retrievedResource.source);
+						assert.equal(updateData.verb, retrievedResource.verb);
+					});
 				});
 			});
 
-			it('search for resource by title should find the resource', function() {
-				return service.searchByTitle(resource.title)
-				.then(function(foundResources) {
-					assert.equal(1, foundResources.length);
-					assert.equal(resource.id, foundResources[0].id);
-				});
-			});
-
-			it('search for resource by title with different case should find the resource', function() {
-				return service.searchByTitle(resource.title.toUpperCase())
-				.then(function(foundResources) {
-					assert.equal(1, foundResources.length);
-					assert.equal(resource.id, foundResources[0].id);
-				});
-			});
-
-			it('search for resource by url should find the resource', function() {
-				return service.searchByUrl(resource.url)
-				.then(function(foundResources) {
-					assert.equal(1, foundResources.length);
-					assert.equal(resource.id, foundResources[0].id);
-				});
-			});
-
-			it('search for resource by partial title should find the resource', function() {
-				return service.search({ q: resource.title.substr(1) })
-				.then(function(foundResources) {
-					assert.equal(1, foundResources.length);
-					assert.equal(resource.id, foundResources[0].id);
-				});
-			});
-
-			it('destroy resource deletes the resource', function() {
-				return service.destroy(resource.id)
-				.then(function() {
-					return graph.resources.get(resource.id);
-				})
-				.then(function(foundResource) {
-					assert.equal(undefined, foundResource);
+			describe('destroy', function() {
+				it('deletes the resource', function() {
+					return service.destroy(resource.id)
+					.then(function() {
+						return graph.resources.get(resource.id);
+					})
+					.then(function(foundResource) {
+						assert.equal(undefined, foundResource);
+					});
 				});
 			});
 		});
@@ -126,78 +135,82 @@ describe('Resource Service', function() {
 				});
 			});
 
-			it('update first resource with title that would be a duplicate returns a duplicate error', function() {
-				return service.update(resource.id, { title: otherResource.title, url: guid.raw(), source: guid.raw(), verb: 'read'})
-				.then(assert.expectFail, function(error) {
-					assert.equal('duplicate', error.name);
+			describe('update', function() {
+				it('should return duplicate error given a title that would be a duplicate', function() {
+					return service.update(resource.id, { title: otherResource.title, url: guid.raw(), source: guid.raw(), verb: 'read'})
+					.then(assert.expectFail, function(error) {
+						assert.equal('duplicate', error.name);
+					});
 				});
-			});
 
-			it('update first resource with url that would be a duplicate returns a duplicate error', function() {
-				return service.update(resource.id, { title: guid.raw(), url: otherResource.url, source: guid.raw(), verb: 'read'})
-				.then(assert.expectFail, function(error) {
-					assert.equal('duplicate', error.name);
+				it('should return duplicate error given a url that would be a duplicate', function() {
+					return service.update(resource.id, { title: guid.raw(), url: otherResource.url, source: guid.raw(), verb: 'read'})
+					.then(assert.expectFail, function(error) {
+						assert.equal('duplicate', error.name);
+					});
 				});
 			});
 		});
 
 		describe('when resource does not already exist', function() {
 
-			it('create should create a new resource', function() {
-				return service.create({ title: guid.raw(), url: guid.raw(), source: guid.raw(), verb: 'read' })
-				.then(function(createdResource) {
-					return graph.resources.get(createdResource.id)
-					.then(function(retrievedResource) {
-						assert.deepEqual(retrievedResource, createdResource);
+			describe('create', function() {
+				it('should create a new resource', function() {
+					return service.create({ title: guid.raw(), url: guid.raw(), source: guid.raw(), verb: 'read' })
+					.then(function(createdResource) {
+						return graph.resources.get(createdResource.id)
+						.then(function(retrievedResource) {
+							assert.deepEqual(retrievedResource, createdResource);
+						});
 					});
 				});
 			});
 
-			it('get should return a notfound error', function() {
-				return service.get(99999)
-				.then(assert.expectFail, function(err) {
-					assert.equal(err.name, 'notfound');
+			describe('get', function() {
+				it('should return a notfound error', function() {
+					return service.get(99999)
+					.then(assert.expectFail, function(err) {
+						assert.equal(err.name, 'notfound');
+					});
 				});
 			});
 
-			it('update should return a notfound error', function() {
-				return service.update(99999, { title: guid.raw(), url: guid.raw(), source: guid.raw(), verb: 'watch'})
-				.then(assert.expectFail, function(err) {
-					assert.equal('notfound', err.name);
+			describe('search', function() {
+				it('should not find the resource by title', function() {
+					return service.searchByTitle(guid.raw())
+					.then(function(foundResources) {
+						assert.equal(0, foundResources.length);
+					});
+				});
+
+				it('should not find the resource by url', function() {
+					return service.searchByUrl(guid.raw())
+					.then(function(foundResources) {
+						assert.equal(0, foundResources.length);
+					});
 				});
 			});
 
-			it('search for resource by title should not find the resource', function() {
-				return service.searchByTitle(guid.raw())
-				.then(function(foundResources) {
-					assert.equal(0, foundResources.length);
+			describe('update', function() {
+				it('should return a notfound error', function() {
+					return service.update(99999, { title: guid.raw(), url: guid.raw(), source: guid.raw(), verb: 'watch'})
+					.then(assert.expectFail, function(err) {
+						assert.equal('notfound', err.name);
+					});
 				});
 			});
 
-			it('search for resource by url should not find the resource', function() {
-				return service.searchByUrl(guid.raw())
-				.then(function(foundResources) {
-					assert.equal(0, foundResources.length);
-				});
-			});
-
-			it('search for resource by title should not find the resource', function() {
-				return service.searchByTitle(guid.raw())
-				.then(function(foundResources) {
-					assert.equal(0, foundResources.length);
-				});
-			});
-
-			it('destroy resource returns a notfound error', function() {
-				return service.destroy(999999)
-				.then(assert.expectFail, function(err) {
-					assert.equal('notfound', err.name);
+			describe('destroy', function() {
+				it('should return a notfound error', function() {
+					return service.destroy(999999)
+					.then(assert.expectFail, function(err) {
+						assert.equal('notfound', err.name);
+					});
 				});
 			});
 		});
 
 		describe('when resource is linked to topic', function() {
-
 			var resource, topic;
 
 			beforeEach(function() {
@@ -212,74 +225,71 @@ describe('Resource Service', function() {
 				});
 			});
 
-			it('destroy resource returns an error', function() {
-				return service.destroy(resource.id)
-				.then(assert.expectFail, function(err) {
-					assert.equal('cannot delete resource because it still has relationships', err);
+			describe('destroy', function() {
+				it('returns an error that the resource still has relationships', function() {
+					return service.destroy(resource.id)
+					.then(assert.expectFail, function(err) {
+						assert.equal('cannot delete resource because it still has relationships', err);
+					});
 				});
 			});
-
 		});
 
-		describe('when resource is missing required property', function() {
+		describe('when given resource is missing required property', function() {
 
-			describe('title', function() {
-				it('create should return an error', function() {
+			describe('create', function() {
+				it('should return an error given a resource without a title', function() {
 					return service.create({ url: guid.raw(), source: guid.raw(), verb: 'read' })
 					.then(assert.expectFail, function(err) {
 						assert.equal('title is required', err);
 					});
 				});
 
-				it('update should return an error', function() {
-					return service.update(99999, { url: guid.raw(), source: guid.raw(), verb: 'watch' })
-					.then(assert.expectFail, function(err) {
-						assert.equal('title is required', err);
-					});
-				});
-			});
-
-			describe('url', function() {
-				it('create should return an error', function() {
+				it('should return an error given a resource without a url', function() {
 					return service.create({ title: guid.raw(), source: guid.raw(), verb: 'read' })
 					.then(assert.expectFail, function(err) {
 						assert.equal('url is required', err);
 					});
 				});
 
-				it('update should return an error', function() {
-					return service.update(99999, { title: guid.raw(), source: guid.raw(), verb: 'watch' })
-					.then(assert.expectFail, function(err) {
-						assert.equal('url is required', err);
-					});
-				});
-			});
-
-			describe('source', function() {
-				it('create should return an error', function() {
+				it('should return an error given a resource without a source', function() {
 					return service.create({ title: guid.raw(), url: guid.raw(), verb: 'read' })
 					.then(assert.expectFail, function(err) {
 						assert.equal('source is required', err);
 					});
 				});
 
-				it('udpate should return an error', function() {
-					return service.update(99999,{ title: guid.raw(), url: guid.raw(), verb: 'watch' })
-					.then(assert.expectFail, function(err) {
-						assert.equal('source is required', err);
-					});
-				});
-			});
-
-			describe('verb', function() {
-				it('create should return an error', function() {
+				it('should return an error given a resource without a verb', function() {
 					return service.create({ title: guid.raw(), url: guid.raw(), source: guid.raw() })
 					.then(assert.expectFail, function(err) {
 						assert.equal('verb is required', err);
 					});
 				});
+			});
 
-				it('update should return an error', function() {
+			describe('update', function() {
+				it('should return an error given a resource without a title', function() {
+					return service.update(99999, { url: guid.raw(), source: guid.raw(), verb: 'watch' })
+					.then(assert.expectFail, function(err) {
+						assert.equal('title is required', err);
+					});
+				});
+
+				it('should return an error given a resource without a url', function() {
+					return service.update(99999, { title: guid.raw(), source: guid.raw(), verb: 'watch' })
+					.then(assert.expectFail, function(err) {
+						assert.equal('url is required', err);
+					});
+				});
+
+				it('should return an error given a resource without a source', function() {
+					return service.update(99999,{ title: guid.raw(), url: guid.raw(), verb: 'watch' })
+					.then(assert.expectFail, function(err) {
+						assert.equal('source is required', err);
+					});
+				});
+
+				it('should return an error given a resource without a verb', function() {
 					return service.update(99999,{ title: guid.raw(), url: guid.raw(), source: guid.raw() })
 					.then(assert.expectFail, function(err) {
 						assert.equal('verb is required', err);
@@ -290,20 +300,23 @@ describe('Resource Service', function() {
 
 		describe('when resource has an invalid verb', function() {
 
-			it('create returns invalid verb error', function() {
-				return service.create({ title: guid.raw(), url: guid.raw(), source: guid.raw(), verb: 'invalid' })
-				.then(assert.expectFail, function(err) {
-					assert.equal('invalid verb', err);
+			describe('create', function() {
+				it('should return an invalid verb error', function() {
+					return service.create({ title: guid.raw(), url: guid.raw(), source: guid.raw(), verb: 'invalid' })
+					.then(assert.expectFail, function(err) {
+						assert.equal('invalid verb', err);
+					});
 				});
 			});
 
-			it('update returns invalid verb error', function() {
-				return service.create({ title: guid.raw(), url: guid.raw(), source: guid.raw(), verb: 'invalid' })
-				.then(assert.expectFail, function(err) {
-					assert.equal('invalid verb', err);
+			describe('update', function() {
+				it('should return an invalid verb error', function() {
+					return service.create({ title: guid.raw(), url: guid.raw(), source: guid.raw(), verb: 'invalid' })
+					.then(assert.expectFail, function(err) {
+						assert.equal('invalid verb', err);
+					});
 				});
 			});
-
 		});
 	}
 
