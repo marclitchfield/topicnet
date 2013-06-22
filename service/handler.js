@@ -10,7 +10,8 @@ function errorHandler(response, error) {
 	var statusCodes = {
 		'notfound': 404,
 		'duplicate': 400,
-		'badrequest': 400
+		'badrequest': 400,
+		'noauth': 403
 	};
 
 	console.log(error);

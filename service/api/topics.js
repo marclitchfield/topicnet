@@ -1,7 +1,8 @@
 var	neo4jGraph = require('../lib/graph/neo4j-graph'),
 	topicnetGraph = require('../lib/graph/topicnet-graph').create(neo4jGraph),
 	topicService = require('../lib/topic-service').create(topicnetGraph),
-	handler = require('../handler');
+	handler = require('../handler'),
+	Q = require('q');
 
 exports.root = function(request, response) {
 	if (request.query.q) {
@@ -57,4 +58,12 @@ exports.unlinkRelated = function(request, response) {
 
 exports['delete'] = function(request, response) {
 	handler.complete(response, topicService.destroy(request.params.id));
+};
+
+exports.hideResource = function(request, response) {
+	if (!request.user) {
+		handler.complete(response, Q.reject({ name: 'noauth', message:'not authenticated' }));
+	} else {
+		handler.complete(response, topicService.hideResource(request.params.id, request.params.resid, request.user.id));
+	}
 };

@@ -25,6 +25,7 @@ app.post('/topics/:id/root', topics.linkRoot);
 app.post('/topics/:id/resources', topics.linkResource);
 app['delete']('/topics/:id/resources/:resid', topics.unlinkResource);
 app.post('/topics/:id/:rel', topics.linkTopic);
+app.post('/topics/:id/resources/:resid/hide', topics.hideResource);
 app['delete']('/topics/:id/root', topics.unlinkRoot);
 app['delete']('/topics/:id/:rel/:toid', topics.unlinkRelated);
 app['delete']('/topics/:id', topics['delete']);
@@ -32,7 +33,6 @@ app['delete']('/topics/:id', topics['delete']);
 // resources
 
 app.post('/resources', resources.create);
-app.post('/topics/:id/resources/:resid/hide', resources.hideResource);
 app.get('/resources/:id', resources.get);
 app.get('/resources', resources.search);
 app.put('/resources/:id', resources.update);
