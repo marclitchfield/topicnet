@@ -559,7 +559,7 @@ describe('Topic Service', function() {
 				});
 			});
 
-			it('hide resource adds an opinion on the resource', function() {
+			it('hideResource adds a hide opinion on the resource', function() {
 				return service.hideResource(topic.id, resource.id, user.id)
 				.then(function() {
 					return graph.relationships.get(user.id, topic.id, 'opinion_hide');
@@ -570,6 +570,25 @@ describe('Topic Service', function() {
 				});
 			});
 
+			it('hideResource can add hide opinions to multiple linked resources', function() {
+				return graph.resources.create({ title: guid.raw(), url: guid.raw(), source: guid.raw(), verb: 'read' })
+				.then(function(anotherResource) {
+					return graph.relationships.create(topic.id, anotherResource.id, 'resources')
+					.then(function() {
+						return service.hideResource(topic.id, resource.id, user.id);
+					})
+					.then(function() {
+						return service.hideResource(topic.id, anotherResource.id, user.id);
+					})
+					.then(function() {
+						return graph.relationships.getMany(user.id, topic.id, 'opinion_hide');
+					})
+					.then(function(opinions) {
+						assert.ok(_.some(opinions, function(o) { return o.toId === resource.id; }));
+						assert.ok(_.some(opinions, function(o) { return o.toId === anotherResource.id; }));
+					});
+				});
+			});
 		});
 
 		describe('when user already has a hidden relationship opinion', function() {

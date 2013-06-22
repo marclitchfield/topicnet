@@ -165,7 +165,7 @@ exports.create = function(graph) {
 		hideResource: function(topicId, resId, userId) {
 			return graph.relationships.getMany(userId, topicId, 'opinion_hide')
 			.then(function(existingOpinions) {
-				var isDuplicate = _.some(existingOpinions, function(o) { return o.toId = resId; });
+				var isDuplicate = _.some(existingOpinions, function(o) { return o.toId === resId; });
 				if (isDuplicate) {
 					return Q.reject({ name: 'duplicate', message: 'Opinion already exists on resource' });
 				} else {
