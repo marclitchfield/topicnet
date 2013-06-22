@@ -32,7 +32,7 @@ exports.getLink = function(request, response) {
 };
 
 exports.linkRoot = function(request, response) {
-	handler.complete(response, topicService.linkTopic(0, request.params.id, 'root'));
+	handler.complete(response, topicService.linkRoot(request.params.id));
 };
 
 exports.linkResource = function(request, response) {
