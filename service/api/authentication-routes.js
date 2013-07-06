@@ -1,11 +1,8 @@
 var	passport = require('passport'),
 	LocalStrategy = require('passport-local').Strategy,
-	neo4jGraph = require('../lib/graph/neo4j-graph'),
-	topicnetGraph = require('../lib/graph/topicnet-graph').create(neo4jGraph),
-	userService = require('../lib/user-service').create(topicnetGraph),
 	handler = require('../handler');
 
-module.exports = function(app) {
+module.exports = function(app, userService) {
 
 	app.use(passport.initialize());
 	app.use(passport.session());
