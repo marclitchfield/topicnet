@@ -6,7 +6,7 @@ module.exports = function(app, resourceService) {
 	}
 
 	function get(request, response) {
-		handler.complete(response, resourceService.get(request.params.id));
+		handler.complete(response, resourceService.get(parseInt(request.params.id, 10)));
 	}
 
 	function search(request, response) {
@@ -22,16 +22,16 @@ module.exports = function(app, resourceService) {
 	}
 
 	function update(request, response) {
-		handler.complete(response, resourceService.update(request.params.id, request.body));
+		handler.complete(response, resourceService.update(parseInt(request.params.id, 10), request.body));
 	}
 
 	function destroy(request, response) {
-		handler.complete(response, resourceService.destroy(request.params.id));
+		handler.complete(response, resourceService.destroy(parseInt(request.params.id, 10)));
 	}
 
-	app.post('/resources', create);
-	app.get('/resources/:id', get);
 	app.get('/resources', search);
+	app.get('/resources/:id', get);
+	app.post('/resources', create);
 	app.put('/resources/:id', update);
 	app['delete']('/resources/:id', destroy);
 };
