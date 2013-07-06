@@ -11,7 +11,9 @@
     "guid": "~0.0.10",
     "q": "~0.9.4",
     "passport": "~0.1.16",
-    "passport-local": "~0.1.6"
+    "passport-local": "~0.1.6",
+    "sinon": "~1.7.3",
+    "supertest": "~0.7.1"
   },
   "scripts": {
     "test": "grunt"

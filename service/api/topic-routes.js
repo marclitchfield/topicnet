@@ -16,54 +16,54 @@ module.exports = function(app, topicService) {
 	}
 
 	function update(request, response) {
-		handler.complete(response, topicService.update(request.params.id, request.body));
+		handler.complete(response, topicService.update(parseInt(request.params.id, 10), request.body));
 	}
 
 	function get(request, response) {
-		handler.complete(response, topicService.get(request.params.id));
+		handler.complete(response, topicService.get(parseInt(request.params.id, 10)));
 	}
 
 	function getLinkedTopics(request, response) {
-		handler.complete(response, topicService.getLinkedTopics(request.params.id, request.params.rel));
+		handler.complete(response, topicService.getLinkedTopics(parseInt(request.params.id, 10), request.params.rel));
 	}
 
 	function getLink(request, response) {
-		handler.complete(response, topicService.getLink(request.params.id, request.params.toid, request.params.rel));
+		handler.complete(response, topicService.getLink(parseInt(request.params.id, 10), parseInt(request.params.toid, 10), request.params.rel));
 	}
 
 	function linkRoot(request, response) {
-		handler.complete(response, topicService.linkRoot(request.params.id));
+		handler.complete(response, topicService.linkRoot(parseInt(request.params.id, 10)));
 	}
 
 	function linkResource(request, response) {
-		handler.complete(response, topicService.linkResource(request.params.id, request.body.resid));
+		handler.complete(response, topicService.linkResource(parseInt(request.params.id, 10), request.body.resid));
 	}
 
 	function unlinkResource(request, response, next) {
-		handler.complete(response, topicService.unlinkResource(request.params.id, request.params.resid));
+		handler.complete(response, topicService.unlinkResource(parseInt(request.params.id, 10), parseInt(request.params.resid, 10)));
 	}
 
 	function linkTopic(request, response) {
-		handler.complete(response, topicService.linkTopic(request.params.id, request.body.toid, request.params.rel));
+		handler.complete(response, topicService.linkTopic(parseInt(request.params.id, 10), parseInt(request.body.toid, 10), request.params.rel));
 	}
 
 	function unlinkRoot(request, response) {
-		handler.complete(response, topicService.unlinkTopic(0, request.params.id, 'root'));
+		handler.complete(response, topicService.unlinkRoot(parseInt(request.params.id, 10)));
 	}
 
 	function unlinkRelated(request, response) {
-		handler.complete(response, topicService.unlinkTopic(request.params.id, request.params.toid, request.params.rel));
+		handler.complete(response, topicService.unlinkTopic(parseInt(request.params.id, 10), parseInt(request.params.toid, 10), request.params.rel));
 	}
 
 	function destroy(request, response) {
-		handler.complete(response, topicService.destroy(request.params.id));
+		handler.complete(response, topicService.destroy(parseInt(request.params.id, 10)));
 	}
 
 	function hideResource(request, response) {
 		if (!request.user) {
 			handler.complete(response, Q.reject({ name: 'noauth', message:'not authenticated' }));
 		} else {
-			handler.complete(response, topicService.hideResource(request.params.id, request.params.resid, request.user.id));
+			handler.complete(response, topicService.hideResource(parseInt(request.params.id, 10), parseInt(request.params.resid, 10), request.user.id));
 		}
 	}
 
