@@ -55,7 +55,6 @@ describe('Topic Service', function() {
 						assert.equal(updatedName, retrievedTopic.name);
 					});
 				});
-
 			});
 
 			describe('get', function() {
@@ -63,6 +62,7 @@ describe('Topic Service', function() {
 					return service.get(topic.id)
 					.then(function(retrievedTopic) {
 						assert.equal(topic.name, retrievedTopic.name);
+						assert.equal(topic.id, retrievedTopic.id);
 					});
 				});
 			});
@@ -152,7 +152,7 @@ describe('Topic Service', function() {
 			});
 		});
 
-		describe('when topic has related topics', function() {
+		describe('when topic has related topic', function() {
 
 			var topic, relatedTopic;
 
@@ -165,6 +165,16 @@ describe('Topic Service', function() {
 				.then(function(createdTopic2) {
 					relatedTopic = createdTopic2;
 					return graph.relationships.create(topic.id, relatedTopic.id, 'sub');
+				});
+			});
+
+			describe('get', function() {
+				it('should retrieve the related topics', function() {
+					return service.get(topic.id)
+					.then(function(retrievedTopic) {
+						assert.equal(1, retrievedTopic.sub.length);
+						assert.equal(retrievedTopic.sub[0].id, retrievedTopic.id);
+					});
 				});
 			});
 
@@ -186,15 +196,6 @@ describe('Topic Service', function() {
 				});
 			});
 
-			describe('unlinkTopic', function() {
-				it('should return notfound error when parent topic is missing', function() {
-					return service.unlinkTopic(topic.id, 99999, 'sub')
-					.then(assert.expectFail, function(err) {
-						assert.equal('notfound', err.name);
-					});
-				});
-			});
-
 			describe('linkTopic', function() {
 				it('should return notfound error when child topic is missing', function() {
 					return service.linkTopic(99999, topic.id, 'sub')
@@ -204,11 +205,37 @@ describe('Topic Service', function() {
 				});
 			});
 
+			describe('linkTopic', function() {
+				it('should return a duplicate error', function() {
+					return service.linkTopic(topic.id, relatedTopic.id, 'sub')
+					.then(assert.expectFail, function(err) {
+						assert.equal('duplicate', err.name);
+					});
+				});
+			});
+
 			describe('unlinkTopic', function() {
+				it('should return notfound error when parent topic is missing', function() {
+					return service.unlinkTopic(topic.id, 99999, 'sub')
+					.then(assert.expectFail, function(err) {
+						assert.equal('notfound', err.name);
+					});
+				});
+
 				it('should return notfound error when child topic is missing', function() {
 					return service.unlinkTopic(99999, topic.id, 'sub')
 					.then(assert.expectFail, function(err) {
 						assert.equal('notfound', err.name);
+					});
+				});
+
+				it('should unlink the related topic', function() {
+					return service.unlinkTopic(topic.id, relatedTopic.id, 'sub')
+					.then(function() {
+						return graph.relationships.get(topic.id, relatedTopic.id, 'sub');
+					})
+					.then(function(link) {
+						assert.equal(undefined, link);
 					});
 				});
 			});
@@ -352,44 +379,6 @@ describe('Topic Service', function() {
 			});
 		});
 
-		describe('when related topic already exists', function() {
-			var fromTopic;
-			var toTopic;
-
-			beforeEach(function() {
-				return graph.topics.create({ name: guid.raw() })
-				.then(function(firstCreatedTopic) {
-					fromTopic = firstCreatedTopic;
-					return graph.topics.create({ name: guid.raw() });
-				})
-				.then(function(secondCreatedTopic) {
-					toTopic = secondCreatedTopic;
-					return graph.relationships.create(fromTopic.id, toTopic.id, 'sub');
-				});
-			});
-
-			describe('linkTopic', function() {
-				it('should return a duplicate error', function() {
-					return service.linkTopic(fromTopic.id, toTopic.id, 'sub')
-					.then(assert.expectFail, function(err) {
-						assert.equal('duplicate', err.name);
-					});
-				});
-			});
-
-			describe('unlinkTopic', function() {
-				it('should unlink the related topic', function() {
-					return service.unlinkTopic(fromTopic.id, toTopic.id, 'sub')
-					.then(function() {
-						return graph.relationships.get(fromTopic.id, toTopic.id, 'sub');
-					})
-					.then(function(link) {
-						assert.equal(undefined, link);
-					});
-				});
-			});
-		});
-
 		describe('when root topic does not already exist', function() {
 			var topic;
 
@@ -450,8 +439,8 @@ describe('Topic Service', function() {
 					.then(function() {
 						return graph.relationships.get(0, topic.id, 'root');
 					})
-					.then(function(link) {
-						assert.equal(undefined, link);
+					.then(function(rootTopics) {
+
 					});
 				});
 			});
