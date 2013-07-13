@@ -618,8 +618,7 @@ describe('Topic Service', function() {
 				return graph.topics.create({name: guid.raw()})
 				.then(function(createdTopic) {
 					topic = createdTopic;
-					return graph.resources.create({url: guid.raw(), title: guid.raw(),
-						source: 'example.com', verb: 'read'});
+					return graph.resources.create({url: guid.raw(), title: guid.raw(), source: guid.raw(), verb: 'read'});
 				})
 				.then(function(createdResource) {
 					resource = createdResource;
@@ -658,22 +657,6 @@ describe('Topic Service', function() {
 					});
 				});
 			});
-		});
-
-		describe('when resource is linked to topic', function() {
-			var resource, topic;
-
-			beforeEach(function() {
-				return graph.topics.create({ name: guid.raw() })
-				.then(function(createdTopic) {
-					topic = createdTopic;
-					return graph.resources.create({ title: guid.raw(), url: guid.raw(), source: guid.raw(), verb: 'read' })
-					.then(function(createdResource) {
-						resource = createdResource;
-						return graph.relationships.create(createdTopic.id, createdResource.id, 'resources');
-					});
-				});
-			});
 
 			describe('hideResource', function() {
 				it('should create a hide opinion on the resource relationship', function() {
@@ -708,6 +691,7 @@ describe('Topic Service', function() {
 				});
 			});
 		});
+
 
 		describe('when user already has a hidden relationship opinion', function() {
 			var resource, topic;
