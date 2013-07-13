@@ -1,5 +1,6 @@
-var Q = require('q');
-var _ = require('underscore');
+var Q = require('q'),
+	_ = require('underscore'),
+	error = require('../../../../service/error');
 
 exports.create = function() {
 
@@ -11,10 +12,10 @@ exports.create = function() {
 
 	function getRelationships(fromId, toId, relationshipType) {
 		if (!(fromId in topics) && !(fromId in resources) && !(fromId in users)) {
-			return Q.reject({ name: 'notfound' });
+			return error.promise({ name: 'notfound' });
 		}
 		if (!(toId in topics) && !(toId in resources) && !(toId in users)) {
-			return Q.reject({ name: 'notfound' });
+			return error.promise({ name: 'notfound' });
 		}
 
 		var rels = _.filter(_.values(relationships), function(r) {
@@ -37,7 +38,7 @@ exports.create = function() {
 
 			update: function(id, topicData) {
 				if (!(id in topics)) {
-					return Q.reject({ name: 'notfound' });
+					return error.promise({ name: 'notfound' });
 				}
 				topicData.id = id;
 				topics[id] = topicData;
@@ -45,7 +46,19 @@ exports.create = function() {
 			},
 
 			get: function(id) {
-				return Q.resolve(topics[id]);
+				var topic = topics[id];
+				if (topic !== undefined) {
+					var rels = _.filter(relationships, function(r) {
+						return r._fromId === id;
+					});
+					_.each(rels, function(r) {
+						if (!(r.type in topic)) {
+							topic[r.type] = [];
+						}
+						topic[r.type].push(topics[r._toId]);
+					});
+				}
+				return Q.resolve(topic);
 			},
 
 			getByName: function(name) {
@@ -55,7 +68,7 @@ exports.create = function() {
 
 			getRelated: function(fromId, relationshipType) {
 				if (!(fromId in topics)) {
-					return Q.reject({ name: 'notfound' });
+					return error.promise({ name: 'notfound' });
 				}
 				var rels = _.filter(relationships, function(r) {
 					return r._fromId === fromId && r.type === relationshipType;
@@ -74,7 +87,7 @@ exports.create = function() {
 
 			destroy: function(id) {
 				if (!(id in topics)) {
-					return Q.reject({ name: 'notfound' });
+					return error.promise({ name: 'notfound' });
 				}
 				delete topics[id];
 				return Q.resolve();
@@ -123,7 +136,7 @@ exports.create = function() {
 
 			update: function(id, resourceData) {
 				if (!(id in resources)) {
-					return Q.reject({ name: 'notfound' });
+					return error.promise({ name: 'notfound' });
 				}
 				resourceData.id = id;
 				resources[id] = resourceData;
@@ -147,7 +160,7 @@ exports.create = function() {
 
 			destroy: function(id) {
 				if (!(id in resources)) {
-					return Q.reject({ name: 'notfound' });
+					return error.promise({ name: 'notfound' });
 				}
 				delete resources[id];
 				return Q.resolve();

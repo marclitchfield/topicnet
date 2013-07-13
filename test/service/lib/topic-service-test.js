@@ -44,15 +44,16 @@ describe('Topic Service', function() {
 			});
 
 			describe('update', function() {
-				var updatedName = guid.raw();
 				it('should return the updated topic', function() {
+					var updatedName = guid.raw();
 					return service.update(topic.id, { name: updatedName })
 					.then(function(updatedTopic) {
-						assert.equal(updatedName, retrievedTopic.name);
+						assert.equal(updatedName, updatedTopic.name);
 					});
 				});
 
 				it('should update the topic', function() {
+					var updatedName = guid.raw();
 					return service.update(topic.id, { name: updatedName })
 					.then(function() {
 						return graph.topics.get(topic.id);
@@ -202,7 +203,7 @@ describe('Topic Service', function() {
 					return service.get(topic.id)
 					.then(function(retrievedTopic) {
 						assert.equal(1, retrievedTopic.sub.length);
-						assert.equal(retrievedTopic.sub[0].id, retrievedTopic.id);
+						assert.equal(retrievedTopic.sub[0].id, relatedTopic.id);
 					});
 				});
 			});
@@ -356,7 +357,7 @@ describe('Topic Service', function() {
 				it('should return an error', function() {
 					return service.create({})
 					.then(assert.expectFail, function(err) {
-						assert.equal('name is required', err);
+						assert.equal('name is required', err.message);
 					});
 				});
 			});
@@ -365,7 +366,7 @@ describe('Topic Service', function() {
 				it('should return an error', function() {
 					return service.update(999, {})
 					.then(assert.expectFail, function(err) {
-						assert.equal('name is required', err);
+						assert.equal('name is required', err.message);
 					});
 				});
 			});
@@ -481,7 +482,7 @@ describe('Topic Service', function() {
 				it('should return an invalid relationship error', function() {
 					return service.linkTopic(1, 2, 'invalid')
 					.then(assert.expectFail, function(err) {
-						assert.notEqual(-1, err.indexOf('invalid relationship'));
+						assert.notEqual(-1, err.message.indexOf('invalid relationship'));
 					});
 				});
 			});
@@ -490,7 +491,7 @@ describe('Topic Service', function() {
 				it('should return an invalid relationship error', function() {
 					return service.unlinkTopic(1, 2, 'invalid')
 					.then(assert.expectFail, function(err) {
-						assert.notEqual(-1, err.indexOf('invalid relationship'));
+						assert.notEqual(-1, err.message.indexOf('invalid relationship'));
 					});
 				});
 			});
@@ -499,7 +500,7 @@ describe('Topic Service', function() {
 				it('should return an invalid relationship error', function() {
 					return service.getLinkedTopics(1, 'invalid')
 					.then(assert.expectFail, function(err) {
-						assert.notEqual(-1, err.indexOf('invalid relationship'));
+						assert.notEqual(-1, err.message.indexOf('invalid relationship'));
 					});
 				});
 			});
@@ -690,6 +691,13 @@ describe('Topic Service', function() {
 					});
 				});
 			});
+
+//			describe('destroy', function() {
+//				return service.destroy(topic.id)
+//				.then(assert.expectFail, function(error) {
+//					assert.equal('frammis', error.name);
+//				});
+//			});
 		});
 
 

@@ -1,6 +1,7 @@
 var _ = require('underscore');
 var Q = require('q');
 var helper = require('./service-helper');
+var error = require('../error');
 
 exports.create = function(graph) {
 
@@ -9,13 +10,13 @@ exports.create = function(graph) {
 
 	function linkTopic(fromId, toId, relationshipType) {
 		if (!_.include(validRelationships, relationshipType)) {
-			return Q.reject('invalid relationship. must be one of: ' + validRelationships.join(', '));
+			return error.promise('invalid relationship. must be one of: ' + validRelationships.join(', '));
 		}
 
 		return graph.relationships.get(fromId, toId, relationshipType)
 		.then(function(rel) {
 			if(rel !== undefined) {
-				return Q.reject({name: 'duplicate', message: 'Relationship \'' +
+				return error.promise({name: 'duplicate', message: 'Relationship \'' +
 					relationshipType + '\' already exists between ' + fromId + ' and ' + toId});
 			}
 		})
@@ -29,12 +30,12 @@ exports.create = function(graph) {
 
 	function unlinkTopic(fromId, toId, relationshipType) {
 		if(!_.include(validRelationships, relationshipType)) {
-			return Q.reject('invalid relationship. must be one of: ' + validRelationships.join(', '));
+			return error.promise('invalid relationship. must be one of: ' + validRelationships.join(', '));
 		}
 		return graph.relationships.get(fromId, toId, relationshipType)
 		.then(function(rel) {
 			if (rel === undefined) {
-				return Q.reject({name: 'notfound'});
+				return error.promise({name: 'notfound'});
 			} else {
 				return graph.relationships.destroy(rel.id);
 			}
@@ -43,7 +44,7 @@ exports.create = function(graph) {
 
 	function getLinkedTopics(fromId, relationshipType) {
 		if (!_.include(validRelationships, relationshipType)) {
-			return Q.reject('invalid relationship. must be one of: ' + validRelationships.join(', '));
+			return error.promise('invalid relationship. must be one of: ' + validRelationships.join(', '));
 		}
 
 		return graph.topics.getRelated(fromId, relationshipType);
@@ -55,7 +56,7 @@ exports.create = function(graph) {
 			return graph.topics.get(id)
 			.then(function(topic) {
 				if (topic === undefined) {
-					return Q.reject({name: 'notfound', message: 'topic with id ' + id + ' not found'});
+					return error.promise({name: 'notfound', message: 'topic with id ' + id + ' not found'});
 				} else {
 					return topic;
 				}
@@ -78,13 +79,13 @@ exports.create = function(graph) {
 
 		create: function(topicData) {
 			if (!topicData.hasOwnProperty('name') || !topicData.name) {
-				return Q.reject('name is required');
+				return error.promise('name is required');
 			}
 
 			return graph.topics.getByName(topicData.name)
 			.then(function(existing) {
 				if(existing !== undefined) {
-					return Q.reject({ name: 'duplicate', message: 'A topic with the specified name already exists' });
+					return error.promise({ name: 'duplicate', message: 'A topic with the specified name already exists' });
 				}
 			})
 			.then(function() {
@@ -94,13 +95,13 @@ exports.create = function(graph) {
 
 		update: function(id, topicData) {
 			if (!topicData.hasOwnProperty('name') || !topicData.name) {
-				return Q.reject('name is required');
+				return error.promise('name is required');
 			}
 
 			return graph.topics.getByName(topicData.name)
 			.then(function(existing) {
 				if(existing !== undefined && existing.id !== id) {
-					return Q.reject({ name: 'duplicate', message: 'Another topic exists with the specified name' });
+					return error.promise({ name: 'duplicate', message: 'Another topic exists with the specified name' });
 				}
 			})
 			.then(function() {
@@ -116,7 +117,7 @@ exports.create = function(graph) {
 			return graph.relationships.get(fromId, toId, relationshipType)
 			.then(function(link) {
 				if(link === undefined) {
-					return Q.reject({name: 'notfound', message: 'Relationship \'' + relationshipType + '\' was not found between ' + fromId + ' and ' + toId});
+					return error.promise({name: 'notfound', message: 'Relationship \'' + relationshipType + '\' was not found between ' + fromId + ' and ' + toId});
 				} else {
 					link.fromId = parseInt(fromId, 10);
 					link.toId = parseInt(toId, 10);
@@ -145,7 +146,7 @@ exports.create = function(graph) {
 			return graph.relationships.get(topicId, resId, 'resources')
 			.then(function(rel) {
 				if(rel !== undefined) {
-					return Q.reject({name: 'duplicate',
+					return error.promise({name: 'duplicate',
 						message: 'Relationship to resource already exists between ' + topicId + ' and ' + resId});
 				}
 			})
@@ -161,7 +162,7 @@ exports.create = function(graph) {
 			return graph.relationships.get(topicId, resId, 'resources')
 			.then(function(rel) {
 				if (rel === undefined) {
-					return Q.reject({name: 'notfound'});
+					return error.promise({name: 'notfound'});
 				} else {
 					return graph.relationships.destroy(rel.id);
 				}
@@ -173,7 +174,7 @@ exports.create = function(graph) {
 			.then(function(existingOpinions) {
 				var isDuplicate = _.some(existingOpinions, function(o) { return o.toId === resId; });
 				if (isDuplicate) {
-					return Q.reject({ name: 'duplicate', message: 'Opinion already exists on resource' });
+					return error.promise({ name: 'duplicate', message: 'Opinion already exists on resource' });
 				} else {
 					var opinion = { rel: 'resources', toId: resId };
 					return graph.relationships.create(userId, topicId, 'opinion_hide', opinion);

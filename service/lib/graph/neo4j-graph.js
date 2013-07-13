@@ -7,6 +7,7 @@ var graphDatabase = new neo4j.GraphDatabase(neo4jUrl);
 
 var _ = require('underscore');
 var Q = require('q');
+var error = require('../../error');
 
 function parseNodeId(node) {
 	var url = node._data.self;
@@ -43,7 +44,7 @@ function getNodeById(id) {
 	graphDatabase.getNodeById(id, deferred.makeNodeResolver());
 	return deferred.promise.then(function(node) {
 		if (node === undefined) {
-			return Q.reject({name: 'notfound'});
+			return error.promise({name: 'notfound'});
 		} else {
 			return node;
 		}
@@ -59,7 +60,7 @@ function getRelationshipById(id) {
 	graphDatabase.getRelationshipById(id, deferred.makeNodeResolver());
 	return deferred.promise.then(function(node) {
 		if (node === undefined) {
-			return Q.reject({name: 'notfound'});
+			return error.promise({name: 'notfound'});
 		} else {
 			return node;
 		}
@@ -143,7 +144,7 @@ exports.queryGraph = function(cypherQuery, params) {
 		if (err && isMissingIndexError(err)) {
 			return deferred.resolve([]);
 		} else if (err && results !== undefined) {
-			return deferred.reject(err);
+			return error.promise(err);
 		} else {
 			return deferred.resolve(processQueryResults(results));
 		}

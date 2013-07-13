@@ -47,8 +47,8 @@ describe('User Service', function() {
 
 				it('should fail when invalid credentials are supplied', function() {
 					return service.verify(user.email, 'FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF')
-					.then(assert.expectFail, function(error) {
-						assert.equal(error, 'Invalid credentials');
+					.then(assert.expectFail, function(err) {
+						assert.equal(err.message, 'Invalid credentials');
 					});
 				});
 			});

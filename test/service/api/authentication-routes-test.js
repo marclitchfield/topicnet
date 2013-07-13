@@ -4,6 +4,8 @@ var assert = require('assert'),
 	supertest = require('supertest'),
 	Q = require('q');
 
+require('../test-utils');
+
 describe('Authentication routes', function() {
 
 	var app = express.createServer();

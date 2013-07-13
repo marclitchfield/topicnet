@@ -1,5 +1,3 @@
-var _ = require('underscore');
-
 module.exports = {
 
 	parsePositiveInt: function(param) {

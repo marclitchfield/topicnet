@@ -241,7 +241,7 @@ describe('Resource Service', function() {
 				it('returns an error that the resource still has relationships', function() {
 					return service.destroy(resource.id)
 					.then(assert.expectFail, function(err) {
-						assert.equal('cannot delete resource because it still has relationships', err);
+						assert.equal('cannot delete resource because it still has relationships', err.message);
 					});
 				});
 			});
@@ -253,28 +253,28 @@ describe('Resource Service', function() {
 				it('should return an error given a resource without a title', function() {
 					return service.create({ url: guid.raw(), source: guid.raw(), verb: 'read' })
 					.then(assert.expectFail, function(err) {
-						assert.equal('title is required', err);
+						assert.equal('title is required', err.message);
 					});
 				});
 
 				it('should return an error given a resource without a url', function() {
 					return service.create({ title: guid.raw(), source: guid.raw(), verb: 'read' })
 					.then(assert.expectFail, function(err) {
-						assert.equal('url is required', err);
+						assert.equal('url is required', err.message);
 					});
 				});
 
 				it('should return an error given a resource without a source', function() {
 					return service.create({ title: guid.raw(), url: guid.raw(), verb: 'read' })
 					.then(assert.expectFail, function(err) {
-						assert.equal('source is required', err);
+						assert.equal('source is required', err.message);
 					});
 				});
 
 				it('should return an error given a resource without a verb', function() {
 					return service.create({ title: guid.raw(), url: guid.raw(), source: guid.raw() })
 					.then(assert.expectFail, function(err) {
-						assert.equal('verb is required', err);
+						assert.equal('verb is required', err.message);
 					});
 				});
 			});
@@ -283,28 +283,28 @@ describe('Resource Service', function() {
 				it('should return an error given a resource without a title', function() {
 					return service.update(99999, { url: guid.raw(), source: guid.raw(), verb: 'watch' })
 					.then(assert.expectFail, function(err) {
-						assert.equal('title is required', err);
+						assert.equal('title is required', err.message);
 					});
 				});
 
 				it('should return an error given a resource without a url', function() {
 					return service.update(99999, { title: guid.raw(), source: guid.raw(), verb: 'watch' })
 					.then(assert.expectFail, function(err) {
-						assert.equal('url is required', err);
+						assert.equal('url is required', err.message);
 					});
 				});
 
 				it('should return an error given a resource without a source', function() {
 					return service.update(99999,{ title: guid.raw(), url: guid.raw(), verb: 'watch' })
 					.then(assert.expectFail, function(err) {
-						assert.equal('source is required', err);
+						assert.equal('source is required', err.message);
 					});
 				});
 
 				it('should return an error given a resource without a verb', function() {
 					return service.update(99999,{ title: guid.raw(), url: guid.raw(), source: guid.raw() })
 					.then(assert.expectFail, function(err) {
-						assert.equal('verb is required', err);
+						assert.equal('verb is required', err.message);
 					});
 				});
 			});
@@ -316,7 +316,7 @@ describe('Resource Service', function() {
 				it('should return an invalid verb error', function() {
 					return service.create({ title: guid.raw(), url: guid.raw(), source: guid.raw(), verb: 'invalid' })
 					.then(assert.expectFail, function(err) {
-						assert.equal('invalid verb', err);
+						assert.equal('invalid verb', err.message);
 					});
 				});
 			});
@@ -325,7 +325,7 @@ describe('Resource Service', function() {
 				it('should return an invalid verb error', function() {
 					return service.create({ title: guid.raw(), url: guid.raw(), source: guid.raw(), verb: 'invalid' })
 					.then(assert.expectFail, function(err) {
-						assert.equal('invalid verb', err);
+						assert.equal('invalid verb', err.message);
 					});
 				});
 			});

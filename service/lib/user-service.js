@@ -1,6 +1,6 @@
 var _ = require('underscore');
 var Q = require('q');
-var helper = require('./service-helper');
+var error = require('../error');
 
 exports.create = function(graph) {
 
@@ -14,13 +14,13 @@ exports.create = function(graph) {
 		create: function(email, password) {
 
 			if(!passwordIsHashed(password)) {
-				return Q.reject({ name: 'badrequest', message: 'Invalid password' });
+				return error.promise({ name: 'badrequest', message: 'Invalid password' });
 			}
 
 			return graph.users.getByEmail(email)
 			.then(function(user) {
 				if (user) {
-					return Q.reject({ name: 'duplicate', message: 'Email address already taken' });
+					return error.promise({ name: 'duplicate', message: 'Email address already taken' });
 				}
 
 				return graph.users.create({ email: email, password: password })
@@ -38,7 +38,7 @@ exports.create = function(graph) {
 					delete user.password;
 					return user;
 				} else {
-					return Q.reject();
+					return error.promise({name: 'notfound'});
 				}
 			});
 		},
@@ -50,7 +50,7 @@ exports.create = function(graph) {
 					delete user.password;
 					return user;
 				} else {
-					return Q.reject('Invalid credentials');
+					return error.promise('Invalid credentials');
 				}
 			});
 		}

@@ -1,6 +1,7 @@
 var _ = require('underscore');
 var Q = require('q');
 var helper = require('./service-helper');
+var error = require('../error');
 
 exports.create = function(graph) {
 
@@ -13,13 +14,13 @@ exports.create = function(graph) {
 		return graph.resources.getByAttribute('title', newValues.title)
 		.then(function(resource) {
 			if(resource !== undefined) {
-				return Q.reject( { name: 'duplicate', message: 'A resource with the specified title already exists' } );
+				return error.promise( { name: 'duplicate', message: 'A resource with the specified title already exists' } );
 			}
 			return graph.resources.getByAttribute('url', decodeURIComponent(newValues.url));
 		})
 		.then(function(resource) {
 			if(resource !== undefined) {
-				return Q.reject( { name: 'duplicate', message: 'A resource with the specified url already exists' } );
+				return error.promise( { name: 'duplicate', message: 'A resource with the specified url already exists' } );
 			}
 		});
 	}
@@ -34,13 +35,13 @@ exports.create = function(graph) {
 		return graph.resources.getByAttribute('title', updatedValues.title)
 		.then(function(resource) {
 			if (resource !== undefined && resource.id !== updatedValues.id) {
-				return Q.reject({ name: 'duplicate', message: 'Another resource exists with the specified title' });
+				return error.promise({ name: 'duplicate', message: 'Another resource exists with the specified title' });
 			}
 			return graph.resources.getByAttribute('url', decodeURIComponent(updatedValues.url));
 		})
 		.then(function(resource) {
 			if(resource !== undefined && resource.id !== updatedValues.id) {
-				return Q.reject({ name: 'duplicate', message: 'Another resource exists with the specified url' });
+				return error.promise({ name: 'duplicate', message: 'Another resource exists with the specified url' });
 			}
 		});
 	}
@@ -48,11 +49,11 @@ exports.create = function(graph) {
 	function validateRequest(data) {
 		for(var i = 0; i < requiredAttributes.length; i++) {
 			if(!data.hasOwnProperty(requiredAttributes[i]) || !data[requiredAttributes[i]]) {
-				return Q.reject(requiredAttributes[i] + ' is required');
+				return error.promise(requiredAttributes[i] + ' is required');
 			}
 		}
 		if(!_.contains(validVerbs, data.verb)) {
-			return Q.reject('invalid verb');
+			return error.promise('invalid verb');
 		}
 		return undefined;
 	}
@@ -75,7 +76,7 @@ exports.create = function(graph) {
 			return graph.resources.get(id)
 			.then(function(resource) {
 				if (resource === undefined) {
-					return Q.reject({name: 'notfound', message: 'resource with id ' + id + ' not found'});
+					return error.promise({name: 'notfound', message: 'resource with id ' + id + ' not found'});
 				} else {
 					return resource;
 				}
@@ -126,7 +127,7 @@ exports.create = function(graph) {
 			return graph.relationships.exists(id, ['resources'])
 			.then(function(hasRelationships) {
 				if(hasRelationships) {
-					return Q.reject('cannot delete resource because it still has relationships');
+					return error.promise('cannot delete resource because it still has relationships');
 				} else {
 					return graph.resources.destroy(id);
 				}
