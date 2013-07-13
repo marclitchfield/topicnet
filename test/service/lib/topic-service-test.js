@@ -390,7 +390,7 @@ describe('Topic Service', function() {
 			});
 		});
 
-		describe('when topic is not already a root', function() {
+		describe('when root topic does not already exist', function() {
 			var topic;
 
 			beforeEach(function() {
@@ -413,7 +413,7 @@ describe('Topic Service', function() {
 			});
 		});
 
-		describe('when topic is already a root', function() {
+		describe('when root topic already exists', function() {
 			var topic;
 
 			beforeEach(function() {
@@ -421,6 +421,17 @@ describe('Topic Service', function() {
 				.then(function(createdTopic) {
 					topic = createdTopic;
 					return graph.relationships.create(0, topic.id, 'root');
+				});
+			});
+
+			describe('getRootTopics', function() {
+				it('should return the root topic', function() {
+					return service.getRootTopics()
+					.then(function(rootTopics) {
+						assert.ok(_.some(rootTopics, function(t) {
+							return topic.id === t.id;
+						}));
+					});
 				});
 			});
 

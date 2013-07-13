@@ -7,7 +7,7 @@ module.exports = function(app, topicService) {
 		if (request.query.q) {
 			handler.complete(response, topicService.search(request.query));
 		} else {
-			handler.complete(response, topicService.getLinkedTopics(0, 'root'));
+			handler.complete(response, topicService.getRootTopics());
 		}
 	}
 

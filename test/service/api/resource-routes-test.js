@@ -58,6 +58,13 @@ describe('Resource routes', function() {
 		});
 	});
 
+	describe('GET /resources?invalid', function() {
+		it('should return 404', function(done) {
+			request.get('/resources?invalid')
+			.expect(404, done);
+		});
+	});
+
 	describe('GET /resources/:id', function() {
 		it('should call get', function(done) {
 			resourceService.get = sinon.stub().returns(Q.resolve());

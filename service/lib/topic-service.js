@@ -41,6 +41,14 @@ exports.create = function(graph) {
 		});
 	}
 
+	function getLinkedTopics(fromId, relationshipType) {
+		if (!_.include(validRelationships, relationshipType)) {
+			return Q.reject('invalid relationship. must be one of: ' + validRelationships.join(', '));
+		}
+
+		return graph.topics.getRelated(fromId, relationshipType);
+	}
+
 	return {
 
 		get: function(id) {
@@ -62,12 +70,10 @@ exports.create = function(graph) {
 			return graph.topics.searchByName(searchString, page, perPage);
 		},
 
-		getLinkedTopics: function(fromId, relationshipType) {
-			if (!_.include(validRelationships, relationshipType)) {
-				return Q.reject('invalid relationship. must be one of: ' + validRelationships.join(', '));
-			}
+		getLinkedTopics: getLinkedTopics,
 
-			return graph.topics.getRelated(fromId, relationshipType);
+		getRootTopics: function() {
+			return getLinkedTopics(0, 'root');
 		},
 
 		create: function(topicData) {

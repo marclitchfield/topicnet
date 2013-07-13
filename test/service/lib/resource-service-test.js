@@ -91,6 +91,18 @@ describe('Resource Service', function() {
 			});
 
 			describe('update', function() {
+				it('should return the updated resource', function() {
+					var updateData = { title: guid.raw(), url: guid.raw(), source: guid.raw(), verb: 'watch'};
+
+					return service.update(resource.id, updateData)
+					.then(function(updatedResource) {
+						assert.equal(updateData.title, updatedResource.title);
+						assert.equal(updateData.url, updatedResource.url);
+						assert.equal(updateData.source, updatedResource.source);
+						assert.equal(updateData.verb, updatedResource.verb);
+					});
+				});
+
 				it('should update the resource', function() {
 					var updateData = { title: guid.raw(), url: guid.raw(), source: guid.raw(), verb: 'watch'};
 

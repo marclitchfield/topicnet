@@ -23,12 +23,12 @@ describe('Topic routes', function() {
 	});
 
 	describe('GET /topics', function() {
-		it('should call getLinkedTopics', function(done) {
-			topicService.getLinkedTopics = sinon.stub().returns(Q.resolve());
+		it('should call getRootTopics', function(done) {
+			topicService.getRootTopics = sinon.stub().returns(Q.resolve());
 
 			request.get('/topics')
 			.expect(200, function(err, res) {
-				assert.ok(topicService.getLinkedTopics.calledWith(0, 'root'));
+				assert.ok(topicService.getRootTopics.calledOnce);
 				done();
 			});
 		});
