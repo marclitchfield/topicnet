@@ -125,6 +125,29 @@ describe('Topic Service', function() {
 			});
 		});
 
+		describe('when two topics exist', function() {
+
+			var topic, otherTopic;
+
+			beforeEach(function() {
+				return graph.topics.create({ name: guid.raw().toLowerCase() })
+				.then(function(createdTopic) {
+					topic = createdTopic;
+					return graph.topics.create({ name: guid.raw().toLowerCase() });
+				})
+				.then(function(createdTopic) {
+					otherTopic = createdTopic;
+				});
+			});
+
+			it('should return duplicate error given a name that would be a duplicate', function() {
+				service.update(topic.id, { name: otherTopic.name })
+				.then(assert.expectFail, function(error) {
+					assert.equal('duplicate', error.name);
+				});
+			});
+		});
+
 		describe('when topic containing special characters exists', function() {
 			var topic;
 			var ourGuid;
