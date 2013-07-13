@@ -45,6 +45,12 @@ describe('Topic Service', function() {
 
 			describe('update', function() {
 				var updatedName = guid.raw();
+				it('should return the updated topic', function() {
+					return service.update(topic.id, { name: updatedName })
+					.then(function(updatedTopic) {
+						assert.equal(updatedName, retrievedTopic.name);
+					});
+				});
 
 				it('should update the topic', function() {
 					return service.update(topic.id, { name: updatedName })
