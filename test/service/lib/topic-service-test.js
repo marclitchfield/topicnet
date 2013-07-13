@@ -443,6 +443,18 @@ describe('Topic Service', function() {
 					});
 				});
 			});
+
+			describe('unlinkRoot', function() {
+				it('should unlink the topic', function() {
+					return service.unlinkRoot(topic.id)
+					.then(function() {
+						return graph.relationships.get(0, topic.id, 'root');
+					})
+					.then(function(link) {
+						assert.equal(undefined, link);
+					});
+				});
+			});
 		});
 
 		describe('when given an invalid relationship', function() {
