@@ -19,7 +19,7 @@ describe('Authentication routes', function() {
 
 	var request;
 	var userService = {};
-	require('../../../service/api/authentication-routes')(app, userService);
+	require('../../../service/routes/authentication-routes')(app, userService);
 
 	beforeEach(function() {
 		request = supertest(app);

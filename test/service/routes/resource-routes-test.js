@@ -16,7 +16,7 @@ describe('Resource routes', function() {
 
 	var request;
 	var resourceService = {};
-	require('../../../service/api/resource-routes')(app, resourceService);
+	require('../../../service/routes/resource-routes')(app, resourceService);
 
 	beforeEach(function() {
 		request = supertest(app);

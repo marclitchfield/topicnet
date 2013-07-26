@@ -16,7 +16,7 @@ describe('Topic routes', function() {
 
 	var request;
 	var topicService = {};
-	require('../../../service/api/topic-routes')(app, topicService);
+	require('../../../service/routes/topic-routes')(app, topicService);
 
 	beforeEach(function() {
 		request = supertest(app);

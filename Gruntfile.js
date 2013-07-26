@@ -59,13 +59,6 @@ module.exports = function(grunt) {
 				]
 			}
 		},
-		develop: {
-			server: {
-				file: 'service/server.js',
-				disableOutput: true,
-				readyText: 'Listening on'
-			}
-		},
 		env: {
 			'skip-integration-tests': {
 				TOPICNET_SKIP_INTEGRATION: true
@@ -102,24 +95,18 @@ module.exports = function(grunt) {
 
 	// Default task.
 	grunt.registerTask('frontend-tests', ['jshint', 'clean', 'uglify', 'jasmine']);
-	grunt.registerTask('backend-tests', ['develop', 'mocha_spawn:all', 'develop-kill']);
+	grunt.registerTask('backend-tests', ['mocha_spawn:all']);
 	grunt.registerTask('default', ['frontend-tests', 'backend-tests']);
 	grunt.registerTask('ft', ['frontend-tests']);
 	grunt.registerTask('bt', ['backend-tests']);
-	grunt.registerTask('develop', ['develop']);
 	grunt.registerTask('backend-unit-tests', ['env:skip-integration-tests', 'mocha_spawn:unit']);
 	grunt.registerTask('but', ['backend-unit-tests']);
-
-	grunt.registerTask('develop-kill', function() {
-		grunt.event.emit('develop.kill');
-	});
 
 	grunt.loadNpmTasks('grunt-contrib-jshint');
 	grunt.loadNpmTasks('grunt-contrib-clean');
 	grunt.loadNpmTasks('grunt-contrib-uglify');
 	grunt.loadNpmTasks('grunt-contrib-watch');
 	grunt.loadNpmTasks('grunt-contrib-jasmine');
-	grunt.loadNpmTasks('grunt-develop');
 	grunt.loadNpmTasks('grunt-mocha-spawn');
 	grunt.loadNpmTasks('grunt-env');
 };

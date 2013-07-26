@@ -1,8 +1,5 @@
 var neo4j = require('neo4j');
-var config = require('../../config.js');
-console.log(config);
-
-var neo4jUrl = process.env.NEO4J_URL || 'http://localhost:' + config.neo4j.port;
+var neo4jUrl = process.env.NEO4J_URL || 'http://localhost:7474';
 var graphDatabase = new neo4j.GraphDatabase(neo4jUrl);
 
 var _ = require('underscore');
