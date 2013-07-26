@@ -120,6 +120,22 @@ describe('Topic Service', function() {
 				});
 			});
 
+			describe('unlinkTopic', function() {
+				it('should return notfound error when source topic is missing', function() {
+					return service.unlinkTopic(99999, topic.id, 'sub')
+					.then(assert.expectFail, function(err) {
+						assert.equal('notfound', err.name);
+					});
+				});
+
+				it('should return notfound error when related topic is missing', function() {
+					return service.unlinkTopic(topic.id, 99999, 'sub')
+					.then(assert.expectFail, function(err) {
+						assert.equal('notfound', err.name);
+					});
+				});
+			});
+
 			describe('search', function() {
 				it('should find the topic by exact name', function() {
 					return service.search({ q: topic.name })
@@ -149,7 +165,6 @@ describe('Topic Service', function() {
 					});
 				});
 			});
-
 
 			describe('linkResource', function() {
 				it('should return notfound error when the resource does not exist', function() {
@@ -333,7 +348,7 @@ describe('Topic Service', function() {
 			});
 
 			describe('get', function() {
-				it('should retrieve the related topics', function() {
+				it('should retrieve the topic with the related topic', function() {
 					return service.get(topic.id)
 					.then(function(retrievedTopic) {
 						assert.equal(1, retrievedTopic.sub.length);
@@ -575,7 +590,7 @@ describe('Topic Service', function() {
 			});
 		});
 
-		describe('when the resource is not linked to the topic', function() {
+		describe('when a topic and a resource exist', function() {
 			var topic;
 			var resource;
 
@@ -622,7 +637,7 @@ describe('Topic Service', function() {
 			});
 		});
 
-		describe('when the resource exists but the topic does not', function() {
+		describe('when a resource exists but the topic does not', function() {
 			var resource;
 
 			beforeEach(function() {
@@ -651,7 +666,7 @@ describe('Topic Service', function() {
 			});
 		});
 
-		describe('when the resource is linked to the topic', function() {
+		describe('when topic exists with a linked resource', function() {
 			var topic;
 			var resource;
 
@@ -664,6 +679,16 @@ describe('Topic Service', function() {
 				.then(function(createdResource) {
 					resource = createdResource;
 					return graph.relationships.create(topic.id, resource.id, 'resources', {});
+				});
+			});
+
+			describe('get', function() {
+				it('should retrieve the topic with the related resource', function() {
+					return service.get(topic.id)
+					.then(function(retrievedTopic) {
+						assert.equal(1, retrievedTopic.resources.length);
+						assert.equal(retrievedTopic.resources[0].id, resource.id);
+					});
 				});
 			});
 

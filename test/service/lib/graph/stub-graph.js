@@ -61,7 +61,8 @@ exports.create = function() {
 						if (!(r.type in topic)) {
 							topic[r.type] = [];
 						}
-						topic[r.type].push(topics[r._toId]);
+						var target = r.type === 'resources' ? resources[r._toId] : topics[r._toId];
+						topic[r.type].push(target);
 					});
 				}
 				return Q.resolve(topic);
