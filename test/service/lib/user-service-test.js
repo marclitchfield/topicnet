@@ -61,7 +61,9 @@ describe('User Service', function() {
 					.then(function(createdUser) {
 						return graph.users.get(createdUser.id)
 						.then(function(retrievedUser) {
+							assert.notEqual(undefined, createdUser.id);
 							assert.equal(createdUser.email, retrievedUser.email);
+							assert.equal(undefined, retrievedUser.password);
 						});
 					});
 				});

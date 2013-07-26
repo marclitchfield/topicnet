@@ -254,7 +254,7 @@ describe('Topic Service', function() {
 						assert.equal(0, foundTopics.length);
 					});
 				});
-			});		
+			});
 
 			describe('linkRoot', function() {
 				it('should return notfound error', function() {
