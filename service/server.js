@@ -11,9 +11,9 @@ app.use(express.bodyParser());
 app.use(express.cookieParser());
 app.use(express.session({ secret: 'Silly Sampton Likes Plant-Like Petunias' }));
 
-require('./api/authentication-routes.js')(app, userService);
-require('./api/topic-routes.js')(app, topicService);
-require('./api/resource-routes.js')(app, resourceService);
+require('./routes/authentication-routes.js')(app, userService);
+require('./routes/topic-routes.js')(app, topicService);
+require('./routes/resource-routes.js')(app, resourceService);
 
 var port = process.env.PORT || 5000;
 app.listen(port, function() {
