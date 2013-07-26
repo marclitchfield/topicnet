@@ -56,14 +56,26 @@ describe('User Service', function() {
 
 		describe('when user does not exist', function() {
 			describe('create', function() {
+				var createPromise;
+
+				beforeEach(function() {
+					createPromise = service.create(guid.raw(), '0000000000000000000000000000000000000000000000000000000000000000');
+				});
+
+				it('should return the created user', function() {
+					createPromise.then(function(createdUser) {
+						assert.notEqual(undefined, createdUser.id);
+						assert.equal(createdUser.email, createdUser.email);
+						assert.equal(undefined, createdUser.password);
+					});
+				});
+
 				it('should create the user', function() {
-					return service.create(guid.raw(), '0000000000000000000000000000000000000000000000000000000000000000')
+					return createPromise
 					.then(function(createdUser) {
 						return graph.users.get(createdUser.id)
 						.then(function(retrievedUser) {
-							assert.notEqual(undefined, createdUser.id);
-							assert.equal(createdUser.email, retrievedUser.email);
-							assert.equal(undefined, retrievedUser.password);
+							assert.equal(createdUser.id, retrievedUser.id);
 						});
 					});
 				});
