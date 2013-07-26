@@ -110,7 +110,13 @@ exports.create = function(graph) {
 		},
 
 		destroy: function(id) {
-			return graph.topics.destroy(id);
+			return graph.topics.destroy(id)
+			.fail(function(error) {
+				if (error.message.indexOf('still has relationships') > -1) {
+					error.name = 'validation';
+				}
+				return Q.reject(error);
+			});
 		},
 
 		getLink: function(fromId, toId, relationshipType) {

@@ -25,6 +25,12 @@ exports.create = function() {
 		return Q.resolve(rels);
 	}
 
+	function hasRelationships(id) {
+		return _.some(_.values(relationships), function(r) {
+			return r._fromId === id || r._toId === id;
+		});
+	}
+
 	return {
 
 		topics: {
@@ -55,7 +61,8 @@ exports.create = function() {
 						if (!(r.type in topic)) {
 							topic[r.type] = [];
 						}
-						topic[r.type].push(topics[r._toId]);
+						var target = r.type === 'resources' ? resources[r._toId] : topics[r._toId];
+						topic[r.type].push(target);
 					});
 				}
 				return Q.resolve(topic);
@@ -88,6 +95,9 @@ exports.create = function() {
 			destroy: function(id) {
 				if (!(id in topics)) {
 					return error.promise({ name: 'notfound' });
+				}
+				if (hasRelationships(id)) {
+					return error.promise('Node could not be deleted (still has relationships?)');
 				}
 				delete topics[id];
 				return Q.resolve();
@@ -161,6 +171,9 @@ exports.create = function() {
 			destroy: function(id) {
 				if (!(id in resources)) {
 					return error.promise({ name: 'notfound' });
+				}
+				if (hasRelationships(id)) {
+					return error.promise('Node could not be deleted (still has relationships?)');
 				}
 				delete resources[id];
 				return Q.resolve();
