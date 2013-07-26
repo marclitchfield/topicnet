@@ -104,6 +104,22 @@ describe('Topic Service', function() {
 				});
 			});
 
+			describe('linkTopic', function() {
+				it('should return notfound error when source topic is missing', function() {
+					return service.linkTopic(99999, topic.id, 'sub')
+					.then(assert.expectFail, function(err) {
+						assert.equal('notfound', err.name);
+					});
+				});
+
+				it('should return notfound error when related topic is missing', function() {
+					return service.linkTopic(topic.id, 99999, 'sub')
+					.then(assert.expectFail, function(err) {
+						assert.equal('notfound', err.name);
+					});
+				});
+			});
+
 			describe('search', function() {
 				it('should find the topic by exact name', function() {
 					return service.search({ q: topic.name })
@@ -223,7 +239,7 @@ describe('Topic Service', function() {
 						assert.equal(0, foundTopics.length);
 					});
 				});
-			});
+			});		
 
 			describe('linkRoot', function() {
 				it('should return notfound error', function() {
@@ -340,24 +356,6 @@ describe('Topic Service', function() {
 					return service.getLinkedTopics(topic.id, 'sub')
 					.then(function(related) {
 						assert.deepEqual([relatedTopic], related);
-					});
-				});
-			});
-
-			describe('linkTopic', function() {
-				it('should return notfound error when parent topic is missing', function() {
-					return service.linkTopic(topic.id, 99999, 'sub')
-					.then(assert.expectFail, function(err) {
-						assert.equal('notfound', err.name);
-					});
-				});
-			});
-
-			describe('linkTopic', function() {
-				it('should return notfound error when child topic is missing', function() {
-					return service.linkTopic(99999, topic.id, 'sub')
-					.then(assert.expectFail, function(err) {
-						assert.equal('notfound', err.name);
 					});
 				});
 			});
