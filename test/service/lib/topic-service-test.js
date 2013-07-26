@@ -126,6 +126,87 @@ describe('Topic Service', function() {
 			});
 		});
 
+		describe('when topic does not already exist', function() {
+
+			describe('create', function() {
+				it('should create the topic', function() {
+					var topicName = guid.raw();
+
+					return service.create({ name: topicName })
+					.then(function(createdTopic) {
+						return graph.topics.get(createdTopic.id);
+					})
+					.then(function(retrievedTopic) {
+						assert.equal(topicName, retrievedTopic.name);
+						assert.notEqual(undefined, retrievedTopic.id);
+					});
+				});
+			});
+
+			describe('update', function() {
+				it('should return notfound error', function() {
+					return service.update(9999, { name: guid.raw() })
+					.then(assert.expectFail, function(err) {
+						assert.equal('notfound', err.name);
+					});
+				});
+			});
+
+			describe('get', function() {
+				it('should return notfound error', function() {
+					return service.get(99999)
+					.then(assert.expectFail, function(err) {
+						assert.equal('notfound', err.name);
+					});
+				});
+			});
+
+			describe('getLinkedTopics', function() {
+				it('should return notfound error', function() {
+					return service.getLinkedTopics(9999, 'sub')
+					.then(assert.expectFail, function(err) {
+						assert.equal('notfound', err.name);
+					});
+				});
+			});
+
+			describe('destroy', function() {
+				it('should return a notfound error', function() {
+					return service.destroy(9999)
+					.then(assert.expectFail, function(err) {
+						assert.equal('notfound', err.name);
+					});
+				});
+			});
+
+			describe('search', function() {
+				it('should not find topics by name', function() {
+					return service.search({ q: 'notfound' })
+					.then(function(foundTopics) {
+						assert.equal(0, foundTopics.length);
+					});
+				});
+			});
+
+			describe('linkRoot', function() {
+				it('should return notfound error', function() {
+					return service.linkRoot(9999)
+					.then(assert.expectFail, function(err) {
+						assert.equal('notfound', err.name);
+					});
+				});
+			});
+
+			describe('unlinkRoot', function() {
+				it('should return notfound error', function() {
+					return service.unlinkRoot(9999)
+					.then(assert.expectFail, function(err) {
+						assert.equal('notfound', err.name);
+					});
+				});
+			});
+		});
+
 		describe('when two topics exist', function() {
 
 			var topic, otherTopic;
@@ -269,84 +350,28 @@ describe('Topic Service', function() {
 					});
 				});
 			});
-		});
-
-		describe('when topic does not already exist', function() {
-
-			describe('create', function() {
-				it('should create the topic', function() {
-					var topicName = guid.raw();
-
-					return service.create({ name: topicName })
-					.then(function(createdTopic) {
-						return graph.topics.get(createdTopic.id);
-					})
-					.then(function(retrievedTopic) {
-						assert.equal(topicName, retrievedTopic.name);
-						assert.notEqual(undefined, retrievedTopic.id);
-					});
-				});
-			});
-
-			describe('update', function() {
-				it('should return notfound error', function() {
-					return service.update(9999, { name: guid.raw() })
-					.then(assert.expectFail, function(err) {
-						assert.equal('notfound', err.name);
-					});
-				});
-			});
-
-			describe('get', function() {
-				it('should return notfound error', function() {
-					return service.get(99999)
-					.then(assert.expectFail, function(err) {
-						assert.equal('notfound', err.name);
-					});
-				});
-			});
-
-			describe('getLinkedTopics', function() {
-				it('should return notfound error', function() {
-					return service.getLinkedTopics(9999, 'sub')
-					.then(assert.expectFail, function(err) {
-						assert.equal('notfound', err.name);
-					});
-				});
-			});
 
 			describe('destroy', function() {
-				it('should return a notfound error', function() {
-					return service.destroy(9999)
-					.then(assert.expectFail, function(err) {
-						assert.equal('notfound', err.name);
+				var destroyPromise;
+
+				beforeEach(function() {
+					destroyPromise = service.destroy(topic.id);
+				});
+
+				it('should return an error', function() {
+					return destroyPromise
+					.then(assert.expectFail, function(error) {
+						assert.equal('validation', error.name);
 					});
 				});
-			});
 
-			describe('search', function() {
-				it('should not find topics by name', function() {
-					return service.search({ q: 'notfound' })
-					.then(function(foundTopics) {
-						assert.equal(0, foundTopics.length);
-					});
-				});
-			});
-
-			describe('linkRoot', function() {
-				it('should return notfound error', function() {
-					return service.linkRoot(9999)
-					.then(assert.expectFail, function(err) {
-						assert.equal('notfound', err.name);
-					});
-				});
-			});
-
-			describe('unlinkRoot', function() {
-				it('should return notfound error', function() {
-					return service.unlinkRoot(9999)
-					.then(assert.expectFail, function(err) {
-						assert.equal('notfound', err.name);
+				it('should not delete the topic', function() {
+					return destroyPromise
+					.fail(function() {
+						return graph.topics.get(topic.id)
+						.then(function(retrievedTopic) {
+							assert.equal(retrievedTopic.id, topic.id);
+						});
 					});
 				});
 			});
@@ -692,14 +717,31 @@ describe('Topic Service', function() {
 				});
 			});
 
-//			describe('destroy', function() {
-//				return service.destroy(topic.id)
-//				.then(assert.expectFail, function(error) {
-//					assert.equal('frammis', error.name);
-//				});
-//			});
-		});
+			describe('destroy', function() {
+				var destroyPromise;
 
+				beforeEach(function() {
+					destroyPromise = service.destroy(topic.id);
+				});
+
+				it('should return an error', function() {
+					return destroyPromise
+					.then(assert.expectFail, function(error) {
+						assert.equal('validation', error.name);
+					});
+				});
+
+				it('should not delete the topic', function() {
+					return destroyPromise
+					.fail(function() {
+						return graph.topics.get(topic.id)
+						.then(function(retrievedTopic) {
+							assert.equal(retrievedTopic.id, topic.id);
+						});
+					});
+				});
+			});
+		});
 
 		describe('when user already has a hidden relationship opinion', function() {
 			var resource, topic;
