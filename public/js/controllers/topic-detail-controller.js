@@ -2,19 +2,13 @@ topicnet.controllers.controller('TopicDetailController', function($scope, $http,
 
 	$http.get('/topics/' + $routeParams.topicId).success(function(topic) {
 		$scope.topic = topic;
-		$scope.topic.resources = filterHidden($scope.topic.resources || []);
-		$scope.topic.sub = filterHidden($scope.topic.sub || []);
-		$scope.topic.next = filterHidden($scope.topic.next || []);
+		$scope.topic.resources = $scope.topic.resources || [];
+		$scope.topic.sub = $scope.topic.sub || [];
+		$scope.topic.next = $scope.topic.next || [];
 		$scope.editedTopicName = topic.name;
 	}).error(function(message) {
 		$scope.$emit('error', message);
 	});
-
-	function filterHidden(items) {
-		return items.filter(function(i) {
-			return !i.hidden;
-		});
-	}
 
 	$scope.update = function() {
 		$http.put('/topics/' + $scope.topic.id, {name: $scope.editedTopicName}).success(function() {

@@ -32,39 +32,6 @@ describe('TopicDetailController', function() {
 			it('should set the editedTopicName to the topic name', function() {
 				expect(scope.editedTopicName).toEqual('topic');
 			});
-
-
-			describe('and there are hidden resources', function() {
-
-				beforeEach(inject(function($controller) {
-					var resources = [{id:1}, {id:2, hidden:true}];
-					setupController($controller, { id: 1, resources: resources });
-				}));
-
-				it('should not show hidden resources in the resource list', function() {
-					expect(scope.topic.resources).toEqual([{id:1}]);
-				});
-
-			});
-
-			describe('and there are hidden related topics', function() {
-
-				beforeEach(inject(function($controller) {
-					var subTopics = [{id:1}, {id:2, hidden:true}];
-					var nextTopics = [{id:3}, {id:4, hidden:true}];
-					setupController($controller, { id: 1, sub: subTopics, next: nextTopics });
-				}));
-
-				it('should not show hidden sub topics topics in the sub topics list', function() {
-					expect(scope.topic.sub).toEqual([{id:1}]);
-				});
-
-
-				it('should not show hidden next topics topics in the next topics list', function() {
-					expect(scope.topic.next).toEqual([{id:3}]);
-				});
-			});
-
 		});
 
 		describe('when update is called', function() {
