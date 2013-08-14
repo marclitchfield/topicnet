@@ -11,6 +11,12 @@ app.use(express.bodyParser());
 app.use(express.cookieParser());
 app.use(express.session({ secret: 'Silly Sampton Likes Plant-Like Petunias' }));
 
+app.use(function(req, res, next) {
+	// The global user object is set in the authentication routes if the user is authenticated.
+	global.user = undefined;
+	next();
+});
+
 require('./routes/authentication-routes.js')(app, userService);
 require('./routes/topic-routes.js')(app, topicService);
 require('./routes/resource-routes.js')(app, resourceService);

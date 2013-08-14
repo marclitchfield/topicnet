@@ -27,6 +27,7 @@ module.exports = function(app, userService) {
 	});
 
 	passport.deserializeUser(function(user, done) {
+		global.user = user;
 		done(null, user);
 	});
 

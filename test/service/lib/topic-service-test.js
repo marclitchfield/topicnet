@@ -20,6 +20,7 @@ describe('Topic Service', function() {
 			return graph.users.create({ email: guid.raw() })
 			.then(function(res) {
 				user = res;
+				global.user = user;
 			});
 		});
 
